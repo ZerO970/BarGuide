@@ -1,4 +1,4 @@
-const CACHE = 'bar-guide-v1';
+const CACHE = 'bar-guide-v4';
 const ASSETS = [
   '/BarGuide/',
   '/BarGuide/index.html',
