@@ -1,0 +1,15 @@
+{
+  "name": "The Bar Guide — Whisky Edition",
+  "short_name": "Bar Guide",
+  "description": "Whisky tasting notes, cocktail pairings & serve recommendations for bar staff.",
+  "start_url": "/BarGuide/",
+  "scope": "/BarGuide/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0d0a",
+  "theme_color": "#0f0d0a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
