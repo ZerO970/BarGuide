@@ -644,6 +644,24 @@ body {
 .caiman-langs span { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
 .caiman-dedication { font-size: 0.78rem; color: oklch(72% 0.14 145 / 0.8); text-align: center; margin: 0 0 16px; line-height: 1.5; }
 
+/* ─── Quiz Mode Toggle ───────────────────────────────────── */
+.quiz-mode-toggle { display: flex; gap: 8px; margin-bottom: 18px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 4px; }
+.quiz-mode-btn { flex: 1; padding: 9px 14px; border: none; border-radius: 10px; background: transparent; color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 200ms ease; }
+.quiz-mode-btn.active { background: var(--bg-raised); color: var(--gold-bright); box-shadow: 0 1px 4px oklch(0% 0 0 / 0.25); }
+
+/* ─── Trivia ─────────────────────────────────────────────── */
+.trivia-progress-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trivia-progress-bar { flex: 1; height: 4px; background: var(--bg-raised); border-radius: 999px; overflow: hidden; }
+.trivia-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright)); border-radius: 999px; transition: width 400ms ease; }
+.trivia-progress-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; font-weight: 600; }
+.trivia-question { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--text-primary); line-height: 1.5; margin-bottom: 20px; }
+.trivia-opts { grid-template-columns: 1fr; gap: 8px; }
+.trivia-opts .quiz-opt-btn { font-size: 0.82rem; padding: 12px 16px; }
+.trivia-final { text-align: center; padding: 30px 10px 10px; }
+.trivia-final-icon { font-size: 3rem; margin-bottom: 8px; }
+.trivia-final-score { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--gold-bright); line-height: 1; margin-bottom: 6px; }
+.trivia-final-label { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
 /* ─── Quiz ──────────────────────────────────────────────── */
 .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .quiz-score-wrap { display: flex; gap: 20px; }
@@ -815,24 +833,56 @@ body.lang-ru [data-ru] { display: revert; }
 
 <!-- ─── SCREEN: QUIZ ───────────────────────────────── -->
 <div class="screen" id="screen-quiz">
-  <div class="quiz-header">
-    <div class="quiz-score-wrap">
-      <div class="quiz-stat"><span class="quiz-stat-val" id="quizScore">0</span><span class="quiz-stat-label"><span data-en>Score</span><span data-ru>Счёт</span></span></div>
-      <div class="quiz-stat"><span class="quiz-stat-val" id="quizStreak">0</span><span class="quiz-stat-label"><span data-en>Streak 🔥</span><span data-ru>Серия 🔥</span></span></div>
-      <div class="quiz-stat"><span class="quiz-stat-val" id="quizTotal">0</span><span class="quiz-stat-label"><span data-en>Total</span><span data-ru>Всего</span></span></div>
-    </div>
-    <button class="quiz-restart-btn" id="quizRestartBtn"><span data-en>Restart</span><span data-ru>Заново</span></button>
+
+  <!-- Mode Toggle -->
+  <div class="quiz-mode-toggle">
+    <button class="quiz-mode-btn active" id="modeFlavorBtn">👃 <span data-en>Flavor</span><span data-ru>Вкус</span></button>
+    <button class="quiz-mode-btn" id="modeTriviaBtn">📚 <span data-en>Trivia</span><span data-ru>Тест</span></button>
   </div>
 
-  <div class="quiz-card" id="quizCard">
-    <p class="quiz-prompt"><span data-en>Which whisky is this?</span><span data-ru>Что это за виски?</span></p>
-    <div class="quiz-clues" id="quizClues"></div>
-    <div class="quiz-options" id="quizOptions"></div>
-    <div class="quiz-result" id="quizResult" hidden>
-      <div class="quiz-result-inner" id="quizResultInner"></div>
-      <button class="quiz-next-btn" id="quizNextBtn"><span data-en>Next →</span><span data-ru>Далее →</span></button>
+  <!-- ── Flavor Mode ── -->
+  <div id="flavorMode">
+    <div class="quiz-header">
+      <div class="quiz-score-wrap">
+        <div class="quiz-stat"><span class="quiz-stat-val" id="quizScore">0</span><span class="quiz-stat-label"><span data-en>Score</span><span data-ru>Счёт</span></span></div>
+        <div class="quiz-stat"><span class="quiz-stat-val" id="quizStreak">0</span><span class="quiz-stat-label"><span data-en>Streak 🔥</span><span data-ru>Серия 🔥</span></span></div>
+        <div class="quiz-stat"><span class="quiz-stat-val" id="quizTotal">0</span><span class="quiz-stat-label"><span data-en>Total</span><span data-ru>Всего</span></span></div>
+      </div>
+      <button class="quiz-restart-btn" id="quizRestartBtn"><span data-en>Restart</span><span data-ru>Заново</span></button>
+    </div>
+    <div class="quiz-card" id="quizCard">
+      <p class="quiz-prompt"><span data-en>Which whisky is this?</span><span data-ru>Что это за виски?</span></p>
+      <div class="quiz-clues" id="quizClues"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-result" id="quizResult" hidden>
+        <div class="quiz-result-inner" id="quizResultInner"></div>
+        <button class="quiz-next-btn" id="quizNextBtn"><span data-en>Next →</span><span data-ru>Далее →</span></button>
+      </div>
     </div>
   </div>
+
+  <!-- ── Trivia Mode ── -->
+  <div id="triviaMode" hidden>
+    <div class="trivia-progress-wrap">
+      <div class="trivia-progress-bar"><div class="trivia-progress-fill" id="triviaFill"></div></div>
+      <span class="trivia-progress-label" id="triviaLabel">1 / 10</span>
+    </div>
+    <div class="quiz-card" id="triviaCard">
+      <p class="trivia-question" id="triviaQ"></p>
+      <div class="quiz-options trivia-opts" id="triviaOpts"></div>
+      <div class="quiz-result" id="triviaResult" hidden>
+        <div class="quiz-result-inner" id="triviaResultInner"></div>
+        <button class="quiz-next-btn" id="triviaNxtBtn"><span data-en>Next →</span><span data-ru>Далее →</span></button>
+      </div>
+    </div>
+    <div class="trivia-final" id="triviaFinal" hidden>
+      <div class="trivia-final-icon" id="triviaFinalIcon"></div>
+      <div class="trivia-final-score" id="triviaFinalScore"></div>
+      <div class="trivia-final-label" id="triviaFinalLabel"></div>
+      <button class="quiz-next-btn" style="margin-top:20px" id="triviaAgainBtn"><span data-en>Play Again</span><span data-ru>Ещё раз</span></button>
+    </div>
+  </div>
+
 </div>
 
 <!-- ─── SCREEN: COCKTAILS ──────────────────────────── -->
@@ -2517,6 +2567,202 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 /* ══════════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   TRIVIA DATA
+══════════════════════════════════════════════════ */
+const TRIVIA = [
+  // — Scotch Regions & Production —
+  { q:"Which of these is NOT a whisky-producing region of Scotland?", o:["Islay","Speyside","Bordeaux","Highlands"], a:2, e:"Bordeaux is a French wine region. Scotland's 5 official whisky regions are Campbeltown, Highlands, Islay, Lowlands, and Speyside." },
+  { q:"How many officially recognised whisky regions does Scotland have?", o:["4","5","6","7"], a:1, e:"Scotland has 5 SWA-recognised regions: Campbeltown, Highlands, Islay, Lowlands, and Speyside." },
+  { q:"Which Scottish region has the highest concentration of distilleries?", o:["Islay","Highlands","Speyside","Lowlands"], a:2, e:"Speyside is home to over 50 distilleries — more than any other Scottish region — including Glenfiddich, Macallan, and Glenlivet." },
+  { q:"What gives Islay whisky its distinctive smoky flavour?", o:["Sea air","Peat","Charred oak","Salt water"], a:1, e:"Islay barley is dried over burning peat, infusing the malt — and the final spirit — with phenolic, smoky compounds." },
+  { q:"Minimum aging for Scotch whisky in oak casks is:", o:["1 year","2 years","3 years","5 years"], a:2, e:"By law, Scotch whisky must mature in oak casks in Scotland for a minimum of 3 years." },
+  { q:"Which distillery is located on Islay?", o:["Glenfiddich","Glenlivet","Bowmore","Balvenie"], a:2, e:"Bowmore is one of Islay's oldest distilleries. Glenfiddich, Glenlivet, and Balvenie are all Speyside." },
+  { q:"What does 'single malt' mean?", o:["Made from one single grain","Made at one distillery from malted barley","Aged in a single barrel","Made by a single person"], a:1, e:"'Single' refers to a single distillery, 'malt' to 100% malted barley. Multiple casks can be vatted together." },
+  { q:"What is the 'Angel's Share'?", o:["Charity donation by distilleries","The portion that evaporates during aging","The first run from the still","The blender's commission"], a:1, e:"The Angel's Share is the portion of whisky that evaporates through the cask each year — typically ~2% in Scotland." },
+  { q:"A blended Scotch must contain:", o:["Only single malts","Only grain whisky","Both malt and grain whiskies","At least 80% malt"], a:2, e:"Blended Scotch is a combination of one or more single malts with one or more grain whiskies." },
+  { q:"Which Scottish region is known for its lighter, more floral whiskies?", o:["Islay","Highlands","Campbeltown","Lowlands"], a:3, e:"Lowlands whiskies are triple-distilled and known for being light, grassy, and floral — the gentlest style of Scotch." },
+  { q:"Ardbeg, Lagavulin, and Laphroaig are all distilleries on which island?", o:["Jura","Skye","Islay","Orkney"], a:2, e:"All three are on Islay's southern coast, known as the 'Kildalton trio' — among the smokiest whiskies in the world." },
+  { q:"Campbeltown once had over 30 distilleries. How many does it have today?", o:["1","3","8","15"], a:1, e:"Campbeltown now has just 3 distilleries: Springbank, Glen Scotia, and Glengyle. It was devastated by Prohibition and changing tastes." },
+  { q:"What does 'cask strength' mean?", o:["Extra-aged whisky","Bottled without water dilution, at barrel strength","Made from strong-charred barrels","Heavy peated whisky"], a:1, e:"Cask strength whisky is bottled directly from the barrel without dilution — typically 50–65% ABV. Water can be added by the drinker." },
+  { q:"What does NAS stand for on a whisky bottle?", o:["North American Scotch","No Age Statement","Natural Aging System","New Artisan Spirit"], a:1, e:"NAS means No Age Statement — the whisky has no declared age. It may still be excellent, but legally no minimum age applies." },
+  { q:"Which Scottish region is Glenfiddich from?", o:["Islay","Highlands","Campbeltown","Speyside"], a:3, e:"Glenfiddich is in Dufftown, Speyside — the most distillery-dense region in Scotland." },
+  // — Bourbon & American Whiskey —
+  { q:"Bourbon must be made from at least what percentage of corn?", o:["25%","41%","51%","75%"], a:2, e:"The legal minimum is 51% corn. Most bourbons use 65–80% corn for sweetness, with rye or wheat and malted barley making up the rest." },
+  { q:"Can bourbon only be made in Kentucky?", o:["Yes — it's a Kentucky product","No — it can be made anywhere in the USA","No — only in the South","Only in Kentucky and Tennessee"], a:1, e:"Bourbon can be produced anywhere in the United States. Kentucky makes ~95% of it, but it's not legally required." },
+  { q:"What type of barrel must bourbon be aged in?", o:["Used French oak","New charred American oak","Any wooden barrel","Used bourbon barrels"], a:1, e:"New charred American white oak barrels are legally required for bourbon. This is why Scotch makers love ex-bourbon casks — they're plentiful and flavourful." },
+  { q:"What is the Lincoln County Process?", o:["A Kentucky distilling technique","Charcoal filtering before aging — used by Tennessee Whiskey","A mashbill with Lincoln corn varieties","A mash fermentation method"], a:1, e:"Tennessee Whiskey (Jack Daniel's, George Dickel) filters new spirit through maple charcoal before aging — this is what distinguishes it from bourbon." },
+  { q:"Bottled-in-Bond whiskey must be aged for at least:", o:["2 years","4 years","6 years","10 years"], a:1, e:"The Bottled-in-Bond Act (1897) requires: product of one distilling season, one distillery, aged minimum 4 years, bottled at exactly 50% ABV." },
+  { q:"Rye whiskey must contain at least what percentage of rye grain?", o:["25%","41%","51%","65%"], a:2, e:"Like bourbon's 51% corn requirement, rye whiskey must contain at least 51% rye grain in the mashbill." },
+  { q:"Which of these is a Tennessee Whiskey, NOT a bourbon?", o:["Maker's Mark","Wild Turkey","Jack Daniel's","Knob Creek"], a:2, e:"Jack Daniel's uses the Lincoln County Process (charcoal filtering), which legally makes it Tennessee Whiskey, not bourbon." },
+  { q:"What is the maximum distillation proof for bourbon?", o:["80 proof","125 proof","160 proof","190 proof"], a:2, e:"Bourbon must be distilled to no more than 160 proof (80% ABV). Above that, too much character is lost." },
+  { q:"WhistlePig 10 Year is made from what percentage of rye?", o:["51%","75%","95%","100%"], a:3, e:"WhistlePig 10 is a 100% rye whiskey — extremely rare, as most ryes use only 51–65% rye in their mashbill." },
+  { q:"What does 'straight' bourbon legally mean?", o:["No additives at all","Aged minimum 2 years, no added colour or flavour","Aged exactly 4 years","Made from 100% corn"], a:1, e:"'Straight' requires: aged minimum 2 years in new charred oak, no added colour or flavour. Under 4 years must display an age statement." },
+  { q:"Bulleit Rye is known for its unusually high rye mashbill of:", o:["51%","68%","80%","95%"], a:3, e:"Bulleit Rye uses a 95% rye mashbill — one of the highest available — which delivers an intensely dry, spicy character." },
+  { q:"What does 'mashbill' refer to in whiskey production?", o:["The distillery's location","The grain recipe used in fermentation","The aging process","The barrel char level"], a:1, e:"The mashbill is the grain recipe — e.g. 75% corn, 13% rye, 12% malted barley. It fundamentally shapes the whiskey's flavour." },
+  { q:"Rittenhouse Rye is produced by which distillery?", o:["Buffalo Trace","Brown-Forman","Heaven Hill","Jim Beam"], a:2, e:"Rittenhouse is produced by Heaven Hill in Kentucky. Its BiB designation makes it exceptionally reliable for cocktail use." },
+  { q:"The maximum barrel entry proof for bourbon is:", o:["100 proof","110 proof","125 proof","160 proof"], a:2, e:"Spirit can enter the barrel at a maximum of 125 proof (62.5% ABV). Higher entry proof means less wood contact and lighter flavour." },
+  { q:"'Small batch' on a bourbon label legally means:", o:["Under 10 barrels","Under 100 barrels","Aged minimum 8 years","Nothing — there is no legal definition"], a:3, e:"'Small batch' has no legal definition in the USA. It's a marketing term — different brands use it for batches of 10 to thousands of barrels." },
+  // — Irish Whiskey —
+  { q:"How many times is most Irish whiskey traditionally distilled?", o:["Once","Twice","Three times","Four times"], a:2, e:"Triple distillation is the Irish tradition — it produces a lighter, smoother spirit than the double distillation used in Scotland." },
+  { q:"Irish whiskey must be aged for at least:", o:["1 year","2 years","3 years","5 years"], a:2, e:"Irish whiskey must mature in wooden casks in Ireland for a minimum of 3 years — the same as Scotch." },
+  { q:"What is 'single pot still' Irish whiskey?", o:["Any whiskey from a small still","Made in a copper pot still from a mix of malted AND unmalted barley","A single-barrel Irish expression","A peated Irish whiskey"], a:1, e:"Single Pot Still is uniquely Irish — a combination of malted and unmalted barley in a pot still creates a spicy, creamy, oily character." },
+  { q:"Which country produces the world's best-selling whiskey brand?", o:["Scotland","USA","Ireland","Japan"], a:2, e:"Jameson Irish Whiskey is the world's best-selling whiskey, followed closely by Jack Daniel's. Ireland punches well above its size." },
+  { q:"The Irish Coffee was invented at:", o:["Dublin Airport","Cork train station","Shannon Airport","Belfast docks"], a:2, e:"Irish Coffee was invented by Joe Sheridan at Shannon Airport in 1943, to warm transatlantic passengers whose flying boat turned back due to bad weather." },
+  { q:"Which of these is a uniquely Irish whiskey style?", o:["Single malt","Blended grain","Single pot still","Single cask"], a:2, e:"Single Pot Still — using both malted and unmalted barley in a copper pot still — exists only in Ireland and is legally protected." },
+  { q:"Irish whiskey is spelled with an 'e' (whiskey), while Scotch is without (whisky). Is this true?", o:["True","False — both use 'whisky'","It varies by brand","There is no official rule"], a:0, e:"True. Ireland and the USA use 'whiskey'. Scotland, Japan, and Canada use 'whisky'. A quick spelling check tells you the origin." },
+  { q:"Roe & Co Irish Whiskey is named after:", o:["A famous bartender","The Roe family distillery that once occupied the building","A river in Dublin","A character in Irish literature"], a:1, e:"George Roe & Co once operated one of the world's largest distilleries on the same Dublin site. The brand honours that heritage." },
+  // — Japanese Whisky —
+  { q:"Japanese whisky was primarily inspired by which country's tradition?", o:["Ireland","USA","Scotland","Canada"], a:2, e:"Masataka Taketsuru studied distilling in Scotland before returning to Japan — Japanese whisky is modelled closely on Scotch traditions." },
+  { q:"Which company pioneered Japanese whisky production?", o:["Nikka","Suntory","Kirin","Mars"], a:1, e:"Suntory built Japan's first whisky distillery at Yamazaki in 1923, founded by Shinjiro Torii." },
+  { q:"The Japanese Highball is traditionally served:", o:["Neat in a small Glencairn","In a tall glass with lots of ice and cold soda, stirred minimally","On the rocks in a tumbler","Warm with hot water"], a:1, e:"The Japanese Highball is an art form: tall glass, maximum ice, super-cold soda poured gently to preserve carbonation, stirred just once." },
+  { q:"Nikka Whisky was co-founded by:", o:["Shinjiro Torii","Masataka Taketsuru","Kenji Nikka","Ichiro Akuto"], a:1, e:"Masataka Taketsuru studied in Scotland, married a Scottish woman, and founded Nikka after leaving Suntory. His story inspired the TV drama 'Massan'." },
+  { q:"'Nikka From the Barrel' is:", o:["A single cask bottling","A blended whisky bottled at close to cask strength (51.4%)","A 100% malt whisky","An unaged spirit"], a:1, e:"Nikka From the Barrel blends malt and grain whiskies, then bottles at 51.4% — close to cask strength — giving it incredible richness for its price." },
+  // — Cocktail History —
+  { q:"The Sazerac is the official cocktail of which city?", o:["Chicago","New York","New Orleans","Nashville"], a:2, e:"Louisiana officially declared the Sazerac the cocktail of New Orleans in 2008. It was born at the Sazerac Coffee House in the 1850s." },
+  { q:"Who invented the Penicillin cocktail?", o:["Dale DeGroff","Sam Ross","Audrey Saunders","Dick Bradsell"], a:1, e:"Sam Ross created the Penicillin at Milk & Honey, NYC around 2005. He also created the Paper Plane. Both became modern classics." },
+  { q:"The Paper Plane uses equal parts of how many ingredients?", o:["2","3","4","5"], a:2, e:"Equal parts (0.75 oz each) of bourbon, Aperol, Amaro Nonino, and fresh lemon juice. Four ingredients, ruthlessly balanced." },
+  { q:"A Boulevardier substitutes what in a Negroni?", o:["Campari for Aperol","Sweet vermouth for dry","Bourbon or Rye for Gin","Scotch for bourbon"], a:2, e:"The Boulevardier is essentially a Negroni where gin is replaced with bourbon or rye. Same structure, completely different character." },
+  { q:"The Vieux Carré was created at:", o:["Arnaud's Restaurant, New Orleans","Hotel Monteleone, New Orleans","The Ritz Bar, Paris","21 Club, New York"], a:1, e:"Walter Bergeron created the Vieux Carré at the Hotel Monteleone's Carousel Bar in New Orleans in 1938. It's still served there today." },
+  { q:"The Mint Julep is the official drink of which event?", o:["The Grand National","The Super Bowl","The Kentucky Derby","Wimbledon"], a:2, e:"The Mint Julep has been the official drink of the Kentucky Derby since 1938. Over 120,000 are served at Churchill Downs each Derby weekend." },
+  { q:"What does 'stirred, not shaken' achieve in cocktails?", o:["A warmer drink","Silky texture and clarity without aeration","More dilution","A stronger flavour"], a:1, e:"Shaking introduces air bubbles and clouds spirit-forward drinks. Stirring chills and dilutes without breaking the texture — ideal for Manhattan, Martini, Old Fashioned." },
+  { q:"The Gold Rush cocktail is a variation of which classic?", o:["Old Fashioned","Manhattan","Whisky Sour","Boulevardier"], a:2, e:"The Gold Rush (TJ Siegel, Milk & Honey, ~2000) replaces simple syrup in a Whisky Sour with honey syrup — rounder, more complex." },
+  { q:"A 'dry shake' in bartending means:", o:["Shaking without alcohol","Shaking without ice to emulsify egg white","Shaking very briefly","Shaking in a chilled tin"], a:1, e:"Dry shaking (no ice) first allows the egg white proteins to emulsify properly before ice is added. This creates a better foam." },
+  { q:"What is 'double straining' a cocktail?", o:["Straining twice through the same strainer","Straining through a Hawthorne strainer AND a fine-mesh strainer","Filtering through a coffee filter","Pouring from a height"], a:1, e:"Double straining removes ice chips and fruit pulp for a cleaner, silkier drink. Essential for Sours and anything with citrus." },
+  { q:"The Highball became iconic in which country?", o:["Scotland","USA","Japan","Ireland"], a:2, e:"Japan elevated the Highball into an art form — precise technique, maximum ice, minimal carbonation disturbance. Suntory's Whisky Highball campaign drove mass adoption." },
+  { q:"Which bitters are traditional in a Sazerac?", o:["Angostura only","Orange bitters","Peychaud's (+ dash Angostura)","Mole bitters"], a:2, e:"Peychaud's bitters are the defining ingredient of a Sazerac — their anise and floral notes are essential. A dash of Angostura is often added for depth." },
+  { q:"The absinthe rinse in a Sazerac serves what purpose?", o:["To add significant alcohol","To coat the glass with aroma — only a tiny amount is used","To neutralise bitterness","To add sweetness"], a:1, e:"The rinse coats the glass with anise aroma on every sip without making the drink taste of absinthe. Discard the excess before building the drink." },
+  { q:"What does 'on the rocks' mean?", o:["Served neat, no ice","Served over ice cubes","Served with crushed ice","Served chilled but strained off ice"], a:1, e:"'On the rocks' means served over ice — typically large ice cubes in a rocks/Old Fashioned glass." },
+  { q:"The 'float' in a Penicillin is used to:", o:["Add volume to the drink","Layer peated Scotch on top for aroma on the first sip","Keep the drink from diluting","Balance sweetness"], a:1, e:"Slowly pouring a small amount of Islay Scotch over the back of a spoon layers it on top — you smell the peat before tasting the sweeter drink beneath." },
+  { q:"Which cocktail contains Bénédictine liqueur?", o:["Manhattan","Old Fashioned","Vieux Carré","Gold Rush"], a:2, e:"The Vieux Carré includes a teaspoon of Bénédictine — the herbal French liqueur adds complexity and a faint sweetness." },
+  { q:"The Boulevardier was created by:", o:["A New York bartender in 1890","American expat Erskine Gwynne in 1920s Paris","A Kentucky distiller","Dale DeGroff at the Rainbow Room"], a:1, e:"Erskine Gwynne published a Paris magazine called 'The Boulevardier' and gave the cocktail its name in the 1920s. It's the American-in-Paris drink." },
+  { q:"What is the 'Perfect' version of a Manhattan?", o:["Made with premium bourbon","Uses equal parts sweet AND dry vermouth","Shaken instead of stirred","Uses three types of bitters"], a:1, e:"A Perfect Manhattan splits the vermouth between sweet and dry in equal parts, creating a drier, more complex drink than the standard (sweet vermouth only) version." },
+  { q:"Rob Roy is essentially a Manhattan made with:", o:["Rye instead of bourbon","Scotch instead of bourbon or rye","Dry vermouth instead of sweet","Peychaud's instead of Angostura"], a:1, e:"Swap the bourbon/rye for Scotch in a Manhattan and you have a Rob Roy. The smoke and complexity of Scotch give it a distinctly different character." },
+  { q:"Egg white in a Whisky Sour creates:", o:["A sweeter flavour","Foam and a silkier, creamier mouthfeel","More alcohol content","A cloudy appearance without foam"], a:1, e:"Egg white adds a frothy head and a silkier texture without changing the flavour significantly. This version is called a Boston Sour or Whisky Sour with foam." },
+  { q:"The Mint Julep's silver cup is traditional because:", o:["It matches the Kentucky Derby trophy","It frosts on the outside from the crushed ice inside","Silver purifies the water","It was easier to clean than glass"], a:1, e:"The metal conducts cold so effectively that the outside of the cup literally frosts — a visual signal that the drink is perfectly cold. It also feels great in hand." },
+  // — Production & General Knowledge —
+  { q:"'Pot still' distillation produces what kind of spirit compared to a column still?", o:["Lighter and more neutral","Heavier and more flavourful","Stronger ABV","Sweeter"], a:1, e:"Pot stills are batch-operated and retain more congeners — flavour compounds. Column stills run continuously and produce lighter, more neutral spirit." },
+  { q:"What does 'maturation' mean in whisky production?", o:["The fermentation of grain","Aging spirit in wooden casks","The distillation process","Blending multiple casks"], a:1, e:"Maturation is the time spirit spends in wooden casks. Up to 70% of a whisky's final flavour can come from the cask interaction." },
+  { q:"What colour does whisky get its colour from?", o:["Added caramel only","The grain used","Maturation in wooden casks","Natural fermentation"], a:2, e:"New spirit is clear. Colour comes entirely from the cask — ex-bourbon barrels give golden hues, ex-sherry casks give amber to deep mahogany tones." },
+  { q:"'Heads' and 'tails' in distillation are:", o:["Premium cuts of the spirit","The first and last parts of a run, removed to keep only the 'heart'","Types of barrel shapes","Parts of the copper still"], a:1, e:"The 'heads' (first runnings) contain harsh methanol and acetone. The 'tails' (last runnings) are heavy and sulphurous. Only the 'heart' is kept for whisky." },
+  { q:"What is a 'washback' in distillery production?", o:["The first distillation still","A large fermentation vessel where yeast converts sugars to alcohol","The copper condenser coil","The barrel filling station"], a:1, e:"The washback is where fermentation happens — yeast is added to the liquid malt (wort) and converts sugars to a beer-like liquid called 'wash' (~8% ABV)." },
+  { q:"Which wood is predominantly used for whisky casks?", o:["Pine","Walnut","Oak","Cherry"], a:2, e:"Oak is used almost exclusively — its structure is tight enough to hold liquid while its pores allow slow air exchange. American white oak and European oak are the main types." },
+  { q:"A 'blended malt' (formerly 'vatted malt') is:", o:["A single malt from one distillery","Malt whiskies from multiple distilleries blended together","A grain whisky blend","A bourbon blend"], a:1, e:"A blended malt uses only single malts — no grain whisky — from multiple distilleries. Johnnie Walker Green Label is a classic example." },
+  { q:"The 'Coffey still' (column still) was invented by:", o:["James Watt","Aeneas Coffey","Robert Burns","John Walker"], a:1, e:"Aeneas Coffey, an Irish excise officer, patented the continuous column still in 1831. It revolutionised spirit production by allowing continuous, efficient distillation." },
+  { q:"Which type of cask imparts the most flavour to whisky?", o:["Third-fill (used three times)","Second-fill (used twice)","First-fill (used once before)","New oak"], a:2, e:"First-fill casks — used once previously (e.g. ex-bourbon or ex-sherry) — still have maximum wine or spirit residue and impart the most flavour. Each subsequent fill gives less." },
+  { q:"Why is whisky typically diluted before bottling?", o:["To add sweetness","To bring ABV to a drinkable level and improve mouthfeel","To add colour","To extend shelf life"], a:1, e:"Cask strength whisky (often 55–65%) is diluted to standard bottling strength (usually 40–46%) with pure water to make it approachable and consistent." },
+  { q:"Approximately what percentage evaporates as the Angel's Share per year in Scotland?", o:["0.5%","2%","5%","10%"], a:1, e:"Scotland's cool climate means about 2% evaporates annually. In warmer climates like Kentucky or India, it can be 4–10%. A 20-year Scotch loses ~33% to the angels." },
+  { q:"What does 'grain whisky' typically refer to?", o:["100% malted barley","Corn or wheat distilled in a column still","100% rye","A blend of any grains"], a:1, e:"Grain whisky uses corn or wheat (sometimes with a small percentage of malted barley) and is distilled in a continuous column still — lighter and more neutral than malt." },
+  { q:"'Single cask' means:", o:["One grain type used","Whisky from one barrel, bottled without blending other casks","Made at one distillery","Aged for the same number of years as stated"], a:1, e:"Single cask bottlings come from one individual barrel and are never blended with other casks. Each bottle from that batch is identical to the others — but no two casks are the same." },
+  { q:"Why do taller pot stills produce lighter spirits?", o:["More copper surface area removes sulphur","Gravity pulls down heavier compounds","The glass viewing panel filters light","Taller stills run at lower temperatures"], a:0, e:"Taller stills with longer necks mean heavier, oilier compounds fall back down (reflux) before reaching the condenser — leaving only lighter, more refined vapours to collect." },
+  { q:"'Cask finishing' means:", o:["Adding wine to the whisky","Transferring whisky to a different type of cask for the final months","Bottling the whisky from the cask","Blending at the cask level"], a:1, e:"Finishing involves moving aged whisky to a secondary cask (e.g. port, sherry, wine, rum) for weeks to months. The final cask adds a last layer of flavour complexity." },
+  // — Brand & Bar Knowledge —
+  { q:"Johnnie Walker's walking man always strides in which direction?", o:["Left","Right","Toward you","He stands still"], a:1, e:"The Johnnie Walker Striding Man has always walked to the right — representing forward momentum and progress. Introduced in 1908, he's one of the world's most iconic brand icons." },
+  { q:"Buffalo Trace distillery produces which of these whiskies?", o:["WhistlePig","Sazerac Rye","Knob Creek","Jim Beam"], a:1, e:"Buffalo Trace (formerly Ancient Age Distillery) produces Sazerac Rye, Eagle Rare, Blanton's, and the bourbon named after the distillery itself." },
+  { q:"Maker's Mark seals its bottles with:", o:["Gold foil and cork","Red wax dripped by hand","A wooden stopper","A black plastic cap"], a:1, e:"Every Maker's Mark bottle is hand-dipped in red wax — a tradition since 1958. The drips are intentionally irregular to signal the handmade, craft nature of the spirit." },
+  { q:"Michter's original distillery was located in:", o:["Kentucky","Tennessee","Pennsylvania","Virginia"], a:2, e:"The original Michter's (then called Bomberger's Distillery) was in Schaefferstown, Pennsylvania — one of America's oldest distilleries before it closed in 1989." },
+  { q:"WhistlePig distillery is located in:", o:["Kentucky","Tennessee","Vermont","New York"], a:2, e:"WhistlePig is on a farm in Shoreham, Vermont. Their 'triple terroir' philosophy — grain grown, distilled, and aged on the same farm — is unique in American whiskey." },
+  { q:"Lagavulin is located on which Scottish island?", o:["Jura","Skye","Islay","Orkney"], a:2, e:"Lagavulin is on Islay's southern shore, between Laphroaig and Ardbeg. Its 16-year expression is considered a benchmark of heavily peated Scotch." },
+  { q:"The 'Whisky Rebellion' of 1794 was a protest against:", o:["Prohibition of whisky","Federal taxes on distilled spirits","A Scottish monopoly on American whisky","Import duties on Scotch"], a:1, e:"When the new US government taxed distilled spirits in 1791, Western Pennsylvania farmers (who used whisky as currency) revolted. Washington sent 13,000 troops to suppress it." },
+  { q:"Which grain is NOT typically used in bourbon production?", o:["Corn","Malted barley","Rice","Rye"], a:2, e:"Bourbon mashbills use corn (majority), malted barley (for enzymes), and either rye or wheat as the flavouring grain. Rice is not used in bourbon production." },
+  { q:"Heaven Hill distillery produces:", o:["Bulleit Bourbon","Maker's Mark","Rittenhouse Rye","Four Roses"], a:2, e:"Heaven Hill is one of America's largest independent distillers, producing Rittenhouse Rye, Elijah Craig, Evan Williams, and Larceny, among others." },
+  { q:"The word 'whisky' (or 'whiskey') comes from which language?", o:["Latin","Gaelic — 'uisce beatha' (water of life)","French","Old English"], a:1, e:"'Whisky' comes from the Scottish/Irish Gaelic 'uisce beatha' (pronounced 'ish-ka bah-ha') meaning 'water of life' — the same root as the French 'eau de vie'." }
+];
+
+/* ══════════════════════════════════════════════════
+   TRIVIA GAME LOGIC
+══════════════════════════════════════════════════ */
+const triviaState = { questions: [], idx: 0, score: 0, answered: false };
+
+function triviaStart() {
+  triviaState.questions = [...TRIVIA].sort(() => Math.random() - 0.5).slice(0, 10);
+  triviaState.idx = 0; triviaState.score = 0; triviaState.answered = false;
+  document.getElementById('triviaFinal').hidden = true;
+  document.getElementById('triviaCard').hidden = false;
+  renderTriviaQ();
+}
+
+function renderTriviaQ() {
+  const q = triviaState.questions[triviaState.idx];
+  const n = triviaState.idx + 1;
+  document.getElementById('triviaFill').style.width = ((n - 1) / 10 * 100) + '%';
+  document.getElementById('triviaLabel').textContent = n + ' / 10';
+  document.getElementById('triviaQ').textContent = q.q;
+  document.getElementById('triviaOpts').innerHTML = q.o.map((opt, i) =>
+    `<button class="quiz-opt-btn" data-i="${i}">${opt}</button>`
+  ).join('');
+  document.getElementById('triviaResult').hidden = true;
+  triviaState.answered = false;
+  document.querySelectorAll('#triviaOpts .quiz-opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => triviaAnswer(+btn.dataset.i));
+  });
+}
+
+function triviaAnswer(idx) {
+  if (triviaState.answered) return;
+  triviaState.answered = true;
+  const q = triviaState.questions[triviaState.idx];
+  const isRight = idx === q.a;
+  if (isRight) triviaState.score++;
+  document.querySelectorAll('#triviaOpts .quiz-opt-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.a) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('wrong');
+  });
+  const inner = document.getElementById('triviaResultInner');
+  inner.innerHTML = isRight
+    ? `<span class="correct-label">✓ Correct!</span> ${q.e}`
+    : `<span class="wrong-label">✗ Wrong.</span> <strong>${q.o[q.a]}</strong> — ${q.e}`;
+  document.getElementById('triviaResult').hidden = false;
+  document.getElementById('triviaFill').style.width = (triviaState.idx + 1) / 10 * 100 + '%';
+}
+
+function triviaNext() {
+  triviaState.idx++;
+  if (triviaState.idx >= 10) {
+    renderTriviaFinal();
+  } else {
+    renderTriviaQ();
+  }
+}
+
+function renderTriviaFinal() {
+  document.getElementById('triviaCard').hidden = true;
+  const s = triviaState.score;
+  const ratings = [
+    { min:0,  icon:'🥃', label:'Keep tasting — knowledge comes with the pour.' },
+    { min:3,  icon:'🌾', label:'Getting there. A few more shifts and you\'ll have it.' },
+    { min:5,  icon:'⭐', label:'Solid. You know your way around a whisky list.' },
+    { min:7,  icon:'🥇', label:'Impressive. You\'re the one guests should be asking.' },
+    { min:9,  icon:'🏆', label:'Perfect. Are you sure you\'re not a distillery rep?' },
+  ];
+  const r = [...ratings].reverse().find(r => s >= r.min) || ratings[0];
+  document.getElementById('triviaFinalIcon').textContent = r.icon;
+  document.getElementById('triviaFinalScore').textContent = s + ' / 10';
+  document.getElementById('triviaFinalLabel').textContent = r.label;
+  document.getElementById('triviaFill').style.width = '100%';
+  document.getElementById('triviaLabel').textContent = '10 / 10';
+  document.getElementById('triviaFinal').hidden = false;
+}
+
+document.getElementById('triviaNxtBtn').addEventListener('click', triviaNext);
+document.getElementById('triviaAgainBtn').addEventListener('click', triviaStart);
+
+/* ── Mode toggle ── */
+document.getElementById('modeFlavorBtn').addEventListener('click', () => {
+  document.getElementById('flavorMode').hidden = false;
+  document.getElementById('triviaMode').hidden = true;
+  document.getElementById('modeFlavorBtn').classList.add('active');
+  document.getElementById('modeTriviaBtn').classList.remove('active');
+});
+document.getElementById('modeTriviaBtn').addEventListener('click', () => {
+  document.getElementById('flavorMode').hidden = true;
+  document.getElementById('triviaMode').hidden = false;
+  document.getElementById('modeTriviaBtn').classList.add('active');
+  document.getElementById('modeFlavorBtn').classList.remove('active');
+  if (!triviaState.questions.length) triviaStart();
+});
+
 /* ══════════════════════════════════════════════════
    QUIZ
 ══════════════════════════════════════════════════ */
