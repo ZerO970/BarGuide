@@ -263,16 +263,53 @@ body {
 .logo-main { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--gold-bright); letter-spacing: 0.04em; text-transform: uppercase; }
 .logo-sub { font-size: 0.58rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 2px; }
 
-/* ─── Nav Tabs ──────────────────────────────────────────── */
-.nav-tabs { display: flex; gap: 2px; background: var(--bg-raised); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 3px; }
-.nav-tab {
-  padding: 5px 14px; border-radius: 999px; border: none; background: transparent;
-  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 500;
-  color: var(--text-muted); cursor: pointer; transition: all 150ms ease;
+/* ─── Nav Pill (collapsible) ────────────────────────────── */
+.nav-pill { position: relative; z-index: 110; }
+
+.nav-pill-current {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px 6px 16px; border-radius: 999px;
+  border: 1px solid var(--border-subtle); background: var(--bg-raised);
+  font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 600;
+  color: var(--gold-bright); cursor: pointer;
+  transition: border-color 150ms, background 150ms;
   white-space: nowrap;
 }
-.nav-tab.active { background: var(--bg-surface); color: var(--gold-bright); box-shadow: 0 1px 4px oklch(0% 0 0 / 0.2); }
-.nav-tab:hover:not(.active) { color: var(--text-secondary); }
+.nav-pill-current:hover { border-color: var(--gold-dim); }
+.nav-pill-arrow {
+  color: var(--gold-dim); flex-shrink: 0;
+  transition: transform 250ms cubic-bezier(0.34,1.1,0.64,1);
+}
+.nav-pill.open .nav-pill-arrow { transform: rotate(180deg); }
+
+.nav-pill-menu {
+  position: absolute; top: calc(100% + 8px); left: 0;
+  min-width: 160px;
+  background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  border-radius: 16px; padding: 5px;
+  box-shadow: var(--shadow-modal);
+  display: flex; flex-direction: column; gap: 2px;
+  /* animation */
+  opacity: 0; transform: translateY(-6px) scale(0.97);
+  transition: opacity 200ms ease, transform 200ms cubic-bezier(0.34,1.2,0.64,1);
+  pointer-events: none;
+}
+.nav-pill.open .nav-pill-menu {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+}
+.nav-pill-item {
+  padding: 10px 14px; border-radius: 12px; border: none; background: transparent;
+  font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer; text-align: left;
+  transition: background 120ms, color 120ms;
+  white-space: nowrap;
+}
+.nav-pill-item:hover { background: var(--bg-raised); color: var(--text-primary); }
+.nav-pill-item.active { color: var(--gold-bright); font-weight: 700; background: var(--recommend-bg); }
+
+/* hide theme/lang when menu is open */
+.header-inner.nav-open .header-right { opacity: 0; pointer-events: none; transition: opacity 150ms; }
+.header-right { transition: opacity 200ms; }
 
 .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
@@ -882,20 +919,18 @@ body.lang-ru [data-ru] { display: revert; }
       </div>
     </div>
 
-    <nav class="nav-tabs">
-      <button class="nav-tab active" data-screen="bar">
-        <span data-en>Bar</span><span data-ru>Бар</span>
+    <div class="nav-pill" id="navPill">
+      <button class="nav-pill-current" id="navPillCurrent" aria-expanded="false" aria-haspopup="true">
+        <span id="navPillLabel">Bar</span>
+        <svg class="nav-pill-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="nav-tab" data-screen="cocktails">
-        <span data-en>Cocktails</span><span data-ru>Коктейли</span>
-      </button>
-      <button class="nav-tab" data-screen="quiz">
-        <span data-en>Quiz</span><span data-ru>Квиз</span>
-      </button>
-      <button class="nav-tab" data-screen="match">
-        <span data-en>Match</span><span data-ru>Подбор</span>
-      </button>
-    </nav>
+      <div class="nav-pill-menu" id="navPillMenu" hidden>
+        <button class="nav-pill-item active" data-screen="bar"><span data-en>Bar</span><span data-ru>Бар</span></button>
+        <button class="nav-pill-item" data-screen="cocktails"><span data-en>Cocktails</span><span data-ru>Коктейли</span></button>
+        <button class="nav-pill-item" data-screen="quiz"><span data-en>Quiz</span><span data-ru>Квиз</span></button>
+        <button class="nav-pill-item" data-screen="match"><span data-en>Match</span><span data-ru>Подбор</span></button>
+      </div>
+    </div>
 
     <div class="header-right">
       <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Switch theme">
@@ -2881,6 +2916,7 @@ function setLang(l) {
   document.getElementById('langToggle').setAttribute('aria-checked', ru);
   document.getElementById('searchInput').placeholder = ru ? 'Поиск по названию, региону, вкусу…' : 'Search by name, region, flavor…';
   document.getElementById('resultsCount').textContent = '';
+  if (navPillLbl) navPillLbl.textContent = NAV_LABELS[currentScreen]?.[l] || currentScreen;
   if (currentCat) { renderCategoryDetail(); } else { renderCategories(); }
   renderCocktails();
 }
@@ -2901,14 +2937,55 @@ document.getElementById('themeBtn').addEventListener('click', () => {
 /* ══════════════════════════════════════════════════
    SCREEN NAV
 ══════════════════════════════════════════════════ */
-document.querySelectorAll('.nav-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentScreen = btn.dataset.screen;
-    document.querySelectorAll('.nav-tab').forEach(b => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + currentScreen));
-    if (currentScreen !== 'bar') closeSearch();
+/* ── Nav Pill ── */
+const NAV_LABELS = {
+  bar:      { en: 'Bar',      ru: 'Бар' },
+  cocktails:{ en: 'Cocktails',ru: 'Коктейли' },
+  quiz:     { en: 'Quiz',     ru: 'Квиз' },
+  match:    { en: 'Match',    ru: 'Подбор' },
+};
+const navPill    = document.getElementById('navPill');
+const navPillBtn = document.getElementById('navPillCurrent');
+const navPillMenu= document.getElementById('navPillMenu');
+const navPillLbl = document.getElementById('navPillLabel');
+const headerInner= document.querySelector('.header-inner');
+
+function navSetScreen(screen) {
+  currentScreen = screen;
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
+  document.querySelectorAll('.nav-pill-item').forEach(b => b.classList.toggle('active', b.dataset.screen === screen));
+  navPillLbl.textContent = NAV_LABELS[screen]?.[lang] || screen;
+  if (screen !== 'bar') closeSearch();
+}
+
+function navOpen() {
+  navPill.classList.add('open');
+  navPillMenu.hidden = false;
+  navPillBtn.setAttribute('aria-expanded', 'true');
+  headerInner.classList.add('nav-open');
+}
+function navClose() {
+  navPill.classList.remove('open');
+  navPillBtn.setAttribute('aria-expanded', 'false');
+  headerInner.classList.remove('nav-open');
+  setTimeout(() => { if (!navPill.classList.contains('open')) navPillMenu.hidden = true; }, 220);
+}
+
+navPillBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  navPill.classList.contains('open') ? navClose() : navOpen();
+});
+
+document.querySelectorAll('.nav-pill-item').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    navSetScreen(btn.dataset.screen);
+    navClose();
   });
 });
+
+document.addEventListener('click', () => { if (navPill.classList.contains('open')) navClose(); });
+navPillMenu.addEventListener('click', e => e.stopPropagation());
 
 /* ══════════════════════════════════════════════════
    SEARCH TOGGLE
@@ -3843,11 +3920,10 @@ document.getElementById('quizNextBtn').addEventListener('click', quizNext);
 document.getElementById('quizRestartBtn').addEventListener('click', quizReset);
 
 // Init quiz when switching to it
-document.querySelectorAll('.nav-tab').forEach(btn => {
+document.querySelectorAll('.nav-pill-item').forEach(btn => {
   if (btn.dataset.screen === 'quiz') {
     btn.addEventListener('click', () => {
       if (!quizState.current) quizNext();
-      // Always reset trivia to difficulty picker when returning to quiz tab
       if (!document.getElementById('triviaMode').hidden) showTriviaDiff();
     });
   }
@@ -4248,7 +4324,7 @@ function resetMatch() {
   renderMatchStep();
 }
 
-document.querySelectorAll('.nav-tab').forEach(btn => {
+document.querySelectorAll('.nav-pill-item').forEach(btn => {
   if (btn.dataset.screen === 'match') {
     btn.addEventListener('click', () => { if (matchState.step === 0 && !matchState.experience) renderMatchStep(); });
   }
