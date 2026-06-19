@@ -264,54 +264,59 @@ body {
 .logo-sub { font-size: 0.58rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 2px; }
 
 /* ─── Nav Pill (collapsible) ────────────────────────────── */
-.nav-pill { position: relative; z-index: 110; }
+.nav-pill { z-index: 110; display: flex; align-items: center; }
 
-.nav-pill-current {
-  display: flex; align-items: center; gap: 7px;
-  padding: 6px 14px 6px 16px; border-radius: 999px;
-  border: 1px solid var(--border-subtle); background: var(--bg-raised);
-  font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 600;
-  color: var(--gold-bright); cursor: pointer;
-  transition: border-color 150ms, background 150ms;
-  white-space: nowrap;
+/* The expanding pill container */
+.nav-pill-inner {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--bg-raised); border: 1px solid var(--border-subtle);
+  border-radius: 999px; padding: 3px;
 }
-.nav-pill-current:hover { border-color: var(--gold-dim); }
+
+/* The "Bar ▾" trigger — styled like an active tab */
+.nav-pill-trigger {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px 5px 14px; border-radius: 999px; border: none;
+  background: var(--bg-surface); box-shadow: 0 1px 4px oklch(0% 0 0 / 0.2);
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--gold-bright); cursor: pointer; white-space: nowrap;
+  transition: background 150ms;
+}
 .nav-pill-arrow {
-  color: var(--gold-dim); flex-shrink: 0;
-  transition: transform 250ms cubic-bezier(0.34,1.1,0.64,1);
+  width: 10px; height: 10px; color: var(--gold-dim); flex-shrink: 0;
+  transition: transform 280ms cubic-bezier(0.34,1.1,0.64,1), opacity 200ms;
 }
-.nav-pill.open .nav-pill-arrow { transform: rotate(180deg); }
 
-.nav-pill-menu {
-  position: absolute; top: calc(100% + 8px); left: 0;
-  min-width: 160px;
-  background: var(--bg-surface); border: 1px solid var(--border-subtle);
-  border-radius: 16px; padding: 5px;
-  box-shadow: var(--shadow-modal);
-  display: flex; flex-direction: column; gap: 2px;
-  /* animation */
-  opacity: 0; transform: translateY(-6px) scale(0.97);
-  transition: opacity 200ms ease, transform 200ms cubic-bezier(0.34,1.2,0.64,1);
-  pointer-events: none;
+/* Extra tabs — hidden until open */
+.nav-pill-extras {
+  display: flex; align-items: center; gap: 2px;
+  max-width: 0; overflow: hidden; opacity: 0; pointer-events: none;
+  transition: max-width 320ms cubic-bezier(0.34,1.05,0.64,1), opacity 200ms ease;
 }
-.nav-pill.open .nav-pill-menu {
-  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+.nav-pill.open .nav-pill-extras {
+  max-width: 380px; opacity: 1; pointer-events: auto;
 }
+.nav-pill.open .nav-pill-arrow { transform: rotate(180deg); opacity: 0.4; }
+
+/* Individual items inside expanded */
 .nav-pill-item {
-  padding: 10px 14px; border-radius: 12px; border: none; background: transparent;
-  font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 500;
-  color: var(--text-secondary); cursor: pointer; text-align: left;
+  padding: 5px 13px; border-radius: 999px; border: none; background: transparent;
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 500;
+  color: var(--text-muted); cursor: pointer; white-space: nowrap;
   transition: background 120ms, color 120ms;
-  white-space: nowrap;
 }
-.nav-pill-item:hover { background: var(--bg-raised); color: var(--text-primary); }
-.nav-pill-item.active { color: var(--gold-bright); font-weight: 700; background: var(--recommend-bg); }
+.nav-pill-item:hover { color: var(--text-secondary); }
+.nav-pill-item.active {
+  background: var(--bg-surface); color: var(--gold-bright); font-weight: 600;
+  box-shadow: 0 1px 4px oklch(0% 0 0 / 0.2);
+}
 
-/* hide theme/lang when menu is open */
-.header-inner.nav-open .header-right { opacity: 0; pointer-events: none; transition: opacity 150ms; }
-.header-right { transition: opacity 200ms; }
-
-.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+/* Logo and controls slide + fade */
+.logo, .logo-louie, .logo-default { transition: opacity 220ms ease, transform 220ms ease; }
+.header-right { transition: opacity 220ms ease, transform 220ms ease; margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.header-inner.nav-open .logo,
+.header-inner.nav-open .logo-louie { opacity: 0; transform: translateX(-10px); pointer-events: none; }
+.header-inner.nav-open .header-right { opacity: 0; transform: translateX(10px); pointer-events: none; }
 
 /* ─── Theme Toggle ──────────────────────────────────────── */
 .theme-btn {
@@ -920,15 +925,17 @@ body.lang-ru [data-ru] { display: revert; }
     </div>
 
     <div class="nav-pill" id="navPill">
-      <button class="nav-pill-current" id="navPillCurrent" aria-expanded="false" aria-haspopup="true">
-        <span id="navPillLabel">Bar</span>
-        <svg class="nav-pill-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="nav-pill-menu" id="navPillMenu" hidden>
-        <button class="nav-pill-item active" data-screen="bar"><span data-en>Bar</span><span data-ru>Бар</span></button>
-        <button class="nav-pill-item" data-screen="cocktails"><span data-en>Cocktails</span><span data-ru>Коктейли</span></button>
-        <button class="nav-pill-item" data-screen="quiz"><span data-en>Quiz</span><span data-ru>Квиз</span></button>
-        <button class="nav-pill-item" data-screen="match"><span data-en>Match</span><span data-ru>Подбор</span></button>
+      <div class="nav-pill-inner">
+        <button class="nav-pill-trigger" id="navPillCurrent" aria-expanded="false">
+          <span id="navPillLabel">Bar</span>
+          <svg class="nav-pill-arrow" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="nav-pill-extras" id="navPillExtras">
+          <button class="nav-pill-item active" data-screen="bar"><span data-en>Bar</span><span data-ru>Бар</span></button>
+          <button class="nav-pill-item" data-screen="cocktails"><span data-en>Cocktails</span><span data-ru>Коктейли</span></button>
+          <button class="nav-pill-item" data-screen="quiz"><span data-en>Quiz</span><span data-ru>Квиз</span></button>
+          <button class="nav-pill-item" data-screen="match"><span data-en>Match</span><span data-ru>Подбор</span></button>
+        </div>
       </div>
     </div>
 
@@ -2944,11 +2951,10 @@ const NAV_LABELS = {
   quiz:     { en: 'Quiz',     ru: 'Квиз' },
   match:    { en: 'Match',    ru: 'Подбор' },
 };
-const navPill    = document.getElementById('navPill');
-const navPillBtn = document.getElementById('navPillCurrent');
-const navPillMenu= document.getElementById('navPillMenu');
-const navPillLbl = document.getElementById('navPillLabel');
-const headerInner= document.querySelector('.header-inner');
+const navPill     = document.getElementById('navPill');
+const navPillBtn  = document.getElementById('navPillCurrent');
+const navPillLbl  = document.getElementById('navPillLabel');
+const headerInner = document.querySelector('.header-inner');
 
 function navSetScreen(screen) {
   currentScreen = screen;
@@ -2960,7 +2966,6 @@ function navSetScreen(screen) {
 
 function navOpen() {
   navPill.classList.add('open');
-  navPillMenu.hidden = false;
   navPillBtn.setAttribute('aria-expanded', 'true');
   headerInner.classList.add('nav-open');
 }
@@ -2968,7 +2973,6 @@ function navClose() {
   navPill.classList.remove('open');
   navPillBtn.setAttribute('aria-expanded', 'false');
   headerInner.classList.remove('nav-open');
-  setTimeout(() => { if (!navPill.classList.contains('open')) navPillMenu.hidden = true; }, 220);
 }
 
 navPillBtn.addEventListener('click', e => {
@@ -2985,7 +2989,7 @@ document.querySelectorAll('.nav-pill-item').forEach(btn => {
 });
 
 document.addEventListener('click', () => { if (navPill.classList.contains('open')) navClose(); });
-navPillMenu.addEventListener('click', e => e.stopPropagation());
+document.getElementById('navPillExtras').addEventListener('click', e => e.stopPropagation());
 
 /* ══════════════════════════════════════════════════
    SEARCH TOGGLE
