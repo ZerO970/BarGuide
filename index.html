@@ -684,6 +684,71 @@ body {
 .trivia-diff-btn .diff-desc { font-size: 0.72rem; color: var(--text-muted); }
 .trivia-diff-btn.all-btn { grid-column: 1 / -1; flex-direction: row; gap: 12px; justify-content: center; padding: 14px; }
 
+/* ─── Match (Guest Sommelier) ───────────────────────────── */
+.match-wizard { max-width: 560px; margin: 0 auto; }
+.match-progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 22px; }
+.match-dot { width: 28px; height: 4px; border-radius: 999px; background: var(--bg-raised); border: 1px solid var(--border-subtle); transition: background 250ms, border-color 250ms; }
+.match-dot.done { background: var(--gold-dim); border-color: var(--gold-dim); }
+.match-dot.active { background: var(--gold-bright); border-color: var(--gold-bright); }
+.match-step-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--text-primary); text-align: center; margin-bottom: 4px; text-wrap: balance; }
+.match-step-sub { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 22px; }
+.match-opts { display: grid; gap: 10px; }
+.match-opts.cols-1 { grid-template-columns: 1fr; }
+.match-opts.cols-2 { grid-template-columns: 1fr 1fr; }
+.match-opts.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.match-opt { padding: 16px 12px; border: 1px solid var(--border-subtle); border-radius: 14px; background: var(--bg-surface); color: var(--text-primary); cursor: pointer; transition: all 180ms ease; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-family: 'Inter', sans-serif; }
+.match-opt:hover { border-color: var(--gold-dim); background: var(--bg-raised); transform: translateY(-1px); }
+.match-opt.selected { border-color: var(--gold-bright); background: var(--recommend-bg); box-shadow: 0 0 0 1px var(--gold-bright) inset; }
+.match-opt-icon { font-size: 1.6rem; line-height: 1; }
+.match-opt-label { font-weight: 600; font-size: 0.85rem; color: var(--gold-bright); }
+.match-opt-sub { font-size: 0.68rem; color: var(--text-muted); line-height: 1.3; }
+.match-occasion { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 13px 16px; border: 1px solid var(--border-subtle); border-radius: 14px; background: var(--bg-surface); cursor: pointer; transition: all 180ms ease; }
+.match-occasion:hover { border-color: var(--gold-dim); }
+.match-occasion.on { border-color: var(--gold-bright); background: var(--recommend-bg); }
+.match-occasion-txt { display: flex; flex-direction: column; gap: 2px; }
+.match-occasion-title { font-size: 0.84rem; font-weight: 600; color: var(--text-primary); }
+.match-occasion-sub { font-size: 0.7rem; color: var(--text-muted); }
+.match-switch { width: 42px; height: 24px; border-radius: 999px; background: var(--bg-raised); border: 1px solid var(--border-subtle); position: relative; flex-shrink: 0; transition: background 200ms; }
+.match-occasion.on .match-switch { background: var(--gold-bright); border-color: var(--gold-bright); }
+.match-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-base); transition: transform 200ms; }
+.match-occasion.on .match-switch::after { transform: translateX(18px); }
+.match-nav { display: flex; gap: 10px; margin-top: 22px; }
+.match-back-btn { flex-shrink: 0; padding: 13px 18px; border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--bg-surface); color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 150ms; }
+.match-back-btn:hover { color: var(--gold-bright); border-color: var(--gold-dim); }
+.match-go-btn { flex: 1; padding: 13px; border-radius: 999px; border: none; background: var(--gold-bright); color: var(--bg-base); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.02em; cursor: pointer; transition: opacity 150ms, transform 100ms; }
+.match-go-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.match-go-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ─── Match Results ─────────────────────────────────────── */
+.match-results { max-width: 560px; margin: 0 auto; }
+.match-result-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.match-result-summary { font-size: 0.76rem; color: var(--text-secondary); line-height: 1.5; }
+.match-result-summary b { color: var(--gold-bright); font-weight: 600; }
+.match-restart-btn { flex-shrink: 0; font-size: 0.72rem; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 6px 14px; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.match-restart-btn:hover { color: var(--gold-bright); border-color: var(--gold-dim); }
+.ladder-card { position: relative; border: 1px solid var(--border-subtle); border-radius: 16px; background: var(--bg-surface); overflow: hidden; margin-bottom: 12px; box-shadow: var(--shadow-card); }
+.ladder-tier { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 6px 14px; }
+.ladder-tier.tier-0 { background: oklch(30% 0.08 145 / 0.18); color: oklch(58% 0.13 145); }
+.ladder-tier.tier-1 { background: oklch(60% 0.12 72 / 0.16); color: var(--gold-mid); }
+.ladder-tier.tier-2 { background: oklch(55% 0.16 25 / 0.16); color: oklch(60% 0.17 25); }
+[data-theme="dark"] .ladder-tier.tier-0, [data-theme="louie"] .ladder-tier.tier-0 { color: oklch(72% 0.15 145); }
+[data-theme="dark"] .ladder-tier.tier-2, [data-theme="louie"] .ladder-tier.tier-2 { color: oklch(70% 0.18 25); }
+.ladder-main { display: flex; gap: 14px; padding: 14px; align-items: center; cursor: pointer; }
+.ladder-img-wrap { width: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ladder-img { width: 56px; height: 72px; object-fit: contain; }
+.ladder-img-ph { width: 56px; height: 72px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; opacity: 0.4; }
+.ladder-info { flex: 1; min-width: 0; }
+.ladder-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ladder-price { font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--gold-bright); }
+.ladder-tags { font-size: 0.74rem; color: var(--text-secondary); margin: 3px 0; }
+.ladder-serve { font-size: 0.74rem; color: var(--gold-muted); font-style: italic; }
+.ladder-arrow { flex-shrink: 0; color: var(--gold-dim); font-size: 1.1rem; }
+.flight-box { margin-top: 16px; padding: 16px; border: 1px dashed var(--gold-dim); border-radius: 16px; background: var(--recommend-bg); text-align: center; }
+.flight-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-bright); margin-bottom: 4px; }
+.flight-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+.flight-price { font-weight: 700; color: var(--gold-bright); }
+.match-empty { text-align: center; padding: 30px 16px; color: var(--text-muted); font-size: 0.85rem; }
+
 /* ─── Cocktail story (Bartender's Story) ────────────────── */
 .story-details { margin-top: 12px; border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; }
 .story-summary { list-style: none; padding: 13px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: var(--gold-bright); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.03em; background: var(--bg-raised); user-select: none; }
@@ -792,6 +857,9 @@ body.lang-ru [data-ru] { display: revert; }
       </button>
       <button class="nav-tab" data-screen="quiz">
         <span data-en>Quiz</span><span data-ru>Квиз</span>
+      </button>
+      <button class="nav-tab" data-screen="match">
+        <span data-en>Match</span><span data-ru>Подбор</span>
       </button>
     </nav>
 
@@ -956,6 +1024,21 @@ body.lang-ru [data-ru] { display: revert; }
     <p><span data-en>Find the best whisky for the drink — with history & top recommendations.</span><span data-ru>Подбери лучший виски под напиток — с историей и топ-рекомендациями.</span></p>
   </div>
   <div class="cocktail-grid" id="cocktailGrid"></div>
+</div>
+
+<!-- ─── SCREEN: MATCH (Guest Sommelier) ─────────────── -->
+<div class="screen" id="screen-match">
+  <div class="hero-bar">
+    <h1><span data-en>Match the <em>Guest.</em></span><span data-ru>Подбери <em>под гостя.</em></span></h1>
+    <p><span data-en>Three taps. Three picks — good, better, treat. With a line to sell it.</span><span data-ru>Три тапа — три варианта: безопасный, выше, особенный. И фраза для подачи.</span></p>
+  </div>
+
+  <div class="match-wizard" id="matchWizard">
+    <div class="match-progress" id="matchProgress"></div>
+    <div class="match-step" id="matchStep"></div>
+  </div>
+
+  <div class="match-results" id="matchResults" hidden></div>
 </div>
 
 <!-- ─── MODAL ──────────────────────────────────────── -->
@@ -3099,7 +3182,7 @@ function renderCocktails() {
 /* ══════════════════════════════════════════════════
    WHISKY MODAL
 ══════════════════════════════════════════════════ */
-function openWhiskyModal(w) {
+function openWhiskyModal(w, backFn) {
   const p = w.palate;
   const flavors = [
     { l: lang === 'en' ? 'Spice' : 'Пряность', v: p.spice },
@@ -3112,6 +3195,7 @@ function openWhiskyModal(w) {
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-top">
       <div>
+        ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to picks' : 'Назад к подбору'}</button>` : ''}
         <div class="modal-badges">
           <span class="badge badge-type">${t(w.typeLabel)}</span>
           <span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>
@@ -3168,10 +3252,11 @@ function openWhiskyModal(w) {
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
+  if (backFn) document.getElementById('modalBackBtn').addEventListener('click', backFn);
   document.querySelectorAll('.ci-link[data-cid]').forEach(el => {
     el.addEventListener('click', () => {
       const cocktail = COCKTAILS.find(x => x.id === el.dataset.cid);
-      if (cocktail) openCocktailModal(cocktail, () => openWhiskyModal(w));
+      if (cocktail) openCocktailModal(cocktail, () => openWhiskyModal(w, backFn));
     });
   });
   openModal();
@@ -3721,6 +3806,292 @@ document.querySelectorAll('.nav-tab').forEach(btn => {
     });
   }
 });
+
+/* ══════════════════════════════════════════════════
+   MATCH — Guest Sommelier
+══════════════════════════════════════════════════ */
+const matchState = { step: 0, experience: null, flavors: [], budget: null, occasion: false };
+
+const MATCH_EXP = [
+  { id: 'beginner',     icon: '🌱', en: 'First time',  ru: 'Впервые',  enSub: 'New to whisky',   ruSub: 'Пробует впервые' },
+  { id: 'casual',       icon: '🥃', en: 'Sometimes',   ru: 'Иногда',   enSub: 'Knows the basics', ruSub: 'Знает основы' },
+  { id: 'connoisseur',  icon: '🎩', en: 'Connoisseur', ru: 'Ценитель', enSub: 'Wants a challenge', ruSub: 'Хочет вызов' },
+];
+const MATCH_FLAVORS = [
+  { id: 'sweet',    icon: '🍯', en: 'Sweet',    ru: 'Сладкое' },
+  { id: 'fruity',   icon: '🍎', en: 'Fruity',   ru: 'Фруктовое' },
+  { id: 'spicy',    icon: '🌶️', en: 'Spicy',    ru: 'Пряное' },
+  { id: 'smoky',    icon: '🔥', en: 'Smoky',    ru: 'Дымное' },
+  { id: 'oaky',     icon: '🌳', en: 'Oaky',     ru: 'Дубовое' },
+  { id: 'balanced', icon: '⚖️', en: 'Balanced', ru: 'Сбаланс.' },
+];
+const MATCH_BUDGET = [
+  { id: 'low',  en: 'Up to £15', ru: 'до £15' },
+  { id: 'mid',  en: '£15–25',    ru: '£15–25' },
+  { id: 'high', en: '£25+',      ru: '£25+' },
+];
+
+function mPrice(w) { return parseFloat((w.priceGbp || '£0').replace('£', '')) || 0; }
+function mSmoke(w) {
+  const nose = ((w.nose.tags.en || []).join(' ') + ' ' + (w.nose.tags.ru || []).join(' ') + ' ' + (w.palateNotes ? (w.palateNotes.en || '') : '')).toLowerCase();
+  return /peat|smoke|smok|iodine|brine|medicinal|campfire|\bash\b|seaweed|maritime|\btar\b|тор|дым|йод|солён|медицин|костёр|пепел|водоросл|морск|смол/.test(nose) ? 5 : 0;
+}
+function mFlavorScore(w, flavors) {
+  if (!flavors.length) return 2.5;
+  const p = w.palate;
+  let sum = 0;
+  flavors.forEach(f => {
+    if (f === 'sweet') sum += p.caramel;
+    else if (f === 'fruity') sum += p.fruit;
+    else if (f === 'spicy') sum += p.spice;
+    else if (f === 'oaky') sum += p.oak;
+    else if (f === 'smoky') sum += mSmoke(w);
+    else if (f === 'balanced') {
+      const vals = [p.spice, p.malt, p.fruit, p.caramel, p.oak];
+      const spread = Math.max(...vals) - Math.min(...vals);
+      sum += (w.balance === 'balanced' ? 4 : 0) + (4 - spread);
+    }
+  });
+  return sum / flavors.length;
+}
+function mExpFit(w, exp) {
+  const abv = parseFloat(w.abv) || 40;
+  if (exp === 'beginner') {
+    let s = 0;
+    if (w.balance === 'approachable') s += 2.5;
+    if (w.balance === 'bold') s -= 2;
+    if (abv > 50) s -= 2; else if (abv <= 43) s += 1;
+    if (mSmoke(w) >= 5) s -= 2;
+    return s;
+  }
+  if (exp === 'connoisseur') {
+    let s = 0;
+    if (w.balance === 'bold') s += 1;
+    if (abv >= 50) s += 0.8;
+    if (mPrice(w) >= 25) s += 0.5;
+    return s;
+  }
+  return 0;
+}
+
+function buildLadder() {
+  const f = matchState.flavors, exp = matchState.experience, budget = matchState.budget;
+  const scoreAll = () => WHISKIES.map(w => ({ w, fs: mFlavorScore(w, f), score: mFlavorScore(w, f) + mExpFit(w, exp) }));
+  let scored = scoreAll().filter(x => x.fs >= 2).sort((a, b) => b.score - a.score);
+  if (scored.length < 3) scored = scoreAll().sort((a, b) => b.score - a.score);
+
+  // budget defines where the "safe" pick sits; premium ceiling caps the treat unless occasion unlocks the shelf
+  const safeCeil = budget === 'low' ? 16 : budget === 'mid' ? 26 : 1e9;
+  const premCeil = matchState.occasion ? 1e9 : (budget === 'low' ? 35 : budget === 'mid' ? 60 : 1e9);
+  const strong = scored.slice(0, 20);
+
+  // SAFE — best-scoring match within budget
+  let safe = scored.filter(x => mPrice(x.w) <= safeCeil)[0]
+    || scored.slice().sort((a, b) => mPrice(a.w) - mPrice(b.w))[0];
+
+  // PREMIUM — priciest strong match above safe, within premium ceiling
+  let premium = strong.filter(x => mPrice(x.w) > mPrice(safe.w) && mPrice(x.w) <= premCeil)
+    .sort((a, b) => mPrice(b.w) - mPrice(a.w))[0];
+  if (matchState.occasion) {
+    const lux = scored.filter(x => mPrice(x.w) >= 40).sort((a, b) => b.score - a.score)[0];
+    if (lux && (!premium || mPrice(lux.w) > mPrice(premium.w))) premium = lux;
+  }
+  if (!premium) premium = strong.filter(x => x.w !== safe.w).sort((a, b) => mPrice(b.w) - mPrice(a.w))[0];
+
+  // MID — best-scoring match priced strictly between safe and premium
+  let mid = scored.filter(x => mPrice(x.w) > mPrice(safe.w) && mPrice(x.w) < mPrice(premium.w) && x.w !== safe.w && x.w !== premium.w)
+    .sort((a, b) => b.score - a.score)[0];
+  if (!mid) mid = scored.find(x => x.w !== safe.w && x.w !== premium.w);
+
+  const out = [];
+  [safe, mid, premium].forEach(x => { if (x && !out.some(o => o.w === x.w)) out.push(x); });
+  return out;
+}
+
+function mServe(w) {
+  const abv = parseFloat(w.abv) || 40;
+  if (w.balance === 'approachable') return lang === 'ru' ? 'Чистым или с кубиком льда.' : 'Neat or one cube.';
+  if (mSmoke(w) >= 5) return lang === 'ru' ? 'Чистым — дай раскрыться.' : 'Neat — let it open up.';
+  if (abv >= 50) return lang === 'ru' ? 'С крупным кубиком льда.' : 'Over one large cube.';
+  return lang === 'ru' ? 'Чистым или со льдом.' : 'Neat or on the rocks.';
+}
+
+const MATCH_TIER = [
+  { en: 'Safe bet', ru: 'Беспроигрышно' },
+  { en: 'Trade up', ru: 'На ступень выше' },
+  { en: 'Treat yourself', ru: 'Если побаловать' },
+];
+
+function renderMatchProgress() {
+  const dots = [0, 1, 2].map(i => {
+    const cls = i < matchState.step ? 'done' : (i === matchState.step ? 'active' : '');
+    return `<div class="match-dot ${cls}"></div>`;
+  }).join('');
+  document.getElementById('matchProgress').innerHTML = dots;
+}
+
+function renderMatchStep() {
+  document.getElementById('matchResults').hidden = true;
+  document.getElementById('matchWizard').hidden = false;
+  renderMatchProgress();
+  const el = document.getElementById('matchStep');
+  const ru = lang === 'ru';
+
+  if (matchState.step === 0) {
+    el.innerHTML = `
+      <div class="match-step-title">${ru ? 'Что за гость?' : 'Who is the guest?'}</div>
+      <div class="match-step-sub">${ru ? 'Насколько хорошо знает виски' : 'How well they know whisky'}</div>
+      <div class="match-opts cols-3">
+        ${MATCH_EXP.map(o => `
+          <button class="match-opt" data-exp="${o.id}">
+            <span class="match-opt-icon">${o.icon}</span>
+            <span class="match-opt-label">${ru ? o.ru : o.en}</span>
+            <span class="match-opt-sub">${ru ? o.ruSub : o.enSub}</span>
+          </button>`).join('')}
+      </div>`;
+    el.querySelectorAll('[data-exp]').forEach(b => b.addEventListener('click', () => {
+      matchState.experience = b.dataset.exp;
+      matchState.step = 1;
+      renderMatchStep();
+    }));
+    return;
+  }
+
+  if (matchState.step === 1) {
+    el.innerHTML = `
+      <div class="match-step-title">${ru ? 'Какой вкус ищет?' : 'What flavours?'}</div>
+      <div class="match-step-sub">${ru ? 'Можно выбрать несколько' : 'Pick one or more'}</div>
+      <div class="match-opts cols-3">
+        ${MATCH_FLAVORS.map(o => `
+          <button class="match-opt ${matchState.flavors.includes(o.id) ? 'selected' : ''}" data-flavor="${o.id}">
+            <span class="match-opt-icon">${o.icon}</span>
+            <span class="match-opt-label">${ru ? o.ru : o.en}</span>
+          </button>`).join('')}
+      </div>
+      <div class="match-nav">
+        <button class="match-back-btn" id="mBack">${ru ? 'Назад' : 'Back'}</button>
+        <button class="match-go-btn" id="mNext" ${matchState.flavors.length ? '' : 'disabled'}>${ru ? 'Далее' : 'Next'}</button>
+      </div>`;
+    el.querySelectorAll('[data-flavor]').forEach(b => b.addEventListener('click', () => {
+      const id = b.dataset.flavor;
+      const i = matchState.flavors.indexOf(id);
+      if (i >= 0) matchState.flavors.splice(i, 1); else matchState.flavors.push(id);
+      renderMatchStep();
+    }));
+    document.getElementById('mBack').addEventListener('click', () => { matchState.step = 0; renderMatchStep(); });
+    document.getElementById('mNext').addEventListener('click', () => { if (matchState.flavors.length) { matchState.step = 2; renderMatchStep(); } });
+    return;
+  }
+
+  if (matchState.step === 2) {
+    el.innerHTML = `
+      <div class="match-step-title">${ru ? 'Бюджет на порцию?' : 'Budget per pour?'}</div>
+      <div class="match-step-sub">${ru ? 'За 50 мл' : 'Per 50ml'}</div>
+      <div class="match-opts cols-3">
+        ${MATCH_BUDGET.map(o => `
+          <button class="match-opt ${matchState.budget === o.id ? 'selected' : ''}" data-budget="${o.id}">
+            <span class="match-opt-label">${ru ? o.ru : o.en}</span>
+          </button>`).join('')}
+      </div>
+      <div class="match-occasion ${matchState.occasion ? 'on' : ''}" id="mOccasion">
+        <div class="match-occasion-txt">
+          <span class="match-occasion-title">🎉 ${ru ? 'Особый случай?' : 'Special occasion?'}</span>
+          <span class="match-occasion-sub">${ru ? 'Разблокирует премиум-полку' : 'Unlocks the premium shelf'}</span>
+        </div>
+        <div class="match-switch"></div>
+      </div>
+      <div class="match-nav">
+        <button class="match-back-btn" id="mBack">${ru ? 'Назад' : 'Back'}</button>
+        <button class="match-go-btn" id="mGo" ${matchState.budget ? '' : 'disabled'}>${ru ? 'Подобрать ✨' : 'Find it ✨'}</button>
+      </div>`;
+    el.querySelectorAll('[data-budget]').forEach(b => b.addEventListener('click', () => {
+      matchState.budget = b.dataset.budget;
+      renderMatchStep();
+    }));
+    document.getElementById('mOccasion').addEventListener('click', () => { matchState.occasion = !matchState.occasion; renderMatchStep(); });
+    document.getElementById('mBack').addEventListener('click', () => { matchState.step = 1; renderMatchStep(); });
+    document.getElementById('mGo').addEventListener('click', () => { if (matchState.budget) renderMatchResults(); });
+    return;
+  }
+}
+
+function renderMatchResults() {
+  const ru = lang === 'ru';
+  const ladder = buildLadder();
+  document.getElementById('matchWizard').hidden = true;
+  const box = document.getElementById('matchResults');
+  box.hidden = false;
+
+  if (!ladder.length) {
+    box.innerHTML = `<div class="match-empty">${ru ? 'Не нашлось совпадений. Попробуй другие параметры.' : 'No matches. Try different options.'}</div>`;
+    return;
+  }
+
+  const expLabel = (MATCH_EXP.find(e => e.id === matchState.experience) || {})[ru ? 'ru' : 'en'] || '';
+  const flavLabels = matchState.flavors.map(id => (MATCH_FLAVORS.find(x => x.id === id) || {})[ru ? 'ru' : 'en']).filter(Boolean).join(', ');
+  const budLabel = (MATCH_BUDGET.find(x => x.id === matchState.budget) || {})[ru ? 'ru' : 'en'] || '';
+  const summary = `<b>${expLabel}</b> · ${flavLabels} · ${budLabel}${matchState.occasion ? ' · 🎉' : ''}`;
+
+  const cards = ladder.map((x, i) => {
+    const w = x.w;
+    const tier = MATCH_TIER[Math.min(i, 2)];
+    const tags = (w.nose.tags[lang] || w.nose.tags.en).slice(0, 3).join(', ');
+    const img = w.img
+      ? `<img class="ladder-img" src="${w.img}" alt="" loading="lazy">`
+      : `<span class="ladder-img-ph">🥃</span>`;
+    return `
+      <div class="ladder-card">
+        <div class="ladder-tier tier-${Math.min(i, 2)}">${ru ? tier.ru : tier.en}</div>
+        <div class="ladder-main" data-wid="${w.id}">
+          <div class="ladder-img-wrap">${img}</div>
+          <div class="ladder-info">
+            <div class="ladder-name">${w.name}<span class="ladder-price">${w.priceGbp || ''}</span></div>
+            <div class="ladder-tags">${tags}</div>
+            <div class="ladder-serve">${mServe(w)}</div>
+          </div>
+          <span class="ladder-arrow">›</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  const flightSum = ladder.reduce((s, x) => s + mPrice(x.w) / 2, 0);
+  const flightPrice = '£' + (Math.round(flightSum * 2) / 2);
+  const flight = ladder.length >= 2 ? `
+    <div class="flight-box">
+      <div class="flight-title">${ru ? 'Не может выбрать?' : "Can't decide?"}</div>
+      <div class="flight-desc">${ru ? 'Предложи флайт' : 'Offer a flight of'} 3×25ml — <span class="flight-price">≈ ${flightPrice}</span><br>${ru ? 'Опыт вместо одной порции — и чек выше.' : 'An experience, not one pour — and a bigger tab.'}</div>
+    </div>` : '';
+
+  box.innerHTML = `
+    <div class="match-result-head">
+      <div class="match-result-summary">${summary}</div>
+      <button class="match-restart-btn" id="mRestart">${ru ? 'Заново' : 'Restart'}</button>
+    </div>
+    ${cards}
+    ${flight}`;
+
+  box.querySelectorAll('.ladder-main[data-wid]').forEach(el => el.addEventListener('click', () => {
+    const w = WHISKIES.find(x => x.id === el.dataset.wid);
+    if (w) openWhiskyModal(w, () => { closeModal(); document.getElementById('matchResults').hidden = false; });
+  }));
+  document.getElementById('mRestart').addEventListener('click', resetMatch);
+}
+
+function resetMatch() {
+  matchState.step = 0;
+  matchState.experience = null;
+  matchState.flavors = [];
+  matchState.budget = null;
+  matchState.occasion = false;
+  renderMatchStep();
+}
+
+document.querySelectorAll('.nav-tab').forEach(btn => {
+  if (btn.dataset.screen === 'match') {
+    btn.addEventListener('click', () => { if (matchState.step === 0 && !matchState.experience) renderMatchStep(); });
+  }
+});
+renderMatchStep();
 
 renderCategories();
 renderCocktails();
