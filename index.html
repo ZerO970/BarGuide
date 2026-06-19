@@ -659,6 +659,11 @@ body {
 .trivia-final-icon { font-size: 3rem; margin-bottom: 8px; }
 .trivia-final-score { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--gold-bright); line-height: 1; margin-bottom: 6px; }
 .trivia-final-label { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+.trivia-final-diff { display: inline-block; margin: 6px auto 0; padding: 3px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.trivia-final-diff.d1 { background: oklch(30% 0.08 145); color: oklch(75% 0.15 145); border: 1px solid oklch(40% 0.1 145); }
+.trivia-final-diff.d2 { background: oklch(30% 0.1 70); color: oklch(80% 0.15 70); border: 1px solid oklch(45% 0.12 70); }
+.trivia-final-diff.d3 { background: oklch(28% 0.1 20); color: oklch(75% 0.18 20); border: 1px solid oklch(42% 0.14 20); }
+.trivia-final-diff.d0 { background: oklch(22% 0.05 280); color: oklch(72% 0.1 280); border: 1px solid oklch(38% 0.08 280); }
 
 /* ─── Trivia difficulty picker ───────────────────────────── */
 .trivia-diff-screen { text-align: center; padding: 20px 0 10px; }
@@ -927,6 +932,7 @@ body.lang-ru [data-ru] { display: revert; }
       <div class="trivia-final" id="triviaFinal" hidden>
         <div class="trivia-final-icon" id="triviaFinalIcon"></div>
         <div class="trivia-final-score" id="triviaFinalScore"></div>
+        <div class="trivia-final-diff" id="triviaFinalDiff"></div>
         <div class="trivia-final-label" id="triviaFinalLabel"></div>
         <button class="quiz-next-btn" style="margin-top:14px" id="triviaAgainBtn"><span data-en>Play Again</span><span data-ru>Ещё раз</span></button>
         <button class="quiz-next-btn" style="margin-top:8px;background:transparent;color:var(--text-muted);border:1px solid var(--border-subtle)" id="triviaChangeDiffBtn"><span data-en>Change difficulty</span><span data-ru>Сменить сложность</span></button>
@@ -3441,17 +3447,57 @@ function triviaNext() {
 function renderTriviaFinal() {
   document.getElementById('triviaCard').hidden = true;
   const s = triviaState.score;
+  const d = triviaState.currentDiff;
   const ru = lang === 'ru';
-  const ratings = [
-    { min:0,  icon:'🥃', en:'Keep tasting — knowledge comes with the pour.', ru:'Продолжай дегустировать — знания приходят со временем.' },
-    { min:3,  icon:'🌾', en:'Getting there. A few more shifts and you\'ll have it.', ru:'Почти. Ещё несколько смен — и всё будет.' },
-    { min:5,  icon:'⭐', en:'Solid. You know your way around a whisky list.', ru:'Неплохо. Ты ориентируешься в виски-меню.' },
-    { min:7,  icon:'🥇', en:'Impressive. You\'re the one guests should be asking.', ru:'Впечатляет. Именно тебя гости должны спрашивать.' },
-    { min:9,  icon:'🏆', en:'Perfect. Are you sure you\'re not a distillery rep?', ru:'Идеально. Ты точно не представитель дистиллерии?' },
-  ];
+
+  const diffMeta = {
+    1: { cls:'d1', en:'🟢 Easy', ru:'🟢 Лёгкий' },
+    2: { cls:'d2', en:'🟡 Medium', ru:'🟡 Средний' },
+    3: { cls:'d3', en:'🔴 Hard', ru:'🔴 Сложный' },
+    0: { cls:'d0', en:'⚡ All levels', ru:'⚡ Все уровни' },
+  };
+  const dm = diffMeta[d] || diffMeta[0];
+
+  // Ratings keyed by difficulty: 1=easy, 2=medium, 3=hard, 0=all
+  const ratingsByDiff = {
+    1: [
+      { min:0,  icon:'🥃', en:'The basics first — these were the easy ones.', ru:'Начни с основ — это были лёгкие вопросы.' },
+      { min:4,  icon:'🌾', en:'Not bad for a warm-up.', ru:'Неплохо для разминки.' },
+      { min:7,  icon:'⭐', en:'Easy done. Ready for something harder?', ru:'Лёгкий уровень пройден. Готов к сложнее?' },
+      { min:9,  icon:'🏆', en:'Flawless on Easy. Now try Medium — bet you won\'t score 10.', ru:'Идеально на лёгком. Попробуй Средний — уверен, 10 не наберёшь.' },
+    ],
+    2: [
+      { min:0,  icon:'🥃', en:'Medium is called that for a reason. Keep studying.', ru:'Средний — это не просто название. Продолжай учиться.' },
+      { min:3,  icon:'🌾', en:'Getting there. You\'ve got the foundations.', ru:'Уже лучше. Основа есть.' },
+      { min:6,  icon:'⭐', en:'Solid work on Medium. Guests will be impressed.', ru:'Отлично на среднем. Гости оценят.' },
+      { min:8,  icon:'🥇', en:'Sharp. You clearly do more than just pour.', ru:'Остро. Ты явно не только наливаешь.' },
+      { min:10, icon:'🏆', en:'Perfect on Medium. You\'re the bar\'s secret weapon. Try Hard.', ru:'Идеально на среднем. Ты тайное оружие бара. Попробуй Сложный.' },
+    ],
+    3: [
+      { min:0,  icon:'💀', en:'Hard is hard. No shame — most guests don\'t even know half of this.', ru:'Сложный — это сложный. Не стыдись — большинство гостей не знают и половины.' },
+      { min:3,  icon:'🥃', en:'A few sparks in the dark. Not bad for the hardest level.', ru:'Несколько искр в темноте. Неплохо для самого сложного уровня.' },
+      { min:5,  icon:'🌾', en:'Halfway on Hard? Respectable. You\'ve been reading the bottles.', ru:'Половина на Сложном? Уважаю. Ты читаешь этикетки.' },
+      { min:7,  icon:'🥇', en:'Impressive. You\'re the one guests SHOULD be asking. Seriously.', ru:'Впечатляет. Именно тебя гости ДОЛЖНЫ спрашивать. Серьёзно.' },
+      { min:9,  icon:'🏆', en:'Distillery-level knowledge. Are you sure you\'re not the rep?', ru:'Знания уровня дистиллерии. Ты точно не представитель?' },
+      { min:10, icon:'👑', en:'PERFECT on Hard. 10/10. Put this in your CV. Right now.', ru:'ИДЕАЛЬНО на Сложном. 10/10. Вписывай в резюме. Прямо сейчас.' },
+    ],
+    0: [
+      { min:0,  icon:'🥃', en:'Keep tasting — knowledge comes with the pour.', ru:'Продолжай дегустировать — знания приходят со временем.' },
+      { min:3,  icon:'🌾', en:'Getting there. A few more shifts and you\'ll have it.', ru:'Почти. Ещё несколько смен — и всё будет.' },
+      { min:5,  icon:'⭐', en:'Solid. You know your way around a whisky list.', ru:'Неплохо. Ты ориентируешься в виски-меню.' },
+      { min:7,  icon:'🥇', en:'Impressive. You\'re the one guests should be asking.', ru:'Впечатляет. Именно тебя гости должны спрашивать.' },
+      { min:9,  icon:'🏆', en:'Perfect. Are you sure you\'re not a distillery rep?', ru:'Идеально. Ты точно не представитель дистиллерии?' },
+    ],
+  };
+
+  const ratings = ratingsByDiff[d] || ratingsByDiff[0];
   const r = [...ratings].reverse().find(r => s >= r.min) || ratings[0];
+
   document.getElementById('triviaFinalIcon').textContent = r.icon;
   document.getElementById('triviaFinalScore').textContent = s + ' / 10';
+  const diffEl = document.getElementById('triviaFinalDiff');
+  diffEl.textContent = ru ? dm.ru : dm.en;
+  diffEl.className = 'trivia-final-diff ' + dm.cls;
   document.getElementById('triviaFinalLabel').textContent = ru ? r.ru : r.en;
   document.getElementById('triviaFill').style.width = '100%';
   document.getElementById('triviaLabel').textContent = '10 / 10';
