@@ -586,9 +586,14 @@ body {
 .recommend-box p { font-size: 0.85rem; line-height: 1.65; color: var(--text-secondary); }
 .cocktail-list { display: flex; flex-direction: column; gap: 8px; }
 .ci { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--bg-raised); border-radius: 10px; border: 1px solid var(--border-subtle); }
+.ci.ci-link { cursor: pointer; transition: border-color 150ms, background 150ms; }
+.ci.ci-link:hover { border-color: var(--gold-dim); background: oklch(20% 0.025 60); }
 .ci-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 .ci-name { font-size: 0.83rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.ci-name .ci-arrow { font-size: 0.7rem; color: var(--gold-dim); margin-left: 5px; }
 .ci-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+.modal-back { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--gold-dim); font-size: 0.78rem; font-weight: 600; cursor: pointer; padding: 0 0 4px; letter-spacing: 0.02em; }
+.modal-back:hover { color: var(--gold-bright); }
 .history-text { font-size: 0.83rem; line-height: 1.7; color: var(--text-secondary); }
 .history-text strong { color: var(--gold-bright); font-weight: 600; }
 
@@ -2318,7 +2323,7 @@ const CARLOS_COCKTAIL = {
   spec: {
     en: {
       glass: "Rocks glass, single large ice",
-      ingredients: ["1.5 oz WhistlePig 10 Rye", "0.5 oz Green Chartreuse", "0.5 oz Aperol", "0.25 oz fresh lemon juice"],
+      ingredients: ["45 ml WhistlePig 10 Rye", "15 ml Green Chartreuse", "15 ml Aperol", "7.5 ml fresh lemon juice"],
       method: "Stir all ingredients over ice for 20 seconds — do not shake. The Chartreuse needs time to marry with the rye. Strain over a single large cube.",
       garnish: "Express orange peel over the glass, wipe the rim, do not drop in."
     },
@@ -2345,7 +2350,7 @@ const COCKTAILS = [
       "wathens": { en: "Honey and vanilla sweetness means you need less sugar — cleaner, more elegant.", ru: "Медово-ванильная сладость — меньше сахара, чище, элегантнее." }
     },
     spec: {
-      en: { glass: "Rocks glass", ingredients: ["2 oz Bourbon (or Rye)", "1 tsp demerara sugar (or 1 sugar cube)", "2 dashes Angostura bitters", "1 dash orange bitters (optional)"], method: "Add sugar and bitters to glass, stir to dissolve. Add one large ice cube, pour whisky over. Stir 15 seconds. No shaking, no muddling fruit.", garnish: "Expressed orange twist — press over glass to release oils, wipe the rim, place on the side." },
+      en: { glass: "Rocks glass", ingredients: ["60 ml Bourbon (or Rye)", "1 tsp demerara sugar (or 1 sugar cube)", "2 dashes Angostura bitters", "1 dash orange bitters (optional)"], method: "Add sugar and bitters to glass, stir to dissolve. Add one large ice cube, pour whisky over. Stir 15 seconds. No shaking, no muddling fruit.", garnish: "Expressed orange twist — press over glass to release oils, wipe the rim, place on the side." },
       ru: { glass: "Бокал Rocks", ingredients: ["60 мл бурбон (или рожь)", "1 ч.л. тростниковый сахар (или кубик сахара)", "2 dash Angostura биттер", "1 dash апельсиновый биттер (опц.)"], method: "Добавить сахар и биттер в бокал, мешать до растворения. Положить крупный лёд, добавить виски. Мешать 15 секунд. Без шейкера, без фруктов.", garnish: "Апельсиновый твист — выжать масла над бокалом, протереть край, положить сбоку." }
     },
     history: { en: "The Old Fashioned is arguably the oldest cocktail still in common use. The original 1806 definition of a 'cocktail' was exactly this: spirit, sugar, water, bitters. The name 'Old Fashioned' emerged in the 1880s when bartenders started adding fruit, soda and other embellishments — and purists requested their whiskey 'the old-fashioned way'.", ru: "Old Fashioned — возможно, самый старый коктейль в постоянном использовании. Определение «коктейль» 1806 года: спирт, сахар, вода, биттер — именно это. Название «старомодный» появилось в 1880-х, когда пуристы стали требовать виски «по-старинке», без фруктов и соды." },
@@ -2363,10 +2368,10 @@ const COCKTAILS = [
       "michters-bourbon": { en: "For a sweeter, fruity Manhattan. The butterscotch notes work beautifully with sweet vermouth.", ru: "Для более сладкого, фруктового Манхэттена. Ириска прекрасно работает со сладким вермутом." }
     },
     spec: {
-      en: { glass: "Coupe or Nick & Nora", ingredients: ["2 oz Rye (or Bourbon)", "1 oz Sweet vermouth (Carpano Antica or Cocchi)", "2 dashes Angostura bitters"], method: "Combine all in mixing glass over ice. Stir 30 seconds — enough to chill and dilute without watering down. Strain into chilled glass.", garnish: "Luxardo maraschino cherry." },
+      en: { glass: "Coupe or Nick & Nora", ingredients: ["60 ml Rye (or Bourbon)", "30 ml Sweet vermouth (Carpano Antica or Cocchi)", "2 dashes Angostura bitters"], method: "Combine all in mixing glass over ice. Stir 30 seconds — enough to chill and dilute without watering down. Strain into chilled glass.", garnish: "Luxardo maraschino cherry." },
       ru: { glass: "Купе или Nick & Nora", ingredients: ["60 мл рожь (или бурбон)", "30 мл сладкий вермут (Carpano Antica или Cocchi)", "2 dash Angostura биттер"], method: "Смешать в мерном стакане со льдом. Мешать 30 секунд — охладить и разбавить, не перелить. Процедить в охлаждённый бокал.", garnish: "Вишня Luxardo." }
     },
-    history: { en: "The Manhattan is believed to have been created in the 1870s at the Manhattan Club in New York City, though the exact origin is disputed. It's the template for virtually all whisky-vermouth cocktails that followed. The classic ratio: 2oz whiskey, 1oz sweet vermouth, 2 dashes Angostura bitters, stirred and strained into a coupe.", ru: "Манхэттен, по легенде, создан в 1870-х в клубе Manhattan Club в Нью-Йорке, хотя точное происхождение спорно. Шаблон для всех последующих виски-вермутовых коктейлей. Классика: 2 oz виски, 1 oz сладкий вермут, 2 dash Angostura, перемешать и процедить." },
+    history: { en: "The Manhattan is believed to have been created in the 1870s at the Manhattan Club in New York City, though the exact origin is disputed. It's the template for virtually all whisky-vermouth cocktails that followed. The classic ratio: 2oz whiskey, 1oz sweet vermouth, 2 dashes Angostura bitters, stirred and strained into a coupe.", ru: "Манхэттен, по легенде, создан в 1870-х в клубе Manhattan Club в Нью-Йорке, хотя точное происхождение спорно. Шаблон для всех последующих виски-вермутовых коктейлей. Классика: 60 mlвиски, 30 mlсладкий вермут, 2 dash Angostura, перемешать и процедить." },
     story: { en: "The famous Lady Randolph Churchill story — that Winston Churchill's American mother invented the Manhattan at the Manhattan Club in 1874 to celebrate a political victory — is almost certainly false. She was in England at the time and was pregnant. But the story is irresistible: an American woman at a New York power club inventing the world's most important whisky cocktail. It spread for a reason.\n\nThe real history is murkier. The drink appears in multiple 1880s recipe books without clear attribution. What historians agree on: the Manhattan launched rye whiskey as THE cocktail spirit for the next century, and its template — spirit, vermouth, bitters, stirred — shaped every great whisky cocktail that followed.\n\nBartender tip: guests who say 'I don't like sweet drinks' often love a Perfect Manhattan (half sweet, half dry vermouth). It's drier, more complex, and often converts sceptics on the first sip.", ru: "Знаменитая история с леди Рэндольф Черчилль — будто мать Уинстона Черчилля изобрела Manhattan в Manhattan Club в 1874 году — почти наверняка выдумка. Она была в Англии и ожидала ребёнка. Но история неотразима: американка в нью-йоркском клубе власти изобретает самый важный виски-коктейль мира.\n\nРеальная история туманнее. Напиток появляется в нескольких рецептурных книгах 1880-х без авторства. В чём историки согласны: Manhattan сделал ржаной виски главным коктейльным спиртом на целый век, а его формула — дистиллят, вермут, биттер, перемешать — определила все великие виски-коктейли после.\n\nСовет бармену: гости, говорящие «я не люблю сладкое», часто влюбляются в Perfect Manhattan (поровну сладкий и сухой вермут). Суше, сложнее — и часто убеждает скептиков с первого глотка." }
   },
   {
@@ -2381,7 +2386,7 @@ const COCKTAILS = [
       "roe-and-co": { en: "Apple and pear fruitiness creates the freshest, most delicate Sour on the menu.", ru: "Яблочно-грушевая фруктовость — самый свежий и деликатный Sour в меню." }
     },
     spec: {
-      en: { glass: "Rocks glass or coupe", ingredients: ["2 oz Bourbon", "0.75 oz fresh lemon juice", "0.75 oz simple syrup (1:1)", "1 egg white (optional — for Boston Sour)"], method: "If using egg white: dry shake all ingredients without ice first (15 sec), then add ice and shake hard (15 sec). Double strain. Without egg white: shake with ice, double strain.", garnish: "Lemon wheel + 3 drops Angostura on the foam (draw a pattern with a toothpick)." },
+      en: { glass: "Rocks glass or coupe", ingredients: ["60 ml Bourbon", "22 ml fresh lemon juice", "22 ml simple syrup (1:1)", "1 egg white (optional — for Boston Sour)"], method: "If using egg white: dry shake all ingredients without ice first (15 sec), then add ice and shake hard (15 sec). Double strain. Without egg white: shake with ice, double strain.", garnish: "Lemon wheel + 3 drops Angostura on the foam (draw a pattern with a toothpick)." },
       ru: { glass: "Бокал Rocks или купе", ingredients: ["60 мл бурбон", "22 мл свежий лимонный сок", "22 мл простой сироп (1:1)", "1 белок яйца (опц. — для Boston Sour)"], method: "С белком: сначала сухой шейк без льда (15 сек), затем со льдом (15 сек). Двойное процеживание. Без белка: шейк со льдом, двойное процеживание.", garnish: "Долька лимона + 3 капли Angostura на пене (рисунок зубочисткой)." }
     },
     history: { en: "The Whisky Sour dates to at least 1870, appearing in Jerry Thomas's 'Bartenders Guide'. The formula: spirit, citrus, sweetener. The egg white variation (Boston Sour) became popular in the early 20th century, adding a frothy silkiness. Modern bars often use aquafaba as a vegan substitute.", ru: "Whisky Sour появился не позднее 1870 года в «Руководстве барменов» Джерри Томаса. Формула: спирт, цитрус, подсластитель. Вариант с белком (Boston Sour) стал популярен в начале XX века." },
@@ -2399,7 +2404,7 @@ const COCKTAILS = [
       "jw-black": { en: "The benchmark Scotch highball. Light smoke + soda = something magical.", ru: "Эталонный скотч-хайбол. Лёгкий дым + сода = нечто магическое." }
     },
     spec: {
-      en: { glass: "Highball / Collins glass", ingredients: ["2 oz Scotch or Japanese whisky", "4 oz soda water (very cold)"], method: "Fill glass to the top with ice. Pour whisky over ice. Add cold soda water slowly — pour down the back of a spoon to preserve carbonation. Stir once, gently, from the bottom only.", garnish: "Lemon twist, expressed and placed along the rim." },
+      en: { glass: "Highball / Collins glass", ingredients: ["60 ml Scotch or Japanese whisky", "120 ml soda water (very cold)"], method: "Fill glass to the top with ice. Pour whisky over ice. Add cold soda water slowly — pour down the back of a spoon to preserve carbonation. Stir once, gently, from the bottom only.", garnish: "Lemon twist, expressed and placed along the rim." },
       ru: { glass: "Хайбол / Collins", ingredients: ["60 мл скотч или японский виски", "120 мл содовая (очень холодная)"], method: "Наполнить стакан льдом до краёв. Налить виски. Добавить холодную соду медленно — по задней стороне ложки, чтобы сохранить карбонизацию. Один раз перемешать снизу.", garnish: "Лимонный твист, выжать масла, положить вдоль края." }
     },
     history: { en: "The Highball's origins are debated — possibly named after railroad signals (a ball raised high = full speed ahead). The drink became iconic in Japan, where the Suntory-driven 'Whisky Highball' culture turned it into an art form: long glass, maximum ice, super-cold soda added with minimal stirring to preserve carbonation, garnished with lemon peel.", ru: "Происхождение хайбола спорно — возможно, назван по железнодорожным сигналам (шар поднят высоко = полный вперёд). Культовым стал в Японии, где Suntory превратил его в искусство: высокий стакан, максимум льда, очень холодная сода с минимальным перемешиванием." },
@@ -2417,7 +2422,7 @@ const COCKTAILS = [
       "jw-black": { en: "Budget-accessible version. The hint of smoke is enough, fruit notes complement honey.", ru: "Доступная версия. Намёка на дым хватает, фруктовые ноты дополняют мёд." }
     },
     spec: {
-      en: { glass: "Rocks glass", ingredients: ["2 oz Blended Scotch", "0.75 oz fresh lemon juice", "0.75 oz honey-ginger syrup*", "0.25 oz Islay Scotch (float)", "*Honey-ginger syrup: simmer 2:1 honey:water with fresh ginger slices, strain, cool."], method: "Shake first 3 ingredients hard with ice. Double strain into rocks glass over large ice. Float Islay Scotch by pouring slowly over the back of a spoon — it should sit on top.", garnish: "Candied ginger on a pick + lemon wheel." },
+      en: { glass: "Rocks glass", ingredients: ["60 ml Blended Scotch", "22 ml fresh lemon juice", "22 ml honey-ginger syrup*", "7.5 ml Islay Scotch (float)", "*Honey-ginger syrup: simmer 2:1 honey:water with fresh ginger slices, strain, cool."], method: "Shake first 3 ingredients hard with ice. Double strain into rocks glass over large ice. Float Islay Scotch by pouring slowly over the back of a spoon — it should sit on top.", garnish: "Candied ginger on a pick + lemon wheel." },
       ru: { glass: "Бокал Rocks", ingredients: ["60 мл бленд скотч", "22 мл свежий лимонный сок", "22 мл медово-имбирный сироп*", "7.5 мл айлейский скотч (флоат)", "*Сироп: 2:1 мёд:вода с имбирём, нагреть, процедить, охладить."], method: "Шейк первых 3 ингредиентов со льдом. Двойное процеживание на крупный лёд. Флоат айлейского скотча — медленно по ложке, слой сверху.", garnish: "Засахаренный имбирь на шпажке + долька лимона." }
     },
     history: { en: "Invented by Sam Ross at Milk & Honey bar in New York City around 2005. The Penicillin — blended Scotch, lemon juice, honey-ginger syrup, float of peated Scotch — became one of the defining modern cocktails of the 21st century, credited with introducing a generation of drinkers to smoky whisky. Named for its supposedly restorative qualities.", ru: "Придуман Сэмом Россом в баре Milk & Honey в Нью-Йорке около 2005 года. Penicillin — бленд-скотч, лимон, медово-имбирный сироп, флоат торфяного — стал одним из определяющих современных коктейлей XXI века." },
@@ -2435,10 +2440,10 @@ const COCKTAILS = [
       "knob-creek-bourbon": { en: "50% ABV doesn't get lost in the Campari. Big, bold, and memorable.", ru: "50% не теряется в Кампари. Большой, насыщенный, запоминающийся." }
     },
     spec: {
-      en: { glass: "Coupe or rocks with large ice", ingredients: ["1.5 oz Bourbon or Rye", "0.75 oz Campari", "0.75 oz Sweet vermouth"], method: "Combine all in mixing glass over ice. Stir 30 seconds. Strain into chilled coupe, or over large single ice in rocks glass.", garnish: "Orange twist or Luxardo cherry." },
+      en: { glass: "Coupe or rocks with large ice", ingredients: ["45 ml Bourbon or Rye", "22 ml Campari", "22 ml Sweet vermouth"], method: "Combine all in mixing glass over ice. Stir 30 seconds. Strain into chilled coupe, or over large single ice in rocks glass.", garnish: "Orange twist or Luxardo cherry." },
       ru: { glass: "Купе или Rocks с крупным льдом", ingredients: ["45 мл бурбон или рожь", "22 мл Campari", "22 мл сладкий вермут"], method: "Смешать в мерном стакане со льдом. Мешать 30 секунд. Процедить в охлаждённый купе или на крупный лёд.", garnish: "Апельсиновый твист или вишня Luxardo." }
     },
-    history: { en: "Created in the 1920s by American expat Erskine Gwynne, who published a Paris magazine called 'The Boulevardier'. Unlike the Negroni (gin-based), the Boulevardier uses bourbon or rye — making it a whisky drinker's Negroni. Ratio: 1.5oz whiskey, 0.75oz Campari, 0.75oz sweet vermouth, stirred, cherry garnish.", ru: "Создан в 1920-х американским эмигрантом Эрскином Гвинном, издававшим парижский журнал «The Boulevardier». В отличие от Негрони (на джине), здесь бурбон или рожь. Соотношение: 1.5 oz виски, 0.75 oz Campari, 0.75 oz сладкий вермут." },
+    history: { en: "Created in the 1920s by American expat Erskine Gwynne, who published a Paris magazine called 'The Boulevardier'. Unlike the Negroni (gin-based), the Boulevardier uses bourbon or rye — making it a whisky drinker's Negroni. Ratio: 1.5oz whiskey, 0.75oz Campari, 0.75oz sweet vermouth, stirred, cherry garnish.", ru: "Создан в 1920-х американским эмигрантом Эрскином Гвинном, издававшим парижский журнал «The Boulevardier». В отличие от Негрони (на джине), здесь бурбон или рожь. Соотношение: 45 mlвиски, 22 ml Campari, 22 mlсладкий вермут." },
     story: { en: "Erskine Gwynne was a wealthy American living in 1920s Paris — the golden era of American expats drinking magnificently in the city. He published a society magazine called 'The Boulevardier,' a French word for an idle, sophisticated man-about-town.\n\nAt Harry's New York Bar (still open today, one of the most famous bars in the world), he asked his bartender to make him a Negroni with bourbon instead of gin and name it after his magazine. It was published in Harry's recipe book in 1927.\n\nUnlike the Negroni, which spread globally through the 20th century, the Boulevardier remained almost completely obscure for 70 years — only rediscovered by cocktail enthusiasts in the early 2000s. Today it's a staple on every serious menu. Useful tip: if a guest asks for a 'whiskey Negroni,' make them a Boulevardier and tell them the story. They'll feel like they discovered something.", ru: "Эрскин Гвинн — состоятельный американец в Париже 1920-х, золотой эре американских экспатов, пивших великолепно. Он издавал светский журнал «The Boulevardier» — французское слово для праздного светского человека.\n\nВ Harry's New York Bar (работает по сей день, один из самых знаменитых баров мира) он попросил бармена сделать ему Негрони с бурбоном вместо джина и назвать в честь журнала. Рецепт опубликован в книге Гарри в 1927 году.\n\nВ отличие от Негрони, распространившегося по всему миру в XX веке, Boulevardier оставался почти полностью в безвестности 70 лет — заново открыт любителями коктейлей лишь в начале 2000-х. Совет: если гость просит «виски-негрони» — сделай Boulevardier и расскажи историю. Он почувствует себя первооткрывателем." }
   },
   {
@@ -2453,7 +2458,7 @@ const COCKTAILS = [
       "singleton-12": { en: "The honey and orchard fruit character amplifies in heat — gentle and universally appealing.", ru: "Медовый и фруктовый характер усиливается в тепле — мягко, нравится всем." }
     },
     spec: {
-      en: { glass: "Heatproof mug or glass", ingredients: ["2 oz Scotch or Irish whisky", "0.75 oz honey (or 0.5 oz honey syrup 2:1)", "0.5 oz fresh lemon juice", "4 oz hot water (not boiling — 80°C)", "Optional: cinnamon stick, 2 cloves"], method: "Warm the glass first with hot water, discard. Add honey and lemon, stir. Add whisky, top with hot water, stir gently. Add spices if using.", garnish: "Lemon wheel studded with cloves. Cinnamon stick." },
+      en: { glass: "Heatproof mug or glass", ingredients: ["60 ml Scotch or Irish whisky", "22 ml honey (or 15 ml honey syrup 2:1)", "15 ml fresh lemon juice", "120 ml hot water (not boiling — 80°C)", "Optional: cinnamon stick, 2 cloves"], method: "Warm the glass first with hot water, discard. Add honey and lemon, stir. Add whisky, top with hot water, stir gently. Add spices if using.", garnish: "Lemon wheel studded with cloves. Cinnamon stick." },
       ru: { glass: "Термостойкая кружка или стакан", ingredients: ["60 мл скотч или ирландский виски", "22 мл мёд (или медовый сироп 2:1)", "15 мл свежий лимонный сок", "120 мл горячая вода (не кипяток — 80°C)", "Опц.: палочка корицы, 2 гвоздики"], method: "Прогреть бокал горячей водой, вылить. Добавить мёд и лимон, перемешать. Добавить виски, залить горячей водой, аккуратно перемешать.", garnish: "Долька лимона с гвоздикой. Палочка корицы." }
     },
     history: { en: "The Hot Toddy's origins are genuinely disputed — Scotland, Ireland, and India all have claims. The word 'toddy' may derive from the Indian 'tāṛī', a fermented palm drink. In 18th-century Scotland and Ireland, whiskey mixed with hot water was a common remedy for colds. The modern Hot Toddy: whisky, hot water, honey, lemon juice, optional spices (cinnamon, clove).", ru: "Происхождение Hot Toddy спорно — Шотландия, Ирландия и Индия претендуют на авторство. Слово 'toddy' возможно от индийского 'tāṛī' — пальмовый напиток. В Шотландии/Ирландии XVIII века виски с горячей водой был народным средством от простуды." },
@@ -2471,7 +2476,7 @@ const COCKTAILS = [
       "singleton-12": { en: "The gentle fruit notes create a lighter, more delicate Rob Roy — approachable for new guests.", ru: "Мягкие фруктовые ноты создают более лёгкий и деликатный Rob Roy." }
     },
     spec: {
-      en: { glass: "Coupe or Nick & Nora", ingredients: ["2 oz Scotch whisky", "1 oz Sweet vermouth", "2 dashes Angostura bitters"], method: "Stir all over ice for 30 seconds. Strain into chilled coupe.", garnish: "Luxardo cherry or lemon twist." },
+      en: { glass: "Coupe or Nick & Nora", ingredients: ["60 ml Scotch whisky", "30 ml Sweet vermouth", "2 dashes Angostura bitters"], method: "Stir all over ice for 30 seconds. Strain into chilled coupe.", garnish: "Luxardo cherry or lemon twist." },
       ru: { glass: "Купе или Nick & Nora", ingredients: ["60 мл скотч", "30 мл сладкий вермут", "2 dash Angostura биттер"], method: "Мешать со льдом 30 секунд. Процедить в охлаждённый бокал.", garnish: "Вишня Luxardo или лимонный твист." }
     },
     history: { en: "Created at the Waldorf Astoria in New York City in 1894 to celebrate the premiere of a Broadway operetta about Scottish folk hero Rob Roy MacGregor. It's a direct Scotch whisky substitute for the Manhattan — same ratios, just swap bourbon/rye for Scotch. The smoke and peat notes of Scotch give it a distinctly different character.", ru: "Создан в Waldorf Astoria в 1894 году к премьере бродвейской оперетты о шотландском герое Робе Рое МакГрегоре. Прямая замена бурбона на скотч в Манхэттене — те же пропорции, другой характер." },
@@ -2489,7 +2494,7 @@ const COCKTAILS = [
       "bulleit-bourbon": { en: "High rye mashbill adds a spicy backbone — creates a drier, more complex Paper Plane.", ru: "Высокое содержание ржи добавляет пряный стержень — суше и сложнее." }
     },
     spec: {
-      en: { glass: "Chilled coupe", ingredients: ["0.75 oz Bourbon", "0.75 oz Aperol", "0.75 oz Amaro Nonino", "0.75 oz fresh lemon juice"], method: "Shake all with ice. Double strain into chilled coupe. The equal-parts formula is unforgiving — measure precisely.", garnish: "None, or a thin lemon twist." },
+      en: { glass: "Chilled coupe", ingredients: ["22 ml Bourbon", "22 ml Aperol", "22 ml Amaro Nonino", "22 ml fresh lemon juice"], method: "Shake all with ice. Double strain into chilled coupe. The equal-parts formula is unforgiving — measure precisely.", garnish: "None, or a thin lemon twist." },
       ru: { glass: "Охлаждённый купе", ingredients: ["22 мл бурбон", "22 мл Aperol", "22 мл Amaro Nonino", "22 мл свежий лимонный сок"], method: "Шейк со льдом. Двойное процеживание в охлаждённый купе. Равные части — погрешности не прощает. Мерить точно.", garnish: "Без украшения или тонкий лимонный твист." }
     },
     history: { en: "Created by Sam Ross (the same bartender who invented the Penicillin) around 2008 at Milk & Honey, NYC. Named after the MIA song. The equal-parts formula — bourbon, Aperol, Amaro Nonino, lemon — is deceptively simple and ruthlessly balanced. It became the calling card of the modern craft cocktail movement.", ru: "Создан Сэмом Россом (тем же барменом, что изобрёл Penicillin) около 2008 года в Milk & Honey. Назван в честь песни MIA. Равные части — бурбон, Aperol, Amaro Nonino, лимон — обманчиво просто и безжалостно сбалансировано." },
@@ -2507,7 +2512,7 @@ const COCKTAILS = [
       "bulleit-bourbon": { en: "High rye mashbill keeps sweetness in check — the most balanced version.", ru: "Высокое содержание ржи сдерживает сладость — самая сбалансированная версия." }
     },
     spec: {
-      en: { glass: "Rocks glass, large ice", ingredients: ["2 oz Bourbon", "0.75 oz honey syrup (2:1 honey:water)", "0.75 oz fresh lemon juice"], method: "Shake hard with ice. Double strain into rocks glass over large ice. The honey syrup must be made fresh — bottled honey diluted cold won't emulsify properly.", garnish: "Lemon wheel." },
+      en: { glass: "Rocks glass, large ice", ingredients: ["60 ml Bourbon", "22 ml honey syrup (2:1 honey:water)", "22 ml fresh lemon juice"], method: "Shake hard with ice. Double strain into rocks glass over large ice. The honey syrup must be made fresh — bottled honey diluted cold won't emulsify properly.", garnish: "Lemon wheel." },
       ru: { glass: "Бокал Rocks, крупный лёд", ingredients: ["60 мл бурбон", "22 мл медовый сироп (2:1 мёд:вода)", "22 мл свежий лимонный сок"], method: "Шейк со льдом. Двойное процеживание на крупный лёд. Медовый сироп — свежий. Холодный разбавленный мёд не эмульгирует.", garnish: "Долька лимона." }
     },
     history: { en: "Created by TJ Siegel at Milk & Honey, NYC around 2000 — one of the foundational Milk & Honey house cocktails. A Whisky Sour where honey syrup replaces simple syrup entirely, creating a rounder, more floral and complex drink. The Gold Rush helped establish the 'Milk & Honey school' of craft bartending.", ru: "Создан TJ Siegel в Milk & Honey около 2000 года — один из основополагающих коктейлей заведения. Whisky Sour с медовым сиропом вместо простого — округлее, цветочнее, сложнее. Gold Rush помог сформировать «школу Milk & Honey»." },
@@ -2525,7 +2530,7 @@ const COCKTAILS = [
       "wathens": { en: "Natural sweetness means less added sugar — cleaner, more elegant Julep.", ru: "Природная сладость — меньше сахара, чище и элегантнее Julep." }
     },
     spec: {
-      en: { glass: "Silver julep cup (or rocks glass)", ingredients: ["2.5 oz Bourbon", "0.5 oz simple syrup (or 1 tsp powdered sugar)", "8–10 fresh mint leaves"], method: "Gently press (do not muddle) mint leaves with syrup in the cup — you want to bruise them, not shred them. Pack tightly with crushed ice. Pour bourbon over. Churn with a bar spoon (lift and fold). Add more crushed ice to form a dome above the rim.", garnish: "Large mint bouquet (slap before placing to release aroma). Powdered sugar dusted over the top." },
+      en: { glass: "Silver julep cup (or rocks glass)", ingredients: ["75 ml Bourbon", "15 ml simple syrup (or 1 tsp powdered sugar)", "8–10 fresh mint leaves"], method: "Gently press (do not muddle) mint leaves with syrup in the cup — you want to bruise them, not shred them. Pack tightly with crushed ice. Pour bourbon over. Churn with a bar spoon (lift and fold). Add more crushed ice to form a dome above the rim.", garnish: "Large mint bouquet (slap before placing to release aroma). Powdered sugar dusted over the top." },
       ru: { glass: "Серебряная кружка Julep (или Rocks)", ingredients: ["75 мл бурбон", "15 мл простой сироп (или 1 ч.л. сахарной пудры)", "8–10 листьев свежей мяты"], method: "Аккуратно прижать (не толочь) мяту с сиропом — надавить, не разрывать. Плотно набить дроблёным льдом. Добавить бурбон. Перемешать барной ложкой (поднять и сложить). Добавить лёд куполом выше края.", garnish: "Большой пучок мяты (хлопнуть перед подачей). Посыпать сахарной пудрой." }
     },
     history: { en: "The Mint Julep dates to at least the late 18th century in the American South. It became the official drink of the Kentucky Derby in 1938 — today over 120,000 Juleps are served at Churchill Downs each Derby weekend. The silver cup is traditional because it frosts on the outside from the crushed ice inside.", ru: "Mint Julep датируется не позднее конца XVIII века на американском Юге. Официальный напиток Kentucky Derby с 1938 года — более 120 000 Julep подаётся на Churchill Downs каждый уик-энд дерби. Серебряная кружка традиционна — она инеет снаружи от дроблёного льда внутри." },
@@ -2543,7 +2548,7 @@ const COCKTAILS = [
       "knob-creek-rye": { en: "Bold spice character adds backbone — creates the most assertive version of the drink.", ru: "Пряный характер добавляет стержень — самая напористая версия." }
     },
     spec: {
-      en: { glass: "Rocks glass, large ice", ingredients: ["1 oz Rye whiskey", "1 oz Cognac (VS or VSOP)", "1 oz Sweet vermouth", "2 dashes Peychaud's bitters", "2 dashes Angostura bitters", "1 tsp Bénédictine"], method: "Build all in a rocks glass or mixing glass over ice. Stir 30 seconds. Strain over large ice if using mixing glass, or serve as-is if built directly.", garnish: "Lemon twist + Luxardo cherry." },
+      en: { glass: "Rocks glass, large ice", ingredients: ["30 ml Rye whiskey", "30 ml Cognac (VS or VSOP)", "30 ml Sweet vermouth", "2 dashes Peychaud's bitters", "2 dashes Angostura bitters", "1 tsp Bénédictine"], method: "Build all in a rocks glass or mixing glass over ice. Stir 30 seconds. Strain over large ice if using mixing glass, or serve as-is if built directly.", garnish: "Lemon twist + Luxardo cherry." },
       ru: { glass: "Бокал Rocks, крупный лёд", ingredients: ["30 мл ржаной виски", "30 мл Коньяк (VS или VSOP)", "30 мл сладкий вермут", "2 dash Peychaud's биттер", "2 dash Angostura биттер", "1 ч.л. Bénédictine"], method: "Собрать все ингредиенты в бокале или мерном стакане со льдом. Мешать 30 секунд. Процедить на крупный лёд.", garnish: "Лимонный твист + вишня Luxardo." }
     },
     history: { en: "Created at the Hotel Monteleone in New Orleans in 1938 by head bartender Walter Bergeron. 'Vieux Carré' is French for 'Old Square' — the French Quarter of New Orleans. The drink combines the two great cocktail traditions of its city: the rye-and-bitters tradition and the French Cognac heritage. It's been served continuously at the Carousel Bar in the Hotel Monteleone ever since.", ru: "Создан в отеле Monteleone в Новом Орлеане в 1938 году барменом Уолтером Берджероном. 'Vieux Carré' — по-французски 'Старая площадь', французский квартал Нового Орлеана. Объединяет две традиции города: ржаную и французскую коньячную. С тех пор непрерывно подаётся в Carousel Bar." },
@@ -2561,7 +2566,7 @@ const COCKTAILS = [
       "knob-creek-rye": { en: "Maximum spice punch — the anise from the absinthe wash pops against the bold rye.", ru: "Максимальная пряность — анис от абсента взрывается на фоне резкой ржи." }
     },
     spec: {
-      en: { glass: "Chilled rocks glass, no ice", ingredients: ["2 oz Rye whiskey", "1 tsp simple syrup (or 1 sugar cube)", "2–3 dashes Peychaud's bitters", "1 dash Angostura bitters", "Absinthe (for rinse, ~1 tsp)"], method: "Chill the rocks glass (or fill with ice, then discard). Rinse with absinthe — pour in, swirl to coat, discard excess. In a separate mixing glass: muddle sugar with bitters, add rye and ice, stir 30 sec, strain into the absinthe-rinsed glass. No ice in the final glass.", garnish: "Lemon twist — express oil over glass, rub the rim, do NOT drop it in. Discard after expressing." },
+      en: { glass: "Chilled rocks glass, no ice", ingredients: ["60 ml Rye whiskey", "1 tsp simple syrup (or 1 sugar cube)", "2–3 dashes Peychaud's bitters", "1 dash Angostura bitters", "Absinthe (for rinse, ~1 tsp)"], method: "Chill the rocks glass (or fill with ice, then discard). Rinse with absinthe — pour in, swirl to coat, discard excess. In a separate mixing glass: muddle sugar with bitters, add rye and ice, stir 30 sec, strain into the absinthe-rinsed glass. No ice in the final glass.", garnish: "Lemon twist — express oil over glass, rub the rim, do NOT drop it in. Discard after expressing." },
       ru: { glass: "Охлаждённый Rocks, без льда", ingredients: ["60 мл ржаной виски", "1 ч.л. простой сироп (или кубик сахара)", "2–3 dash Peychaud's биттер", "1 dash Angostura биттер", "Абсент (для полоскания, ~1 ч.л.)"], method: "Охладить бокал (набить льдом, выбросить). Прополоскать абсентом — налить, прокрутить, вылить. В отдельном стакане: растолочь сахар с биттером, добавить виски и лёд, мешать 30 сек, процедить в бокал с абсентом. Льда в итоговом бокале нет.", garnish: "Лимонный твист — выжать масла над бокалом, протереть край, НЕ класть внутрь. Выбросить после." }
     },
     history: { en: "The Sazerac is considered by many to be America's oldest cocktail, with roots in 1850s New Orleans. Originally made with Cognac (before phylloxera decimated French vineyards), it shifted to rye whiskey in the 1870s. The Sazerac Coffee House on Exchange Alley gave the drink its name. In 2008, Louisiana officially declared it the official cocktail of New Orleans.", ru: "Sazerac считается многими старейшим коктейлем Америки — корни в Новом Орлеане 1850-х. Изначально на Коньяке (до филлоксеры), с 1870-х — на ржаном. Sazerac Coffee House на Exchange Alley дал имя напитку. В 2008 году Луизиана официально объявила его коктейлем Нового Орлеана." },
@@ -2579,7 +2584,7 @@ const COCKTAILS = [
       "bulleit-rye": { en: "95% rye mashbill and the ginger are made for each other — dry, spicy, perfect.", ru: "95% ржи и имбирь созданы друг для друга — сухо, пряно, идеально." }
     },
     spec: {
-      en: { glass: "Copper mug or highball", ingredients: ["2 oz Rye whiskey", "0.5 oz fresh lime juice", "4 oz ginger beer (strong — Fever-Tree or equivalent)", "Optional: 2 dashes Angostura bitters"], method: "Fill mug with ice. Add rye and lime juice. Top with cold ginger beer. Stir once gently. Add bitters on top if using.", garnish: "Lime wheel + candied ginger on a pick." },
+      en: { glass: "Copper mug or highball", ingredients: ["60 ml Rye whiskey", "15 ml fresh lime juice", "120 ml ginger beer (strong — Fever-Tree or equivalent)", "Optional: 2 dashes Angostura bitters"], method: "Fill mug with ice. Add rye and lime juice. Top with cold ginger beer. Stir once gently. Add bitters on top if using.", garnish: "Lime wheel + candied ginger on a pick." },
       ru: { glass: "Медная кружка или хайбол", ingredients: ["60 мл ржаной виски", "15 мл свежий лаймовый сок", "120 мл имбирное пиво (крепкое — Fever-Tree)", "Опц.: 2 dash Angostura"], method: "Наполнить кружку льдом. Добавить виски и лайм. Сверху имбирное пиво. Один раз аккуратно перемешать. Биттер сверху по желанию.", garnish: "Долька лайма + засахаренный имбирь на шпажке." }
     },
     history: { en: "A rye whiskey variation on the Moscow Mule (vodka, ginger beer, lime), which was itself invented as a marketing stunt in 1941 to sell Smirnoff vodka and ginger beer. The whisky version predates the vodka version historically — ginger and whisky have been paired since the 19th century. The copper mug keeps the drink colder longer and adds a faint metallic minerality.", ru: "Вариация Moscow Mule (водка, имбирное пиво, лайм) с ржаным виски. Сам Moscow Mule изобретён в 1941 году как маркетинговый трюк. Историческое сочетание имбиря и виски старше — XIX век. Медная кружка дольше держит холод и добавляет лёгкую минеральность." },
@@ -2597,7 +2602,7 @@ const COCKTAILS = [
       "powers-gold-label": { en: "Pot still spice gives the drink more backbone — more interesting than the standard version.", ru: "Горшковая пряность даёт больше стержня — интереснее стандартной версии." }
     },
     spec: {
-      en: { glass: "Highball, lots of ice", ingredients: ["2 oz Jameson Irish Whiskey", "4 oz ginger ale (or ginger beer for more kick)", "0.5 oz fresh lime juice"], method: "Fill glass with ice. Add whiskey and lime juice. Top with ginger ale. Stir once. Simple, fast, crowd-pleasing.", garnish: "Lime wedge squeezed and dropped in." },
+      en: { glass: "Highball, lots of ice", ingredients: ["60 ml Jameson Irish Whiskey", "120 ml ginger ale (or ginger beer for more kick)", "15 ml fresh lime juice"], method: "Fill glass with ice. Add whiskey and lime juice. Top with ginger ale. Stir once. Simple, fast, crowd-pleasing.", garnish: "Lime wedge squeezed and dropped in." },
       ru: { glass: "Хайбол, много льда", ingredients: ["60 мл Jameson", "120 мл имбирный эль (или имбирное пиво для удара)", "15 мл свежий лаймовый сок"], method: "Наполнить льдом. Добавить виски и лайм. Сверху имбирный эль. Один раз перемешать. Просто, быстро, всем нравится.", garnish: "Дольку лайма выжать и бросить в бокал." }
     },
     history: { en: "Jameson, Ginger & Lime became the dominant long serve for Irish whiskey in the 2010s, largely driven by Jameson's own marketing campaigns in Ireland and the UK. It's the Irish equivalent of the Scotch & Soda or Jack & Coke — a simple, accessible format that introduces a generation to Irish whiskey. The lime is the key differentiator from the standard Scotch Highball.", ru: "Jameson, Ginger & Lime стал доминирующим лонг-дринком для ирландского виски в 2010-х — благодаря маркетингу Jameson в Ирландии и UK. Ирландский эквивалент Scotch & Soda или Jack & Coke. Лайм — ключевое отличие от стандартного скотч-хайбола." },
@@ -3092,7 +3097,16 @@ function openWhiskyModal(w) {
     </div>
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'Cocktails' : 'Коктейли'}</div>
-      <div class="cocktail-list">${w.cocktails.map(c => `<div class="ci"><span class="ci-icon">${c.icon}</span><div><div class="ci-name">${c.name}</div><div class="ci-desc">${t(c.desc)}</div></div></div>`).join('')}</div>
+      <div class="cocktail-list">${w.cocktails.map(c => {
+        const linked = COCKTAILS.find(x => c.name === x.name || c.name.startsWith(x.name + ' ') || c.name.startsWith(x.name + '(') || c.name.startsWith(x.name.split(' ')[0]+ ' ' + x.name.split(' ')[1]));
+        return `<div class="ci${linked ? ' ci-link' : ''}" ${linked ? `data-cid="${linked.id}"` : ''}>
+          <span class="ci-icon">${c.icon}</span>
+          <div>
+            <div class="ci-name">${c.name}${linked ? '<span class="ci-arrow">›</span>' : ''}</div>
+            <div class="ci-desc">${t(c.desc)}</div>
+          </div>
+        </div>`;
+      }).join('')}</div>
     </div>
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'History & Background' : 'История'}</div>
@@ -3100,13 +3114,19 @@ function openWhiskyModal(w) {
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.querySelectorAll('.ci-link[data-cid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const cocktail = COCKTAILS.find(x => x.id === el.dataset.cid);
+      if (cocktail) openCocktailModal(cocktail, () => openWhiskyModal(w));
+    });
+  });
   openModal();
 }
 
 /* ══════════════════════════════════════════════════
    COCKTAIL MODAL
 ══════════════════════════════════════════════════ */
-function openCocktailModal(c) {
+function openCocktailModal(c, backFn) {
   const recs = c.topWhiskies.map((id, i) => {
     const w = WHISKIES.find(x => x.id === id);
     if (!w) return '';
@@ -3149,6 +3169,7 @@ function openCocktailModal(c) {
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-top">
       <div>
+        ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
         <div style="font-size:2.2rem;margin-bottom:8px">${c.icon}</div>
         <div class="modal-name">${c.name}</div>
         <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px">${t(c.tagline)}</div>
@@ -3176,6 +3197,7 @@ function openCocktailModal(c) {
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
+  if (backFn) document.getElementById('modalBackBtn').addEventListener('click', backFn);
 
   // clicking a whisky recommendation opens that whisky
   document.querySelectorAll('.wr[data-wid]').forEach(el => {
@@ -3260,7 +3282,7 @@ const TRIVIA = [
   // — Cocktail History —
   { d:1, q:"The Sazerac is the official cocktail of which city?", qr:"Sazerac — официальный коктейль какого города?", o:["Chicago","New York","New Orleans","Nashville"], or:["Чикаго","Нью-Йорк","Новый Орлеан","Нэшвилл"], a:2, e:"Louisiana officially declared the Sazerac the cocktail of New Orleans in 2008. It was born at the Sazerac Coffee House in the 1850s.", er:"В 2008 году Луизиана официально признала Sazerac коктейлем Нового Орлеана. Он родился в Sazerac Coffee House в 1850-х годах." },
   { d:2, q:"Who invented the Penicillin cocktail?", qr:"Кто изобрёл коктейль Penicillin?", o:["Dale DeGroff","Sam Ross","Audrey Saunders","Dick Bradsell"], or:["Дейл ДеГрофф","Сэм Росс","Одри Сондерс","Дик Брэдселл"], a:1, e:"Sam Ross created the Penicillin at Milk & Honey, NYC around 2005. He also created the Paper Plane. Both became modern classics.", er:"Сэм Росс создал Penicillin в баре Milk & Honey в Нью-Йорке около 2005 года. Он же придумал Paper Plane. Оба стали современной классикой." },
-  { d:1, q:"The Paper Plane uses equal parts of how many ingredients?", qr:"Коктейль Paper Plane состоит из равных частей скольки ингредиентов?", o:["2","3","4","5"], or:["2","3","4","5"], a:2, e:"Equal parts (0.75 oz each) of bourbon, Aperol, Amaro Nonino, and fresh lemon juice. Four ingredients, ruthlessly balanced.", er:"По 0,75 унции бурбона, Aperol, Amaro Nonino и свежего лимонного сока. Четыре ингредиента, безупречно сбалансированных." },
+  { d:1, q:"The Paper Plane uses equal parts of how many ingredients?", qr:"Коктейль Paper Plane состоит из равных частей скольки ингредиентов?", o:["2","3","4","5"], or:["2","3","4","5"], a:2, e:"Equal parts (22 ml each) of bourbon, Aperol, Amaro Nonino, and fresh lemon juice. Four ingredients, ruthlessly balanced.", er:"По 0,75 унции бурбона, Aperol, Amaro Nonino и свежего лимонного сока. Четыре ингредиента, безупречно сбалансированных." },
   { d:1, q:"A Boulevardier substitutes what in a Negroni?", qr:"Что заменяет джин в коктейле Boulevardier (вариация Negroni)?", o:["Campari for Aperol","Sweet vermouth for dry","Bourbon or Rye for Gin","Scotch for bourbon"], or:["Campari на Aperol","Сладкий вермут на сухой","Бурбон или Рай вместо джина","Скотч вместо бурбона"], a:2, e:"The Boulevardier is essentially a Negroni where gin is replaced with bourbon or rye. Same structure, completely different character.", er:"Boulevardier — это Negroni, где джин заменён бурбоном или раем. Та же структура, абсолютно другой характер." },
   { d:3, q:"The Vieux Carré was created at:", qr:"Где был создан коктейль Vieux Carré?", o:["Arnaud's Restaurant, New Orleans","Hotel Monteleone, New Orleans","The Ritz Bar, Paris","21 Club, New York"], or:["Ресторан Arnaud's, Новый Орлеан","Отель Monteleone, Новый Орлеан","Ritz Bar, Париж","Клуб 21, Нью-Йорк"], a:1, e:"Walter Bergeron created the Vieux Carré at the Hotel Monteleone's Carousel Bar in New Orleans in 1938. It's still served there today.", er:"Уолтер Берджерон создал Vieux Carré в Carousel Bar отеля Monteleone в Новом Орлеане в 1938 году. Его до сих пор подают в том же баре." },
   { d:1, q:"The Mint Julep is the official drink of which event?", qr:"Mint Julep — официальный напиток какого события?", o:["The Grand National","The Super Bowl","The Kentucky Derby","Wimbledon"], or:["Гран-Насьональ","Супербоул","Дерби Кентукки","Уимблдон"], a:2, e:"The Mint Julep has been the official drink of the Kentucky Derby since 1938. Over 120,000 are served at Churchill Downs each Derby weekend.", er:"Mint Julep является официальным напитком Дерби Кентукки с 1938 года. За каждый уик-энд дерби на Churchill Downs подаётся более 120 000 порций." },
