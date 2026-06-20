@@ -1,9 +1,9 @@
 {
-  "name": "The Bar Guide — Whisky Edition",
-  "short_name": "Bar Guide",
+  "name": "The Alligator Guide",
+  "short_name": "Alligator Guide",
   "description": "Whisky tasting notes, cocktail pairings & serve recommendations for bar staff.",
-  "start_url": "/BarGuide/",
-  "scope": "/BarGuide/",
+  "start_url": "/AlligatorGuide/",
+  "scope": "/AlligatorGuide/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f0d0a",
