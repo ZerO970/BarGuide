@@ -343,7 +343,30 @@ body {
 .lang-thumb.ru { transform: translateX(18px); }
 
 /* ─── Main / Screens ────────────────────────────────────── */
-.screen { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 28px 24px 80px; display: none; }
+/* ─── Screens carousel track ──────────────────────────── */
+#screensTrack {
+  display: flex;
+  width: 400vw;
+  will-change: transform;
+  transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  min-height: calc(100dvh - 64px);
+}
+.screen {
+  position: relative; z-index: 1;
+  width: 100vw; min-width: 100vw; flex-shrink: 0;
+  padding: 28px 24px 80px;
+  display: block !important; /* always in DOM, track slides */
+  box-sizing: border-box;
+}
+.screen > * { max-width: 1320px; margin-left: auto; margin-right: auto; }
+/* Nav pill label crossfade during swipe */
+.nav-pill-trigger { position: relative; overflow: hidden; }
+.nav-pill-lbl { display: inline-block; }
+.nav-pill-lbl-alt {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap; opacity: 0; pointer-events: none;
+}
 .screen.active { display: block; }
 
 /* ─── Hero Bar ──────────────────────────────────────────── */
@@ -1066,7 +1089,7 @@ body.lang-ru [data-ru] { display: revert; }
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 520px) {
   .header-inner { padding: 0 14px; }
-  .screen { padding: 18px 14px 60px; }
+  .screen { padding: 18px 14px 60px; width: 100vw; min-width: 100vw; }
   .grid, .cocktail-grid { grid-template-columns: 1fr; gap: 12px; }
   .modal-content { padding: 12px 18px 28px; }
   .modal-top { padding: 18px 18px 0; }
@@ -1109,7 +1132,8 @@ body.lang-ru [data-ru] { display: revert; }
     <div class="nav-pill" id="navPill">
       <div class="nav-pill-inner">
         <button class="nav-pill-trigger" id="navPillCurrent" aria-expanded="false">
-          <span id="navPillLabel">Bar</span>
+          <span id="navPillLabel" class="nav-pill-lbl">Bar</span>
+          <span id="navPillLabelAlt" class="nav-pill-lbl nav-pill-lbl-alt" aria-hidden="true"></span>
           <svg class="nav-pill-arrow" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="nav-pill-extras" id="navPillExtras">
@@ -1139,6 +1163,7 @@ body.lang-ru [data-ru] { display: revert; }
   </div>
 </header>
 
+<div id="screensTrack">
 <!-- ─── SCREEN: BAR ────────────────────────────────── -->
 <div class="screen active" id="screen-bar">
 
@@ -1299,6 +1324,7 @@ body.lang-ru [data-ru] { display: revert; }
 
   <div class="match-results" id="matchResults" hidden></div>
 </div>
+</div><!-- /screensTrack -->
 
 <!-- ─── COMPARE BAR ────────────────────────────────── -->
 <div class="compare-bar" id="compareBar">
@@ -3140,11 +3166,27 @@ const navPillBtn  = document.getElementById('navPillCurrent');
 const navPillLbl  = document.getElementById('navPillLabel');
 const headerInner = document.querySelector('.header-inner');
 
+const SCREEN_ORDER = ['bar', 'cocktails', 'quiz', 'match'];
+const screensTrack = document.getElementById('screensTrack');
+
+function slideTrackTo(idx, animated = true) {
+  screensTrack.style.transition = animated
+    ? 'transform 340ms cubic-bezier(0.22, 1, 0.36, 1)'
+    : 'none';
+  screensTrack.style.transform = `translateX(${-idx * 100}vw)`;
+}
+
 function navSetScreen(screen) {
   currentScreen = screen;
+  const idx = SCREEN_ORDER.indexOf(screen);
+  slideTrackTo(idx);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
   document.querySelectorAll('.nav-pill-item').forEach(b => b.classList.toggle('active', b.dataset.screen === screen));
   navPillLbl.textContent = NAV_LABELS[screen]?.[lang] || screen;
+  navPillLbl.style.opacity = '';
+  navPillLbl.style.transform = '';
+  const alt = document.getElementById('navPillLabelAlt');
+  if (alt) { alt.style.opacity = '0'; alt.style.transform = ''; }
   if (screen !== 'bar') closeSearch();
 }
 
@@ -4260,33 +4302,98 @@ renderBar = function() {
 syncFavBtn();
 
 /* ══════════════════════════════════════════════════
-   SWIPE NAVIGATION
+   SWIPE NAVIGATION — live carousel drag
 ══════════════════════════════════════════════════ */
 (function initSwipe() {
-  const SCREENS = ['bar','cocktails','quiz','match'];
-  let touchStartX = 0, touchStartY = 0;
-  const main = document.querySelector('main') || document.body;
+  const modalOverlay = document.getElementById('modalOverlay');
+  const navLbl    = document.getElementById('navPillLabel');
+  const navLblAlt = document.getElementById('navPillLabelAlt');
+  const navBtn    = document.getElementById('navPillCurrent');
 
-  main.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
+  let startX = 0, startY = 0, dragDX = 0;
+  let dragging = false, axisLocked = false, isHoriz = false;
+  const COMMIT_RATIO = 0.3;   // 30% of screen width to commit
+  const MIN_MOVE = 8;         // px before locking axis
+
+  function currentIdx() { return SCREEN_ORDER.indexOf(currentScreen); }
+
+  function applyDrag(dx) {
+    const idx = currentIdx();
+    const vw  = window.innerWidth;
+    // Rubber-band at edges
+    const atStart = idx === 0 && dx > 0;
+    const atEnd   = idx === SCREEN_ORDER.length - 1 && dx < 0;
+    const bounded = (atStart || atEnd) ? dx * 0.18 : dx;
+    screensTrack.style.transition = 'none';
+    screensTrack.style.transform  = `translateX(calc(${-idx * 100}vw + ${bounded}px))`;
+
+    // Nav pill: crossfade current ↔ adjacent label
+    const dir = dx < 0 ? 1 : -1;
+    const targetIdx = Math.max(0, Math.min(SCREEN_ORDER.length - 1, idx + dir));
+    const progress  = Math.min(1, Math.abs(dx) / (vw * 0.6));
+    const targetScreen = SCREEN_ORDER[targetIdx];
+
+    if (targetIdx !== idx) {
+      navLblAlt.textContent = NAV_LABELS[targetScreen]?.[lang] || targetScreen;
+      navLbl.style.opacity    = String(1 - progress);
+      navLbl.style.transform  = `translateX(${-dir * progress * 14}px)`;
+      navLblAlt.style.opacity = String(progress);
+      navLblAlt.style.transform = `translate(-50%, -50%) translateX(${dir * (1 - progress) * 14}px)`;
+    }
+
+    // Pill button subtle parallax
+    navBtn.style.transform = `translateX(${bounded * 0.06}px)`;
+  }
+
+  function resetPill() {
+    navLbl.style.opacity = '';
+    navLbl.style.transform = '';
+    navLblAlt.style.opacity = '0';
+    navLblAlt.style.transform = '';
+    navBtn.style.transform = '';
+  }
+
+  document.addEventListener('touchstart', e => {
+    if (modalOverlay.classList.contains('open')) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragDX = 0; dragging = true; axisLocked = false; isHoriz = false;
   }, { passive: true });
 
-  main.addEventListener('touchend', e => {
-    // don't switch screens when modal is open
-    if (document.getElementById('modalOverlay').classList.contains('open')) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.8) return; // not a horiz swipe
-    const idx = SCREENS.indexOf(currentScreen);
-    const next = dx < 0 ? SCREENS[idx + 1] : SCREENS[idx - 1];
-    if (!next) return;
-    navSetScreen(next);
-    // flash the pill label briefly
-    const lbl = document.getElementById('navPillLabel');
-    lbl.style.transition = 'opacity 120ms';
-    lbl.style.opacity = '0';
-    setTimeout(() => { lbl.style.opacity = ''; }, 130);
+  document.addEventListener('touchmove', e => {
+    if (!dragging || modalOverlay.classList.contains('open')) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    if (!axisLocked) {
+      if (Math.abs(dx) < MIN_MOVE && Math.abs(dy) < MIN_MOVE) return;
+      isHoriz   = Math.abs(dx) > Math.abs(dy);
+      axisLocked = true;
+    }
+    if (!isHoriz) return;
+
+    dragDX = dx;
+    applyDrag(dx);
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (!axisLocked || !isHoriz) return;
+
+    const idx = currentIdx();
+    const vw  = window.innerWidth;
+    const shouldCommit = Math.abs(dragDX) > vw * COMMIT_RATIO;
+    const dir = dragDX < 0 ? 1 : -1;
+    const nextIdx = Math.max(0, Math.min(SCREEN_ORDER.length - 1, idx + (shouldCommit ? dir : 0)));
+
+    resetPill();
+    if (nextIdx !== idx) {
+      navSetScreen(SCREEN_ORDER[nextIdx]);
+    } else {
+      // snap back
+      slideTrackTo(idx, true);
+    }
   }, { passive: true });
 })();
 
@@ -4722,6 +4829,8 @@ renderMatchStep();
 
 renderCategories();
 renderCocktails();
+// Set initial track position without animation
+slideTrackTo(SCREEN_ORDER.indexOf(currentScreen), false);
 
 /* ══════════════════════════════════════════════════
    EASTER EGG — El Caïman
