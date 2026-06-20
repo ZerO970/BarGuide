@@ -238,13 +238,15 @@ body {
 
 /* ─── Header ────────────────────────────────────────────── */
 .header {
-  position: sticky; top: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: var(--header-bg);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--border-subtle);
   transition: background 300ms ease, border-color 300ms ease;
 }
+/* Push content below fixed header */
+body { padding-top: 73px; }
 .header-inner {
   max-width: 1320px; margin: 0 auto; padding: 0 24px;
   height: 72px; display: flex; align-items: center; gap: 12px;
