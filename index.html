@@ -592,10 +592,59 @@ body {
   background: var(--bg-surface); border: 1px solid var(--border-subtle);
   border-radius: 24px 24px 0 0; width: 100%; max-width: 640px; max-height: 92dvh;
   overflow-y: auto; overscroll-behavior: contain; box-shadow: var(--shadow-modal);
-  transform: translateY(28px); transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1);
   scrollbar-width: thin; scrollbar-color: var(--bg-raised) transparent;
+  transform: translateY(100%);
+  transition: transform 360ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.modal-overlay.open .modal { transform: translateY(0); }
+.modal-overlay.open .modal {
+  transform: translateY(0);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal { transition: none; }
+}
+
+/* ─── Modal bottle hero ─────────────────────────────────── */
+.modal-hero {
+  position: relative; width: 100%; height: 200px; overflow: hidden;
+  border-radius: 22px 22px 0 0; background: var(--bg-base);
+  flex-shrink: 0;
+}
+.modal-hero img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: center 15%;
+  padding: 16px 28% 0;
+  filter: drop-shadow(0 8px 24px oklch(0% 0 0 / 0.5));
+}
+.modal-hero::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    oklch(from var(--bg-surface) l c h / 0.6) 70%,
+    var(--bg-surface) 100%
+  );
+  pointer-events: none;
+}
+/* Price badge inside hero */
+.modal-hero-price {
+  position: absolute; bottom: 14px; right: 18px; z-index: 2;
+  font-size: 1rem; font-weight: 700; color: var(--gold-bright);
+  background: oklch(from var(--bg-base) l c h / 0.75);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid oklch(from var(--gold-bright) l c h / 0.25);
+  border-radius: 999px; padding: 4px 14px;
+  letter-spacing: 0.02em;
+}
+.modal-hero-abv {
+  position: absolute; bottom: 14px; left: 18px; z-index: 2;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-secondary);
+  background: oklch(from var(--bg-base) l c h / 0.75);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px; padding: 4px 12px;
+  letter-spacing: 0.04em;
+}
 @media (min-width: 640px) { .modal { border-radius: 24px; } }
 .modal-drag { width: 36px; height: 4px; background: var(--border-subtle); border-radius: 999px; margin: 12px auto 0; }
 @media (min-width: 640px) { .modal-drag { display: none; } }
@@ -725,6 +774,9 @@ body {
 .trivia-diff-btn .diff-label { font-weight: 600; color: var(--gold-bright); }
 .trivia-diff-btn .diff-desc { font-size: 0.72rem; color: var(--text-muted); }
 .trivia-diff-btn.all-btn { grid-column: 1 / -1; flex-direction: row; gap: 12px; justify-content: center; padding: 14px; }
+
+/* ─── Compare + Fav (hidden, kept as fallback) ──────────── */
+.compare-bar, .card-compare-btn, .card-fav-btn, .fav-btn-header { display: none !important; }
 
 /* ─── Favourites ────────────────────────────────────────── */
 .card-fav-btn {
@@ -3316,8 +3368,6 @@ function renderBar() {
     return `
       <article class="card${imgClass}" data-id="${w.id}" role="button" tabindex="0">
         ${imgHTML}
-        <button class="card-fav-btn${favIds.has(w.id) ? ' faved' : ''}" data-fav="${w.id}" title="${lang==='ru'?'Избранное':'Favourite'}"><span class="fav-icon">${favIds.has(w.id) ? '❤️' : '🤍'}</span></button>
-        <button class="card-compare-btn${compareIds.has(w.id) ? ' in-compare' : ''}" data-cmp="${w.id}" title="${lang==='ru'?'Сравнить':'Compare'}">${compareIds.has(w.id) ? '✓' : '+'}</button>
         <div class="card-header">
           <span class="badge badge-type">${t(w.typeLabel)}</span>
           <span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>
@@ -3346,11 +3396,18 @@ function renderBar() {
     btn.addEventListener('click', e => toggleFav(btn.dataset.fav, e));
   });
 
-  // Skeleton reveal: cards fade in staggered
-  grid.querySelectorAll('.card').forEach((c, i) => {
-    c.style.opacity = '0'; c.style.transform = 'translateY(8px)';
-    c.style.transition = 'opacity 200ms ease, transform 200ms ease';
-    setTimeout(() => { c.style.opacity = ''; c.style.transform = ''; }, 30 + i * 18);
+  // Diagonal stagger: top-left → bottom-right
+  const cards = [...grid.querySelectorAll('.card')];
+  const colCount = Math.max(1, Math.round(grid.offsetWidth / 300));
+  cards.forEach((c, i) => {
+    const row = Math.floor(i / colCount);
+    const col = i % colCount;
+    const delay = (row + col) * 45;
+    c.style.cssText = `opacity:0;transform:translateY(14px) translateX(6px);transition:opacity 260ms ease ${delay}ms,transform 260ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      c.style.opacity = '1'; c.style.transform = 'none';
+    }));
+    setTimeout(() => c.style.cssText = '', delay + 320);
   });
 }
 
@@ -3395,7 +3452,13 @@ function openWhiskyModal(w, backFn) {
     { l: lang === 'en' ? 'Oak / Tannin' : 'Дуб/Танин', v: p.oak },
   ];
 
+  const heroSrc = w.img ? w.img.replace('images/bottles/', 'images/bottles_cards/') : null;
   document.getElementById('modalBody').innerHTML = `
+    ${heroSrc ? `<div class="modal-hero">
+      <img src="${heroSrc}" alt="${w.name}"${w.imgPos ? ` style="object-position:${w.imgPos}"` : ''} loading="lazy">
+      <span class="modal-hero-abv">${w.abv}</span>
+      <span class="modal-hero-price">${w.priceGbp ? '£' + w.priceGbp : (w.price || '')}</span>
+    </div>` : ''}
     <div class="modal-top">
       <div>
         ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to picks' : 'Назад к подбору'}</button>` : ''}
@@ -4129,19 +4192,25 @@ syncFavBtn();
 ══════════════════════════════════════════════════ */
 (function initParallax() {
   let rafId;
-  function onScroll() {
+  function runParallax() {
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
+      const vy = window.innerHeight;
       document.querySelectorAll('.cat-card-icon').forEach(icon => {
-        const rect = icon.closest('.cat-card').getBoundingClientRect();
-        const vy = window.innerHeight;
-        const progress = (vy - rect.top) / (vy + rect.height); // 0→1 as card scrolls through
-        const offset = (progress - 0.5) * 18; // ±9px
-        icon.style.transform = `translateY(${-offset}px)`;
+        const card = icon.closest('.cat-card');
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > vy) return;
+        const progress = (vy - rect.top) / (vy + rect.height);
+        const offset = (progress - 0.5) * 22;
+        icon.style.transform = `translateY(${offset.toFixed(1)}px)`;
       });
     });
   }
-  document.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', runParallax, { passive: true });
+  // Also run after categories render
+  const _origRenderCats = renderCategories;
+  renderCategories = function() { _origRenderCats(); setTimeout(runParallax, 60); };
 })();
 
 /* ══════════════════════════════════════════════════
