@@ -3664,7 +3664,7 @@ function openWhiskyModal(w, backFn) {
   ];
 
   const heroSrc = w.img ? w.img.replace('images/bottles/', 'images/bottles_cards/') : null;
-  const heroCover = w.type === 'rye';
+  const heroCover = !!heroSrc;
   const navList = lastRenderedList.length ? lastRenderedList : WHISKIES;
   const navIdx = navList.findIndex(x => x.id === w.id);
   const hasPrev = navIdx > 0;
