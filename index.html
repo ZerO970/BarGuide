@@ -726,6 +726,70 @@ body {
 .trivia-diff-btn .diff-desc { font-size: 0.72rem; color: var(--text-muted); }
 .trivia-diff-btn.all-btn { grid-column: 1 / -1; flex-direction: row; gap: 12px; justify-content: center; padding: 14px; }
 
+/* ─── Favourites ────────────────────────────────────────── */
+.card-fav-btn {
+  position: absolute; top: 10px; right: 38px; width: 24px; height: 24px;
+  border-radius: 50%; border: none; background: none;
+  font-size: 1rem; line-height: 1; cursor: pointer; z-index: 2;
+  transition: transform 200ms cubic-bezier(0.34,1.6,0.64,1), opacity 150ms;
+  opacity: 0.35;
+}
+.card-fav-btn:hover { opacity: 0.7; }
+.card-fav-btn.faved { opacity: 1; }
+.card-fav-btn.faved .fav-icon { animation: favPop 250ms cubic-bezier(0.34,1.6,0.64,1); }
+@keyframes favPop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+.fav-btn-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border-subtle);
+  background: var(--bg-raised); color: var(--text-muted); font-size: 0.76rem;
+  cursor: pointer; white-space: nowrap; transition: color 150ms, border-color 150ms;
+}
+.fav-btn-header:hover { color: var(--gold-bright); border-color: var(--gold-dim); }
+.fav-btn-header.has-favs { color: var(--gold-bright); border-color: var(--gold-dim); }
+
+/* ─── Modal micro-animation ────────────────────────────── */
+.modal {
+  transform-origin: bottom center;
+}
+.modal-overlay.open .modal {
+  animation: modalIn 340ms cubic-bezier(0.34,1.08,0.64,1) forwards;
+}
+@keyframes modalIn {
+  0%   { transform: translateY(28px) scale(0.97) rotate(-0.4deg); opacity: 0.6; }
+  60%  { transform: translateY(-3px) scale(1.005) rotate(0.1deg); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ─── Skeleton screens ──────────────────────────────────── */
+.skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.skeleton-card {
+  background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  border-radius: 18px; padding: 22px; min-height: 190px;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.skel-line {
+  height: 10px; border-radius: 6px; background: var(--bg-raised);
+  margin-bottom: 10px;
+}
+
+/* ─── Swipe nav ─────────────────────────────────────────── */
+.screens-wrap {
+  display: flex; width: 100%; overflow: hidden;
+  /* screens inside manage their own display:none unless swiping */
+}
+
+/* ─── Parallax cat-cards ────────────────────────────────── */
+.cat-card { perspective: 400px; }
+.cat-card-icon {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 80ms linear;
+}
+
 /* ─── Compare ───────────────────────────────────────────── */
 .card-compare-btn { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-subtle); background: var(--bg-raised); color: var(--text-muted); font-size: 0.85rem; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 150ms; z-index: 2; }
 .card-compare-btn:hover { border-color: var(--gold-dim); color: var(--gold-bright); }
@@ -940,6 +1004,7 @@ body.lang-ru [data-ru] { display: revert; }
     </div>
 
     <div class="header-right">
+      <button class="fav-btn-header" id="favHeaderBtn" title="Favourites">❤️<span class="fav-count"></span></button>
       <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Switch theme">
         <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
         <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -3251,6 +3316,7 @@ function renderBar() {
     return `
       <article class="card${imgClass}" data-id="${w.id}" role="button" tabindex="0">
         ${imgHTML}
+        <button class="card-fav-btn${favIds.has(w.id) ? ' faved' : ''}" data-fav="${w.id}" title="${lang==='ru'?'Избранное':'Favourite'}"><span class="fav-icon">${favIds.has(w.id) ? '❤️' : '🤍'}</span></button>
         <button class="card-compare-btn${compareIds.has(w.id) ? ' in-compare' : ''}" data-cmp="${w.id}" title="${lang==='ru'?'Сравнить':'Compare'}">${compareIds.has(w.id) ? '✓' : '+'}</button>
         <div class="card-header">
           <span class="badge badge-type">${t(w.typeLabel)}</span>
@@ -3275,6 +3341,16 @@ function renderBar() {
   });
   grid.querySelectorAll('.card-compare-btn').forEach(btn => {
     btn.addEventListener('click', e => toggleCompare(btn.dataset.cmp, e));
+  });
+  grid.querySelectorAll('.card-fav-btn').forEach(btn => {
+    btn.addEventListener('click', e => toggleFav(btn.dataset.fav, e));
+  });
+
+  // Skeleton reveal: cards fade in staggered
+  grid.querySelectorAll('.card').forEach((c, i) => {
+    c.style.opacity = '0'; c.style.transform = 'translateY(8px)';
+    c.style.transition = 'opacity 200ms ease, transform 200ms ease';
+    setTimeout(() => { c.style.opacity = ''; c.style.transform = ''; }, 30 + i * 18);
   });
 }
 
@@ -3932,6 +4008,141 @@ document.querySelectorAll('.nav-pill-item').forEach(btn => {
     });
   }
 });
+
+/* ══════════════════════════════════════════════════
+   FAVOURITES
+══════════════════════════════════════════════════ */
+const favIds = new Set(JSON.parse(localStorage.getItem('barGuide_favs') || '[]'));
+
+function saveFavs() { localStorage.setItem('barGuide_favs', JSON.stringify([...favIds])); }
+
+function toggleFav(id, e) {
+  e.stopPropagation();
+  favIds.has(id) ? favIds.delete(id) : favIds.add(id);
+  saveFavs();
+  // update all visible fav buttons for this id
+  document.querySelectorAll(`.card-fav-btn[data-fav="${id}"]`).forEach(btn => {
+    const on = favIds.has(id);
+    btn.classList.toggle('faved', on);
+    btn.querySelector('.fav-icon').textContent = on ? '❤️' : '🤍';
+    if (on) btn.querySelector('.fav-icon').classList.add('fav-icon'); // re-trigger anim
+  });
+  syncFavBtn();
+}
+
+function syncFavBtn() {
+  const btn = document.getElementById('favHeaderBtn');
+  if (!btn) return;
+  btn.classList.toggle('has-favs', favIds.size > 0);
+  btn.querySelector('.fav-count').textContent = favIds.size > 0 ? ` ${favIds.size}` : '';
+}
+
+// Favourites filter state
+let showingFavs = false;
+document.getElementById('favHeaderBtn').addEventListener('click', () => {
+  showingFavs = !showingFavs;
+  if (showingFavs) {
+    // Override list to show only favs
+    document.getElementById('favHeaderBtn').style.background = 'var(--recommend-bg)';
+    renderBar();
+  } else {
+    document.getElementById('favHeaderBtn').style.background = '';
+    renderBar();
+  }
+});
+
+// Patch renderBar to respect showingFavs
+const _origRenderBar = renderBar;
+renderBar = function() {
+  if (showingFavs && favIds.size > 0) {
+    const savedCat = currentCat, savedFilter = activeFilter, savedSearch = search;
+    // temporarily widen scope and filter by favs
+    const grid = document.getElementById('whiskeyGrid');
+    const list = WHISKIES.filter(w => favIds.has(w.id));
+    const n = list.length;
+    document.getElementById('resultsCount').textContent = lang === 'en' ? `${n} favourite${n!==1?'s':''}` : `${n} избранных`;
+    // reuse existing render logic inline
+    grid.innerHTML = list.map(w => {
+      const bars = [
+        { l: lang==='en'?'Spice':'Пряность', v: w.palate.spice },
+        { l: lang==='en'?'Fruit':'Фрукты', v: w.palate.fruit },
+        { l: lang==='en'?'Caramel':'Карамель', v: w.palate.caramel },
+        { l: lang==='en'?'Oak':'Дуб', v: w.palate.oak },
+      ];
+      const imgPos = w.imgPos ? ` style="object-position:${w.imgPos}"` : '';
+      const imgHTML = w.img ? (w.imgVariant==='a' ? `<img class="card-img-a" src="${w.img}" alt="" loading="lazy"${imgPos}>` : `<img class="card-img-b" src="${w.img}" alt="" loading="lazy"${imgPos}>`) : '';
+      const imgClass = w.img ? ` has-img-${w.imgVariant}` : '';
+      return `<article class="card${imgClass}" data-id="${w.id}" role="button" tabindex="0">
+        ${imgHTML}
+        <button class="card-fav-btn faved" data-fav="${w.id}"><span class="fav-icon">❤️</span></button>
+        <button class="card-compare-btn${compareIds.has(w.id)?' in-compare':''}" data-cmp="${w.id}">${compareIds.has(w.id)?'✓':'+'}</button>
+        <div class="card-header"><span class="badge badge-type">${t(w.typeLabel)}</span><span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span></div>
+        <div class="card-name">${w.name}</div>
+        <div class="card-region">${t(w.region)}</div>
+        <div class="flavor-bars">${bars.map(b=>`<div class="flavor-row"><span class="flavor-row-label">${b.l}</span><div class="flavor-bar-bg"><div class="flavor-bar-fill" style="width:${b.v*20}%"></div></div></div>`).join('')}</div>
+        <div class="card-footer"><span class="card-meta"><span class="card-abv">${w.abv}</span>${w.priceGbp?`<span class="card-price">${w.priceGbp}</span>`:''}</span><div class="card-serve-chips">${w.cocktails.slice(0,2).map(c=>`<span class="serve-chip">${c.name}</span>`).join('')}</div></div>
+      </article>`;
+    }).join('');
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => { const w=WHISKIES.find(x=>x.id===card.dataset.id); if(w) openWhiskyModal(w); });
+    });
+    grid.querySelectorAll('.card-fav-btn').forEach(btn => btn.addEventListener('click', e => toggleFav(btn.dataset.fav, e)));
+    grid.querySelectorAll('.card-compare-btn').forEach(btn => btn.addEventListener('click', e => toggleCompare(btn.dataset.cmp, e)));
+  } else {
+    _origRenderBar();
+  }
+};
+
+syncFavBtn();
+
+/* ══════════════════════════════════════════════════
+   SWIPE NAVIGATION
+══════════════════════════════════════════════════ */
+(function initSwipe() {
+  const SCREENS = ['bar','cocktails','quiz','match'];
+  let touchStartX = 0, touchStartY = 0;
+  const main = document.querySelector('main') || document.body;
+
+  main.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  main.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.8) return; // not a horiz swipe
+    const idx = SCREENS.indexOf(currentScreen);
+    const next = dx < 0 ? SCREENS[idx + 1] : SCREENS[idx - 1];
+    if (!next) return;
+    navSetScreen(next);
+    // flash the pill label briefly
+    const lbl = document.getElementById('navPillLabel');
+    lbl.style.transition = 'opacity 120ms';
+    lbl.style.opacity = '0';
+    setTimeout(() => { lbl.style.opacity = ''; }, 130);
+  }, { passive: true });
+})();
+
+/* ══════════════════════════════════════════════════
+   PARALLAX — CATEGORY ICONS
+══════════════════════════════════════════════════ */
+(function initParallax() {
+  let rafId;
+  function onScroll() {
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      document.querySelectorAll('.cat-card-icon').forEach(icon => {
+        const rect = icon.closest('.cat-card').getBoundingClientRect();
+        const vy = window.innerHeight;
+        const progress = (vy - rect.top) / (vy + rect.height); // 0→1 as card scrolls through
+        const offset = (progress - 0.5) * 18; // ±9px
+        icon.style.transform = `translateY(${-offset}px)`;
+      });
+    });
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
+})();
 
 /* ══════════════════════════════════════════════════
    COMPARE
