@@ -606,49 +606,98 @@ body {
 
 /* ─── Modal bottle hero ─────────────────────────────────── */
 .modal-hero {
-  position: relative; width: 100%; height: 200px; overflow: hidden;
-  border-radius: 22px 22px 0 0; background: var(--bg-base);
+  position: relative; width: 100%;
+  height: min(44dvh, 360px);
+  overflow: hidden;
+  border-radius: 22px 22px 0 0;
+  background: var(--bg-base);
   flex-shrink: 0;
 }
 .modal-hero img {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; object-position: center 15%;
-  padding: 16px 28% 0;
-  filter: drop-shadow(0 8px 24px oklch(0% 0 0 / 0.5));
+  object-fit: contain; object-position: center 12%;
+  padding: 52px 22% 20px;
+  filter: drop-shadow(0 12px 32px oklch(0% 0 0 / 0.55));
+  transition: opacity 220ms ease;
 }
+/* bottom gradient dissolve into modal body */
 .modal-hero::after {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
   background: linear-gradient(
     to bottom,
-    transparent 30%,
-    oklch(from var(--bg-surface) l c h / 0.6) 70%,
+    transparent 0%,
+    oklch(from var(--bg-surface) l c h / 0.5) 60%,
     var(--bg-surface) 100%
   );
-  pointer-events: none;
+  pointer-events: none; z-index: 1;
 }
-/* Price badge inside hero */
-.modal-hero-price {
-  position: absolute; bottom: 14px; right: 18px; z-index: 2;
-  font-size: 1rem; font-weight: 700; color: var(--gold-bright);
-  background: oklch(from var(--bg-base) l c h / 0.75);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  border: 1px solid oklch(from var(--gold-bright) l c h / 0.25);
-  border-radius: 999px; padding: 4px 14px;
-  letter-spacing: 0.02em;
+/* top edge softener so radius blends */
+.modal-hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%;
+  background: linear-gradient(to bottom, oklch(from var(--bg-base) l c h / 0.3), transparent);
+  pointer-events: none; z-index: 1;
 }
-.modal-hero-abv {
-  position: absolute; bottom: 14px; left: 18px; z-index: 2;
-  font-size: 0.72rem; font-weight: 600; color: var(--text-secondary);
-  background: oklch(from var(--bg-base) l c h / 0.75);
+/* Close button — floats inside hero top-right */
+.modal-hero-close {
+  position: absolute; top: 14px; right: 14px; z-index: 10;
+  width: 34px; height: 34px;
+  background: oklch(from var(--bg-base) l c h / 0.7);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  transition: border-color 150ms, color 150ms;
+}
+.modal-hero-close:hover { border-color: var(--gold-dim); color: var(--gold-bright); }
+/* Back button — floats inside hero top-left */
+.modal-hero-back {
+  position: absolute; top: 14px; left: 14px; z-index: 10;
+  font-size: 0.75rem; font-weight: 500; color: var(--text-secondary);
+  background: oklch(from var(--bg-base) l c h / 0.7);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px; padding: 5px 12px; cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+.modal-hero-back:hover { color: var(--text-primary); border-color: var(--gold-dim); }
+/* Prev / Next nav arrows */
+.modal-hero-prev,
+.modal-hero-next {
+  position: absolute; top: 50%; z-index: 10;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  background: oklch(from var(--bg-base) l c h / 0.65);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-subtle);
-  border-radius: 999px; padding: 4px 12px;
-  letter-spacing: 0.04em;
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  transition: background 150ms, border-color 150ms, color 150ms, opacity 150ms;
+  opacity: 0.7;
+}
+.modal-hero-prev:hover, .modal-hero-next:hover {
+  opacity: 1; color: var(--gold-bright); border-color: var(--gold-dim);
+}
+.modal-hero-prev { left: 10px; }
+.modal-hero-next { right: 10px; }
+.modal-hero-prev[disabled], .modal-hero-next[disabled] { opacity: 0.2; pointer-events: none; }
+/* Title area below hero */
+.modal-title-area {
+  padding: 16px 22px 0;
+}
+.modal-title-area .modal-badges { margin-bottom: 6px; }
+.modal-title-area .modal-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.35rem, 4vw, 1.85rem);
+  font-weight: 600; line-height: 1.15;
+  text-wrap: balance;
 }
 @media (min-width: 640px) { .modal { border-radius: 24px; } }
 .modal-drag { width: 36px; height: 4px; background: var(--border-subtle); border-radius: 999px; margin: 12px auto 0; }
 @media (min-width: 640px) { .modal-drag { display: none; } }
-.modal-body { padding: 22px 26px 34px; }
+.modal-body { padding: 0; }
+.modal-content { padding: 14px 22px 34px; }
 .modal-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
 .modal-name { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 600; line-height: 1.15; margin-top: 8px; }
 .modal-badges { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -657,7 +706,7 @@ body {
 .modal-stats { display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
 .stat-label { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
 .stat-value { font-size: 1rem; font-weight: 600; color: var(--gold-bright); }
-.divider { height: 1px; background: var(--border-subtle); margin: 0 -26px 22px; }
+.divider { height: 1px; background: var(--border-subtle); margin: 0 -22px 22px; }
 .section { margin-bottom: 24px; }
 .section-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
@@ -1005,7 +1054,10 @@ body.lang-ru [data-ru] { display: revert; }
   .header-inner { padding: 0 14px; }
   .screen { padding: 18px 14px 60px; }
   .grid, .cocktail-grid { grid-template-columns: 1fr; gap: 12px; }
-  .modal-body { padding: 18px 18px 28px; }
+  .modal-content { padding: 12px 18px 28px; }
+  .modal-top { padding: 18px 18px 0; }
+  .modal-title-area { padding: 14px 18px 0; }
+  .divider { margin: 0 -18px 22px; }
   .flavor-grid { grid-template-columns: 1fr; }
   .logo-sub { display: none; }
 
@@ -3026,6 +3078,7 @@ let search = '';
 let currentScreen = 'bar';
 let currentCat = null;
 let currentSub = 'all';
+let lastRenderedList = WHISKIES.slice();
 
 /* ══════════════════════════════════════════════════
    LANG
@@ -3341,6 +3394,7 @@ function renderBar() {
       .join(' ').toLowerCase().includes(search));
   }
 
+  lastRenderedList = list;
   const n = list.length;
   document.getElementById('resultsCount').textContent = lang === 'en'
     ? `${n} bottle${n !== 1 ? 's' : ''}` : `${n} бутыл${n === 1 ? 'ка' : n < 5 ? 'ки' : 'ок'}`;
@@ -3453,29 +3507,35 @@ function openWhiskyModal(w, backFn) {
   ];
 
   const heroSrc = w.img ? w.img.replace('images/bottles/', 'images/bottles_cards/') : null;
+  const navList = lastRenderedList.length ? lastRenderedList : WHISKIES;
+  const navIdx = navList.findIndex(x => x.id === w.id);
+  const hasPrev = navIdx > 0;
+  const hasNext = navIdx < navList.length - 1;
+  const svgChevL = `<svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const svgChevR = `<svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const svgClose = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   document.getElementById('modalBody').innerHTML = `
     ${heroSrc ? `<div class="modal-hero">
       <img src="${heroSrc}" alt="${w.name}"${w.imgPos ? ` style="object-position:${w.imgPos}"` : ''} loading="lazy">
-      <span class="modal-hero-abv">${w.abv}</span>
-      <span class="modal-hero-price">${w.priceGbp ? '£' + w.priceGbp : (w.price || '')}</span>
+      ${backFn ? `<button class="modal-hero-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back' : 'Назад'}</button>` : ''}
+      <button class="modal-hero-prev" id="modalPrev" ${!hasPrev ? 'disabled' : ''} aria-label="Previous">${svgChevL}</button>
+      <button class="modal-hero-next" id="modalNext" ${!hasNext ? 'disabled' : ''} aria-label="Next">${svgChevR}</button>
+      <button class="modal-hero-close" id="modalClose">${svgClose}</button>
     </div>` : ''}
-    <div class="modal-top">
-      <div>
-        ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to picks' : 'Назад к подбору'}</button>` : ''}
-        <div class="modal-badges">
-          <span class="badge badge-type">${t(w.typeLabel)}</span>
-          <span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>
-        </div>
-        <div class="modal-name">${w.name}</div>
+    <div class="modal-title-area">
+      ${!heroSrc && backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to picks' : 'Назад к подбору'}</button>` : ''}
+      <div class="modal-badges">
+        <span class="badge badge-type">${t(w.typeLabel)}</span>
+        <span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>
       </div>
-      <button class="modal-close" id="modalClose">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
+      <div class="modal-name">${w.name}</div>
+      ${!heroSrc ? `<button class="modal-hero-close" id="modalClose" style="position:absolute;top:14px;right:14px">${svgClose}</button>` : ''}
     </div>
+    <div class="modal-content">
     <div class="modal-stats">
       <div><div class="stat-label">${lang === 'en' ? 'Region' : 'Регион'}</div><div class="stat-value" style="font-size:.85rem;color:var(--text-secondary)">${t(w.region)}</div></div>
       <div><div class="stat-label">ABV</div><div class="stat-value">${w.abv}</div></div>
-      <div><div class="stat-label">${lang === 'en' ? 'Price' : 'Цена'}</div><div class="stat-value">${w.priceGbp || w.price}<span style="font-size:.6rem;color:var(--text-muted);font-weight:400;margin-left:3px">${w.priceGbp ? '50ml' : ''}</span></div></div>
+      <div><div class="stat-label">${lang === 'en' ? 'Price' : 'Цена'}</div><div class="stat-value">${w.priceGbp ? '£' + w.priceGbp : (w.price || '')}<span style="font-size:.6rem;color:var(--text-muted);font-weight:400;margin-left:3px">${w.priceGbp ? '50ml' : ''}</span></div></div>
     </div>
     <div class="divider"></div>
     <div class="section">
@@ -3515,10 +3575,34 @@ function openWhiskyModal(w, backFn) {
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'History & Background' : 'История'}</div>
       <p class="history-text">${t(w.history)}</p>
+    </div>
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
-  if (backFn) document.getElementById('modalBackBtn').addEventListener('click', backFn);
+  if (backFn) document.getElementById('modalBackBtn')?.addEventListener('click', backFn);
+  const prevBtn = document.getElementById('modalPrev');
+  const nextBtn = document.getElementById('modalNext');
+  if (prevBtn) prevBtn.addEventListener('click', () => {
+    const idx = navList.findIndex(x => x.id === w.id);
+    if (idx > 0) openWhiskyModal(navList[idx - 1], backFn);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    const idx = navList.findIndex(x => x.id === w.id);
+    if (idx < navList.length - 1) openWhiskyModal(navList[idx + 1], backFn);
+  });
+  // Swipe on hero to navigate prev/next
+  const heroEl = document.querySelector('.modal-hero');
+  if (heroEl) {
+    let tx = 0;
+    heroEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    heroEl.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) < 50) return;
+      const idx = navList.findIndex(x => x.id === w.id);
+      const next = dx < 0 ? navList[idx + 1] : navList[idx - 1];
+      if (next) openWhiskyModal(next, backFn);
+    }, { passive: true });
+  }
   document.querySelectorAll('.ci-link[data-cid]').forEach(el => {
     el.addEventListener('click', () => {
       const cocktail = COCKTAILS.find(x => x.id === el.dataset.cid);
@@ -3572,6 +3656,7 @@ function openCocktailModal(c, backFn) {
     </div>` : '';
 
   document.getElementById('modalBody').innerHTML = `
+    <div class="modal-content">
     <div class="modal-top">
       <div>
         ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
@@ -3599,6 +3684,7 @@ function openCocktailModal(c, backFn) {
         </summary>
         <div class="story-content">${t(c.story).split('\n').map(p => p.trim()).filter(Boolean).map(p => `<p>${p}</p>`).join('')}</div>
       </details>` : ''}
+    </div>
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
@@ -4308,6 +4394,7 @@ function openCompareModal() {
   }).join('');
 
   document.getElementById('modalBody').innerHTML = `
+    <div class="modal-content">
     <div class="cmp-header">
       <span class="cmp-title">${ru ? 'Сравнение' : 'Compare'}</span>
       <button class="modal-close" id="modalClose">
@@ -4323,6 +4410,7 @@ function openCompareModal() {
         ${flavorRows}
       </tbody>
     </table>
+    </div>
     </div>`;
 
   document.getElementById('modalClose').addEventListener('click', closeModal);
@@ -4641,6 +4729,7 @@ function openCaimanModal() {
   const c = CARLOS_COCKTAIL;
   const s = c.spec[lang] || c.spec.en;
   document.getElementById('modalBody').innerHTML = `
+    <div class="modal-content">
     <div class="modal-top caiman-modal" style="border-radius:16px;padding:20px;margin:-20px -20px 0;">
       <div class="caiman-header" style="flex:1">
         <span class="caiman-icon">${c.icon}</span>
@@ -4681,6 +4770,7 @@ function openCaimanModal() {
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'The Story' : 'История'}</div>
       <p class="history-text">${t(c.history)}</p>
+    </div>
     </div>`;
   document.getElementById('modalClose').addEventListener('click', closeModal);
   openModal();
