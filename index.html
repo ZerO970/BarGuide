@@ -182,21 +182,9 @@
   font-family: 'IM Fell English', 'Playfair Display', serif;
 }
 
-/* Hero alligator watermark */
+/* Hero bar — padding only, alligator now handled by .louie-gator-bg fixed element */
 [data-theme="louie"] .hero-bar,
 [data-theme="louie-light"] .hero-bar { position: relative; padding-bottom: 4px; }
-[data-theme="louie"] .hero-bar::after {
-  content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  width: 220px; height: 126px;
-  background: url('alligator.svg') center/contain no-repeat;
-  filter: invert(1); opacity: 0.06; pointer-events: none;
-}
-[data-theme="louie-light"] .hero-bar::after {
-  content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  width: 220px; height: 126px;
-  background: url('alligator.svg') center/contain no-repeat;
-  opacity: 0.14; pointer-events: none;
-}
 
 /* Badge & chip shapes */
 [data-theme="louie"] .badge, [data-theme="louie-light"] .badge { border-radius: 2px; }
@@ -1127,18 +1115,23 @@ body.lang-ru [data-ru] { display: revert; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg-raised); border-radius: 3px; }
 
-/* ─── Fixed alligator watermark (background alligator in Louie themes) ─ */
-[data-theme="louie"] body::after,
-[data-theme="louie-light"] body::after {
-  content: '';
+/* ─── Fixed alligator watermark — Louie themes ──────────── */
+/* Sits behind all content via z-index:0; content scrolls over it */
+.louie-gator-bg {
+  display: none;
   position: fixed;
-  right: -4vw; bottom: 8vh;
-  width: min(52vw, 380px); height: min(30vw, 218px);
+  right: -3vw; top: 60px;
+  width: min(62vw, 340px);
+  aspect-ratio: 220 / 126;
   background: url('alligator.svg') center/contain no-repeat;
   pointer-events: none; z-index: 0;
 }
-[data-theme="louie"] body::after { filter: invert(1); opacity: 0.045; }
-[data-theme="louie-light"] body::after { opacity: 0.10; }
+[data-theme="louie"] .louie-gator-bg {
+  display: block; filter: invert(1); opacity: 0.08;
+}
+[data-theme="louie-light"] .louie-gator-bg {
+  display: block; opacity: 0.15;
+}
 
 /* ─── Desktop nav: always-expanded pill ─────────────────── */
 @media (min-width: 768px) {
@@ -1233,6 +1226,7 @@ body.lang-ru [data-ru] { display: revert; }
     </div>
   </div>
 </header>
+<div class="louie-gator-bg" aria-hidden="true"></div>
 
 <div id="screensTrack">
 <!-- ─── SCREEN: BAR ────────────────────────────────── -->
