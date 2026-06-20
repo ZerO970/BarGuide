@@ -362,21 +362,25 @@ body {
 /* Nav pill — drum/wheel scroll effect */
 .nav-pill-trigger {
   position: relative; overflow: hidden;
-  perspective: 120px; perspective-origin: center center;
+  perspective: 220px; perspective-origin: center center;
+  transform-style: preserve-3d;
 }
 .nav-pill-lbl {
   display: inline-block;
+  transform: translateZ(14px);
   transform-origin: center center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition: transform 320ms cubic-bezier(0.22,1,0.36,1), opacity 320ms ease;
 }
 .nav-pill-lbl-alt {
   position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) translateZ(14px);
   transform-origin: center center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  white-space: nowrap; opacity: 1; pointer-events: none;
+  white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.22,1,0.36,1), opacity 320ms ease;
 }
 .screen.active { display: block; }
 
@@ -1226,6 +1230,15 @@ body.lang-ru [data-ru] { display: revert; }
 
 </div><!-- /screen-bar -->
 
+<!-- ─── SCREEN: COCKTAILS ──────────────────────────── -->
+<div class="screen" id="screen-cocktails">
+  <div class="hero-bar">
+    <h1><span data-en>Pick a <em>Cocktail.</em></span><span data-ru>Выбери <em>Коктейль.</em></span></h1>
+    <p><span data-en>Find the best whisky for the drink — with history & top recommendations.</span><span data-ru>Подбери лучший виски под напиток — с историей и топ-рекомендациями.</span></p>
+  </div>
+  <div class="cocktail-grid" id="cocktailGrid"></div>
+</div>
+
 <!-- ─── SCREEN: QUIZ ───────────────────────────────── -->
 <div class="screen" id="screen-quiz">
 
@@ -1310,15 +1323,6 @@ body.lang-ru [data-ru] { display: revert; }
     </div>
   </div>
 
-</div>
-
-<!-- ─── SCREEN: COCKTAILS ──────────────────────────── -->
-<div class="screen" id="screen-cocktails">
-  <div class="hero-bar">
-    <h1><span data-en>Pick a <em>Cocktail.</em></span><span data-ru>Выбери <em>Коктейль.</em></span></h1>
-    <p><span data-en>Find the best whisky for the drink — with history & top recommendations.</span><span data-ru>Подбери лучший виски под напиток — с историей и топ-рекомендациями.</span></p>
-  </div>
-  <div class="cocktail-grid" id="cocktailGrid"></div>
 </div>
 
 <!-- ─── SCREEN: MATCH (Guest Sommelier) ─────────────── -->
@@ -4325,6 +4329,7 @@ syncFavBtn();
   let dragging = false, axisLocked = false, isHoriz = false;
   const COMMIT_RATIO = 0.3;   // 30% of screen width to commit
   const MIN_MOVE = 8;         // px before locking axis
+  const R = 14;               // drum cylinder radius (px)
 
   function currentIdx() { return SCREEN_ORDER.indexOf(currentScreen); }
 
@@ -4338,25 +4343,32 @@ syncFavBtn();
     screensTrack.style.transition = 'none';
     screensTrack.style.transform  = `translateX(calc(${-idx * 100}vw + ${bounded}px))`;
 
-    // Nav pill: drum/wheel rotation
+    // Nav pill: drum/wheel rotation (cylinder surface via translateZ)
     const dir = dx < 0 ? 1 : -1;
     const targetIdx = Math.max(0, Math.min(SCREEN_ORDER.length - 1, idx + dir));
     const progress  = Math.min(1, Math.abs(dx) / (vw * 0.55));
     const targetScreen = SCREEN_ORDER[targetIdx];
 
+    // instant follow during active drag
+    navLbl.style.transition = 'none';
+    navLblAlt.style.transition = 'none';
+
     if (targetIdx !== idx) {
       navLblAlt.textContent = NAV_LABELS[targetScreen]?.[lang] || targetScreen;
-      // Current label rolls away (up when going next, down when going prev)
-      const rollOut = dir * progress * 75;          // deg, exits toward back-top
-      const shiftOut = -dir * progress * 6;         // px Y, slight arc
-      navLbl.style.transform = `rotateX(${rollOut}deg) translateY(${shiftOut}px)`;
-      navLbl.style.opacity = String(Math.max(0, 1 - progress * 1.8));
+      // Current label rotates from front (0°) toward back-top (+90° for "next")
+      const aOut = dir * progress * 90;
+      navLbl.style.transform = `rotateX(${aOut}deg) translateZ(${R}px)`;
+      navLbl.style.opacity = String(Math.max(0, 1 - progress * 1.1));
 
-      // Incoming label rolls in from opposite side
-      const rollIn = dir * (progress - 1) * 75;    // starts at -75deg, ends at 0
-      const shiftIn = -dir * (progress - 1) * 6;
-      navLblAlt.style.transform = `translate(-50%, -50%) rotateX(${rollIn}deg) translateY(${shiftIn}px)`;
-      navLblAlt.style.opacity = String(Math.min(1, progress * 1.8));
+      // Incoming rolls up from the opposite side (-90° → 0°)
+      const aIn = -dir * (1 - progress) * 90;
+      navLblAlt.style.transform = `translate(-50%,-50%) rotateX(${aIn}deg) translateZ(${R}px)`;
+      navLblAlt.style.opacity = String(Math.min(1, progress * 1.1));
+    } else {
+      // at an edge — keep current label flat, no incoming
+      navLbl.style.transform = `translateZ(${R}px)`;
+      navLbl.style.opacity = '1';
+      navLblAlt.style.opacity = '0';
     }
 
     // Pill button subtle lateral drift
@@ -4364,10 +4376,13 @@ syncFavBtn();
   }
 
   function resetPill() {
+    // re-enable transitions so the label eases back smoothly
+    navLbl.style.transition = '';
+    navLblAlt.style.transition = '';
     navLbl.style.opacity = '';
     navLbl.style.transform = '';
     navLblAlt.style.opacity = '0';
-    navLblAlt.style.transform = 'translate(-50%, -50%)';
+    navLblAlt.style.transform = '';
     navBtn.style.transform = '';
   }
 
