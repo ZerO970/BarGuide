@@ -1,4 +1,4 @@
-const CACHE = 'bar-guide-v7';
+const CACHE = 'bar-guide-v8';
 const ASSETS = [
   '/BarGuide/',
   '/BarGuide/index.html',
@@ -131,6 +131,21 @@ const ASSETS = [
   '/BarGuide/images/bottles_cards/william-larue-weller.jpg',
   '/BarGuide/images/bottles_cards/woodford-reserve.jpg',
   '/BarGuide/images/bottles_cards/woodford-reserve-rye.jpg',
+  '/BarGuide/images/Cocktails/Old_fashioned.jpg',
+  '/BarGuide/images/Cocktails/Manhattan.jpg',
+  '/BarGuide/images/Cocktails/Whisky Sour.jpg',
+  '/BarGuide/images/Cocktails/Highball.jpg',
+  '/BarGuide/images/Cocktails/Penicillin.webp',
+  '/BarGuide/images/Cocktails/Boulevardier.webp',
+  '/BarGuide/images/Cocktails/Hot Toddy.jpg',
+  '/BarGuide/images/Cocktails/Rob Roy.jpg',
+  '/BarGuide/images/Cocktails/Paper Plane.jpg',
+  '/BarGuide/images/Cocktails/Gold Rush.jpg',
+  '/BarGuide/images/Cocktails/Mint Julep.jpg',
+  '/BarGuide/images/Cocktails/Vieux Carré.jpg',
+  '/BarGuide/images/Cocktails/Sazerac.avif',
+  '/BarGuide/images/Cocktails/Whisky Mule.webp',
+  '/BarGuide/images/Cocktails/Jameson, Ginger & Lime.avif',
 ];
 
 self.addEventListener('install', e => {
