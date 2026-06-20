@@ -1127,6 +1127,36 @@ body.lang-ru [data-ru] { display: revert; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg-raised); border-radius: 3px; }
 
+/* ─── Fixed alligator watermark (background alligator in Louie themes) ─ */
+[data-theme="louie"] body::after,
+[data-theme="louie-light"] body::after {
+  content: '';
+  position: fixed;
+  right: -4vw; bottom: 8vh;
+  width: min(52vw, 380px); height: min(30vw, 218px);
+  background: url('alligator.svg') center/contain no-repeat;
+  pointer-events: none; z-index: 0;
+}
+[data-theme="louie"] body::after { filter: invert(1); opacity: 0.045; }
+[data-theme="louie-light"] body::after { opacity: 0.10; }
+
+/* ─── Desktop nav: always-expanded pill ─────────────────── */
+@media (min-width: 768px) {
+  .nav-pill-trigger { display: none; }
+  .nav-pill-extras {
+    max-width: 500px; opacity: 1; pointer-events: auto; overflow: visible;
+    transition: none;
+  }
+  /* Logo always visible on desktop regardless of nav state */
+  .header-inner.nav-open .logo,
+  .header-inner.nav-open .logo-louie {
+    opacity: 1; transform: none; pointer-events: auto;
+  }
+  .header-inner.nav-open .header-right {
+    opacity: 1; transform: none; pointer-events: auto;
+  }
+}
+
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 520px) {
   .header-inner { padding: 0 14px; }
@@ -3223,6 +3253,7 @@ function navSetScreen(screen) {
   currentScreen = screen;
   const idx = SCREEN_ORDER.indexOf(screen);
   slideTrackTo(idx);
+  window.scrollTo(0, 0);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
   document.querySelectorAll('.nav-pill-item').forEach(b => b.classList.toggle('active', b.dataset.screen === screen));
   navPillLbl.textContent = NAV_LABELS[screen]?.[lang] || screen;
