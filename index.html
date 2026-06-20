@@ -228,7 +228,7 @@
 
 /* ─── Reset & Base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background: var(--bg-base);
@@ -236,6 +236,8 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   transition: background 300ms ease, color 300ms ease;
+  overflow-x: hidden;
+  touch-action: pan-y;
 }
 [data-theme="dark"] body::before {
   content: '';
@@ -607,35 +609,47 @@ body {
 /* ─── Modal bottle hero ─────────────────────────────────── */
 .modal-hero {
   position: relative; width: 100%;
-  height: min(44dvh, 360px);
+  height: min(46dvh, 380px);
   overflow: hidden;
   border-radius: 22px 22px 0 0;
-  background: var(--bg-base);
+  background: oklch(12% 0.01 250);
   flex-shrink: 0;
 }
+/* Full-bleed blurred background — same image, covers whole area */
+.modal-hero-bg {
+  position: absolute; inset: -6px;
+  background-size: cover;
+  background-position: center 20%;
+  filter: blur(28px) brightness(0.35) saturate(1.4);
+  z-index: 0;
+}
+/* Bottle image — contained, centered, on top */
 .modal-hero img {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; object-position: center 12%;
-  padding: 52px 22% 20px;
-  filter: drop-shadow(0 12px 32px oklch(0% 0 0 / 0.55));
-  transition: opacity 220ms ease;
+  object-fit: contain; object-position: center 15%;
+  padding: 48px 18% 28px;
+  filter: drop-shadow(0 16px 40px oklch(0% 0 0 / 0.65));
+  z-index: 1;
+  transition: opacity 200ms ease;
 }
-/* bottom gradient dissolve into modal body */
+/* Bottom dissolve into modal surface */
 .modal-hero::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 45%;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    oklch(from var(--bg-surface) l c h / 0.5) 60%,
+    oklch(from var(--bg-surface) l c h / 0.7) 70%,
     var(--bg-surface) 100%
   );
-  pointer-events: none; z-index: 1;
+  pointer-events: none; z-index: 2;
 }
-/* top edge softener so radius blends */
+/* Side edge fade — softens the blur boundary */
 .modal-hero::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%;
-  background: linear-gradient(to bottom, oklch(from var(--bg-base) l c h / 0.3), transparent);
-  pointer-events: none; z-index: 1;
+  content: ''; position: absolute; inset: 0;
+  background:
+    linear-gradient(to right, oklch(12% 0.01 250 / 0.55) 0%, transparent 18%, transparent 82%, oklch(12% 0.01 250 / 0.55) 100%),
+    linear-gradient(to bottom, oklch(12% 0.01 250 / 0.4) 0%, transparent 25%);
+  pointer-events: none; z-index: 2;
 }
 /* Close button — floats inside hero top-right */
 .modal-hero-close {
@@ -3516,6 +3530,7 @@ function openWhiskyModal(w, backFn) {
   const svgClose = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   document.getElementById('modalBody').innerHTML = `
     ${heroSrc ? `<div class="modal-hero">
+      <div class="modal-hero-bg" style="background-image:url('${heroSrc}')"></div>
       <img src="${heroSrc}" alt="${w.name}"${w.imgPos ? ` style="object-position:${w.imgPos}"` : ''} loading="lazy">
       ${backFn ? `<button class="modal-hero-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back' : 'Назад'}</button>` : ''}
       <button class="modal-hero-prev" id="modalPrev" ${!hasPrev ? 'disabled' : ''} aria-label="Previous">${svgChevL}</button>
@@ -3535,7 +3550,7 @@ function openWhiskyModal(w, backFn) {
     <div class="modal-stats">
       <div><div class="stat-label">${lang === 'en' ? 'Region' : 'Регион'}</div><div class="stat-value" style="font-size:.85rem;color:var(--text-secondary)">${t(w.region)}</div></div>
       <div><div class="stat-label">ABV</div><div class="stat-value">${w.abv}</div></div>
-      <div><div class="stat-label">${lang === 'en' ? 'Price' : 'Цена'}</div><div class="stat-value">${w.priceGbp ? '£' + w.priceGbp : (w.price || '')}<span style="font-size:.6rem;color:var(--text-muted);font-weight:400;margin-left:3px">${w.priceGbp ? '50ml' : ''}</span></div></div>
+      <div><div class="stat-label">${lang === 'en' ? 'Price' : 'Цена'}</div><div class="stat-value">${w.priceGbp || w.price || ''}<span style="font-size:.6rem;color:var(--text-muted);font-weight:400;margin-left:3px">${w.priceGbp ? '50ml' : ''}</span></div></div>
     </div>
     <div class="divider"></div>
     <div class="section">
@@ -4258,6 +4273,8 @@ syncFavBtn();
   }, { passive: true });
 
   main.addEventListener('touchend', e => {
+    // don't switch screens when modal is open
+    if (document.getElementById('modalOverlay').classList.contains('open')) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
     if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.8) return; // not a horiz swipe
