@@ -689,6 +689,19 @@ body {
     linear-gradient(to bottom, oklch(12% 0.01 250 / 0.4) 0%, transparent 25%);
   pointer-events: none; z-index: 2;
 }
+/* Cocktail hero — real drink photo fills the frame */
+.modal-hero-cocktail { height: min(52dvh, 360px); }
+.modal-hero-cocktail .modal-hero-bg { filter: blur(0) brightness(1) saturate(1); opacity: 0; }
+.modal-hero-cocktail img { object-fit: cover !important; padding: 0 !important; object-position: center center; filter: none !important; }
+.modal-hero-cocktail::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    oklch(12% 0.01 250 / 0.55) 75%,
+    var(--bg-surface) 100%
+  );
+}
+.modal-hero-cocktail::before { display: none; }
 /* Close button — floats inside hero top-right */
 .modal-hero-close {
   position: absolute; top: 14px; right: 14px; z-index: 10;
@@ -3764,20 +3777,25 @@ function openCocktailModal(c, backFn) {
       </div>
     </div>` : '';
 
+  const cImgFile = COCKTAIL_IMG[c.id];
+  const cHeroSrc = cImgFile ? `images/Cocktails/${cImgFile}` : null;
+  const svgClose = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   document.getElementById('modalBody').innerHTML = `
-    <div class="modal-content">
-    <div class="modal-top">
-      <div>
-        ${backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
-        <div style="font-size:2.2rem;margin-bottom:8px">${c.icon}</div>
-        <div class="modal-name">${c.name}</div>
-        <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px">${t(c.tagline)}</div>
-      </div>
-      <button class="modal-close" id="modalClose">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
+    ${cHeroSrc ? `<div class="modal-hero modal-hero-cocktail">
+      <div class="modal-hero-bg" style="background-image:url('${cHeroSrc}')"></div>
+      <img src="${cHeroSrc}" alt="${c.name}" loading="lazy" style="object-fit:cover;padding:0;filter:none;">
+      ${backFn ? `<button class="modal-hero-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
+      <button class="modal-hero-close" id="modalClose">${svgClose}</button>
+    </div>` : ''}
+    <div class="modal-title-area" style="padding-bottom:4px">
+      ${!cHeroSrc && backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
+      <div style="font-size:2rem;margin-bottom:6px">${c.icon}</div>
+      <div class="modal-name">${c.name}</div>
+      <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px">${t(c.tagline)}</div>
+      ${!cHeroSrc ? `<button class="modal-hero-close" id="modalClose" style="position:absolute;top:14px;right:14px">${svgClose}</button>` : ''}
     </div>
-    <div class="divider"></div>
+    <div class="modal-content">
+    <div class="divider" style="margin-top:8px"></div>
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'Best Whiskies For This' : 'Лучший виски для этого'}</div>
       <div class="whisky-recs">${recs}</div>
@@ -3984,7 +4002,7 @@ const TRIVIA = [
 /* ══════════════════════════════════════════════════
    TRIVIA GAME LOGIC
 ══════════════════════════════════════════════════ */
-const triviaState = { questions: [], idx: 0, score: 0, answered: false, currentDiff: 0 };
+const triviaState = { questions: [], idx: 0, score: 0, answered: false, currentDiff: 0, correctIdx: 0 };
 
 function showTriviaDiff() {
   document.getElementById('triviaDiffScreen').hidden = false;
@@ -4023,8 +4041,12 @@ function renderTriviaQ() {
   document.getElementById('triviaFill').style.width = ((n - 1) / 10 * 100) + '%';
   document.getElementById('triviaLabel').textContent = n + ' / 10';
   document.getElementById('triviaQ').textContent = ru && q.qr ? q.qr : q.q;
-  const opts = ru && q.or ? q.or : q.o;
-  document.getElementById('triviaOpts').innerHTML = opts.map((opt, i) =>
+  const opts = (ru && q.or ? q.or : q.o).slice();
+  // Shuffle answer positions so correct answer isn't always at the same index
+  const order = shuffleArr([0, 1, 2, 3].slice(0, opts.length));
+  const shuffledOpts = order.map(i => opts[i]);
+  triviaState.correctIdx = order.indexOf(q.a); // where the correct answer landed
+  document.getElementById('triviaOpts').innerHTML = shuffledOpts.map((opt, i) =>
     `<button class="quiz-opt-btn" data-i="${i}">${opt}</button>`
   ).join('');
   document.getElementById('triviaResult').hidden = true;
@@ -4039,16 +4061,16 @@ function triviaAnswer(idx) {
   triviaState.answered = true;
   const q = triviaState.questions[triviaState.idx];
   const ru = lang === 'ru';
-  const isRight = idx === q.a;
+  const isRight = idx === triviaState.correctIdx;
   if (isRight) triviaState.score++;
   const opts = ru && q.or ? q.or : q.o;
   document.querySelectorAll('#triviaOpts .quiz-opt-btn').forEach((btn, i) => {
     btn.disabled = true;
-    if (i === q.a) btn.classList.add('correct');
+    if (i === triviaState.correctIdx) btn.classList.add('correct');
     else if (i === idx) btn.classList.add('wrong');
   });
   const explanation = ru && q.er ? q.er : q.e;
-  const correctOpt = opts[q.a];
+  const correctOpt = opts[q.a]; // original correct text for display
   const inner = document.getElementById('triviaResultInner');
   inner.innerHTML = isRight
     ? `<span class="correct-label">${ru ? '✓ Верно!' : '✓ Correct!'}</span> ${explanation}`
