@@ -1120,11 +1120,20 @@ body.lang-ru [data-ru] { display: revert; }
 .louie-gator-bg {
   display: none;
   position: fixed;
+  /* Mobile: hug the right edge with slight overhang */
   right: -3vw; top: 60px;
   width: min(62vw, 340px);
   aspect-ratio: 220 / 126;
   background: url('alligator.svg') center/contain no-repeat;
   pointer-events: none; z-index: 0;
+}
+/* Desktop: align to right edge of the 1320px content container */
+@media (min-width: 768px) {
+  .louie-gator-bg {
+    right: max(0px, calc((100vw - 1320px) / 2));
+    width: 260px;
+    top: 76px;
+  }
 }
 [data-theme="louie"] .louie-gator-bg {
   display: block; filter: invert(1); opacity: 0.08;
