@@ -359,13 +359,24 @@ body {
   box-sizing: border-box;
 }
 .screen > * { max-width: 1320px; margin-left: auto; margin-right: auto; }
-/* Nav pill label crossfade during swipe */
-.nav-pill-trigger { position: relative; overflow: hidden; }
-.nav-pill-lbl { display: inline-block; }
+/* Nav pill — drum/wheel scroll effect */
+.nav-pill-trigger {
+  position: relative; overflow: hidden;
+  perspective: 120px; perspective-origin: center center;
+}
+.nav-pill-lbl {
+  display: inline-block;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 .nav-pill-lbl-alt {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  white-space: nowrap; opacity: 0; pointer-events: none;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  white-space: nowrap; opacity: 1; pointer-events: none;
 }
 .screen.active { display: block; }
 
@@ -4327,29 +4338,36 @@ syncFavBtn();
     screensTrack.style.transition = 'none';
     screensTrack.style.transform  = `translateX(calc(${-idx * 100}vw + ${bounded}px))`;
 
-    // Nav pill: crossfade current ↔ adjacent label
+    // Nav pill: drum/wheel rotation
     const dir = dx < 0 ? 1 : -1;
     const targetIdx = Math.max(0, Math.min(SCREEN_ORDER.length - 1, idx + dir));
-    const progress  = Math.min(1, Math.abs(dx) / (vw * 0.6));
+    const progress  = Math.min(1, Math.abs(dx) / (vw * 0.55));
     const targetScreen = SCREEN_ORDER[targetIdx];
 
     if (targetIdx !== idx) {
       navLblAlt.textContent = NAV_LABELS[targetScreen]?.[lang] || targetScreen;
-      navLbl.style.opacity    = String(1 - progress);
-      navLbl.style.transform  = `translateX(${-dir * progress * 14}px)`;
-      navLblAlt.style.opacity = String(progress);
-      navLblAlt.style.transform = `translate(-50%, -50%) translateX(${dir * (1 - progress) * 14}px)`;
+      // Current label rolls away (up when going next, down when going prev)
+      const rollOut = dir * progress * 75;          // deg, exits toward back-top
+      const shiftOut = -dir * progress * 6;         // px Y, slight arc
+      navLbl.style.transform = `rotateX(${rollOut}deg) translateY(${shiftOut}px)`;
+      navLbl.style.opacity = String(Math.max(0, 1 - progress * 1.8));
+
+      // Incoming label rolls in from opposite side
+      const rollIn = dir * (progress - 1) * 75;    // starts at -75deg, ends at 0
+      const shiftIn = -dir * (progress - 1) * 6;
+      navLblAlt.style.transform = `translate(-50%, -50%) rotateX(${rollIn}deg) translateY(${shiftIn}px)`;
+      navLblAlt.style.opacity = String(Math.min(1, progress * 1.8));
     }
 
-    // Pill button subtle parallax
-    navBtn.style.transform = `translateX(${bounded * 0.06}px)`;
+    // Pill button subtle lateral drift
+    navBtn.style.transform = `translateX(${bounded * 0.055}px)`;
   }
 
   function resetPill() {
     navLbl.style.opacity = '';
     navLbl.style.transform = '';
     navLblAlt.style.opacity = '0';
-    navLblAlt.style.transform = '';
+    navLblAlt.style.transform = 'translate(-50%, -50%)';
     navBtn.style.transform = '';
   }
 
