@@ -13,10 +13,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
-<script>
-  /* No-flash: hide onboarding instantly for returning users (before body paints) */
-  try { if (localStorage.getItem('ag_onboarded_v1')) document.documentElement.classList.add('onb-seen'); } catch (e) {}
-</script>
 <style>
 /* ─── Tokens: Dark ──────────────────────────────────────── */
 [data-theme="dark"] {
@@ -1201,7 +1197,6 @@ body.lang-ru [data-ru] { display: revert; }
   -webkit-tap-highlight-color: transparent;
   user-select: none; -webkit-user-select: none;
 }
-html.onb-seen .onb { display: none !important; }
 /* film grain wash */
 .onb::before {
   content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
@@ -5229,7 +5224,11 @@ function openCaimanModal() {
 ══════════════════════════════════════════════════ */
 (function initOnboarding() {
   const root = document.getElementById('onboarding');
-  if (!root || document.documentElement.classList.contains('onb-seen')) return;
+  if (!root) return;
+
+  // Splash plays on EVERY launch; the coach tour only on the very first.
+  let onboarded = false;
+  try { onboarded = !!localStorage.getItem('ag_onboarded_v1'); } catch (e) {}
 
   const loadEl = document.getElementById('onbLoad');
   const stepsEl = document.getElementById('onbSteps');
@@ -5299,11 +5298,12 @@ function openCaimanModal() {
   }
 
   function finish() {
+    if (advancing) return;
     advancing = true;
     try { localStorage.setItem('ag_onboarded_v1', '1'); } catch (e) {}
     root.classList.add('onb-exit');
     document.body.style.overflow = '';
-    setTimeout(() => { root.style.display = 'none'; document.documentElement.classList.add('onb-seen'); }, 470);
+    setTimeout(() => { root.style.display = 'none'; }, 470);
   }
 
   // Advance on tap anywhere within the steps phase (but not the Skip button)
@@ -5313,14 +5313,17 @@ function openCaimanModal() {
   });
   document.getElementById('onbSkip').addEventListener('click', finish);
 
-  // Loading phase → animate progress, then reveal steps
-  const LOAD_MS = reduced ? 700 : 3200;
+  // Loading phase → animate progress. First launch reveals the coach tour;
+  // returning users get a shorter splash, then straight into the app.
+  const LOAD_MS = reduced ? 600 : (onboarded ? 1900 : 3200);
   const start = performance.now();
   (function tick(now) {
     const p = Math.min(1, (now - start) / LOAD_MS);
     progressEl.style.width = (p * 100).toFixed(1) + '%';
     if (p < 1) requestAnimationFrame(tick);
-    else {
+    else if (onboarded) {
+      finish();
+    } else {
       loadEl.setAttribute('hidden', '');
       stepsEl.removeAttribute('hidden');
       step = 0;
