@@ -13,6 +13,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
+<script>
+  /* No-flash: hide onboarding instantly for returning users (before body paints) */
+  try { if (localStorage.getItem('ag_onboarded_v1')) document.documentElement.classList.add('onb-seen'); } catch (e) {}
+</script>
 <style>
 /* ─── Tokens: Dark ──────────────────────────────────────── */
 [data-theme="dark"] {
@@ -1183,9 +1187,191 @@ body.lang-ru [data-ru] { display: revert; }
   .header-inner { overflow: hidden; flex-wrap: nowrap; }
   .header-right { flex-shrink: 0; gap: 6px; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ONBOARDING — first-launch splash + coach tour
+═══════════════════════════════════════════════════════════ */
+.onb {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(120% 90% at 50% 18%, oklch(16% 0.05 155) 0%, oklch(9% 0.045 155) 48%, oklch(6% 0.035 155) 100%);
+  color: oklch(94% 0.01 80);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+}
+html.onb-seen .onb { display: none !important; }
+/* film grain wash */
+.onb::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+.onb-phase { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; box-sizing: border-box; }
+.onb-phase[hidden] { display: none; }
+
+/* ── Phase 1: loading ── */
+.onb-load { gap: 0; }
+.onb-gator-wrap {
+  position: relative; width: min(64vw, 280px); aspect-ratio: 220/126;
+  animation: onbGatorIn 900ms cubic-bezier(0.16,1,0.3,1) both;
+}
+.onb-gator-img {
+  width: 100%; height: 100%; object-fit: contain;
+  mix-blend-mode: screen;
+  filter: brightness(0) invert(0.82) sepia(0.55) saturate(2.6) hue-rotate(2deg) drop-shadow(0 8px 28px oklch(60% 0.13 80 / 0.35));
+  animation: onbBreath 3.4s ease-in-out 0.6s infinite;
+}
+.onb-wordmark { text-align: center; margin-top: 26px; animation: onbFadeUp 700ms ease 0.35s both; }
+.onb-the {
+  display: block; font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: 0.66rem; letter-spacing: 0.42em; text-transform: uppercase;
+  color: oklch(62% 0.10 78); margin-bottom: 7px; padding-left: 0.42em;
+}
+.onb-name {
+  display: block; font-family: 'IM Fell English', serif;
+  font-size: clamp(1.5rem, 6vw, 2rem); letter-spacing: 0.24em; text-transform: uppercase;
+  color: oklch(82% 0.13 80); padding-left: 0.24em;
+}
+.onb-progress {
+  width: 168px; height: 2px; margin-top: 30px; border-radius: 99px;
+  background: oklch(40% 0.06 80 / 0.35); overflow: hidden;
+  animation: onbFadeUp 700ms ease 0.55s both;
+}
+.onb-progress-fill {
+  width: 0%; height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, oklch(60% 0.12 78), oklch(84% 0.14 82));
+  box-shadow: 0 0 10px oklch(80% 0.14 82 / 0.6);
+  transition: width 120ms linear;
+}
+.onb-tagline {
+  margin-top: 16px; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(55% 0.05 78); animation: onbFadeUp 700ms ease 0.75s both;
+}
+
+/* ── Phase 2: coach steps ── */
+.onb-steps { gap: 0; }
+.onb-skip {
+  position: absolute; top: max(18px, env(safe-area-inset-top)); right: 18px; z-index: 4;
+  font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em;
+  color: oklch(62% 0.04 78); background: oklch(20% 0.04 155 / 0.6);
+  border: 1px solid oklch(40% 0.05 80 / 0.4); border-radius: 99px;
+  padding: 7px 15px; cursor: pointer; backdrop-filter: blur(8px);
+  transition: color 160ms, border-color 160ms;
+}
+.onb-skip:hover { color: oklch(85% 0.1 80); border-color: oklch(55% 0.1 80 / 0.6); }
+
+.onb-stage {
+  position: relative; width: min(78vw, 300px); height: 184px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+}
+.onb-card {
+  text-align: center; max-width: 340px; padding: 0 8px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.onb-card-title {
+  font-family: 'IM Fell English', serif; font-size: clamp(1.4rem, 5.4vw, 1.7rem);
+  letter-spacing: 0.04em; color: oklch(86% 0.12 82); margin-bottom: 10px; text-wrap: balance;
+}
+.onb-card-text {
+  font-family: 'Inter', sans-serif; font-size: 0.92rem; line-height: 1.55;
+  color: oklch(76% 0.02 80); text-wrap: pretty; max-width: 30ch;
+}
+.onb-dots { display: flex; gap: 7px; margin-top: 26px; }
+.onb-dot { width: 6px; height: 6px; border-radius: 99px; background: oklch(45% 0.05 80 / 0.45); transition: all 320ms cubic-bezier(0.16,1,0.3,1); }
+.onb-dot.on { width: 20px; background: oklch(80% 0.13 82); }
+.onb-tap-hint {
+  display: flex; align-items: center; gap: 7px; margin-top: 22px;
+  font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: oklch(58% 0.05 78); animation: onbPulse 2s ease-in-out infinite;
+}
+.onb-tap-hint::before { content: '👆'; font-size: 0.95rem; filter: grayscale(0.2); }
+
+/* step transition */
+.onb-stage, .onb-card-title, .onb-card-text {
+  animation: onbStepIn 480ms cubic-bezier(0.16,1,0.3,1) both;
+}
+
+/* ── Stage illustrations ── */
+/* Swipe */
+.ill-swipe { display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; }
+.ill-chev { font-size: 2rem; color: oklch(70% 0.11 80); font-family: serif; line-height: 1; }
+.ill-chev.l { animation: onbChevL 1.8s ease-in-out infinite; }
+.ill-chev.r { animation: onbChevR 1.8s ease-in-out infinite; }
+.ill-screens { position: relative; width: 96px; height: 132px; perspective: 600px; }
+.ill-mini {
+  position: absolute; inset: 0; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; font-size: 2.4rem;
+  background: linear-gradient(160deg, oklch(22% 0.05 155), oklch(15% 0.045 155));
+  border: 1px solid oklch(45% 0.07 80 / 0.4);
+  box-shadow: 0 12px 30px oklch(4% 0.03 155 / 0.6);
+  animation: onbSlide 2.8s cubic-bezier(0.5,0,0.2,1) infinite;
+}
+.ill-hand { position: absolute; bottom: -6px; left: 50%; font-size: 1.5rem; animation: onbHand 2.8s cubic-bezier(0.5,0,0.2,1) infinite; }
+/* Quiz */
+.ill-quiz { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.ill-q { font-size: 2.6rem; animation: onbBob 2.2s ease-in-out infinite; }
+.ill-opts { display: flex; flex-direction: column; gap: 8px; width: 150px; }
+.ill-opt { height: 22px; border-radius: 8px; background: oklch(22% 0.045 155); border: 1px solid oklch(40% 0.05 80 / 0.35); }
+.ill-opt.correct { animation: onbCorrect 2.4s ease-in-out infinite; }
+/* Upsell */
+.ill-upsell { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.ill-glass { font-size: 3rem; animation: onbBob 2.4s ease-in-out infinite; }
+.ill-glass.up { animation-delay: 0.2s; }
+.ill-arrow { font-size: 1.7rem; color: oklch(80% 0.13 82); animation: onbRise 1.8s ease-in-out infinite; }
+.ill-spark { position: absolute; top: 8px; right: 18px; font-size: 1.2rem; animation: onbSpark 1.9s ease-in-out infinite; }
+
+/* ── keyframes ── */
+@keyframes onbGatorIn { from { opacity: 0; transform: scale(0.86) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes onbBreath { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+@keyframes onbFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes onbStepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes onbPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes onbChevL { 0%,100% { transform: translateX(0); opacity: 0.5; } 50% { transform: translateX(-7px); opacity: 1; } }
+@keyframes onbChevR { 0%,100% { transform: translateX(0); opacity: 0.5; } 50% { transform: translateX(7px); opacity: 1; } }
+@keyframes onbSlide { 0%,12% { transform: translateX(34px) rotateY(-18deg) scale(0.9); opacity: 0.4; } 44%,56% { transform: none; opacity: 1; } 88%,100% { transform: translateX(-34px) rotateY(18deg) scale(0.9); opacity: 0.4; } }
+@keyframes onbHand { 0%,12% { transform: translateX(20px); } 44%,56% { transform: translateX(0); } 88%,100% { transform: translateX(-22px); } }
+@keyframes onbBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes onbCorrect { 0%,30%,100% { background: oklch(22% 0.045 155); border-color: oklch(40% 0.05 80 / 0.35); transform: none; } 45%,75% { background: oklch(45% 0.13 150 / 0.5); border-color: oklch(70% 0.16 150); transform: scale(1.04); } }
+@keyframes onbRise { 0%,100% { transform: translateY(3px); opacity: 0.5; } 50% { transform: translateY(-6px); opacity: 1; } }
+@keyframes onbSpark { 0%,100% { transform: scale(0.6) rotate(-10deg); opacity: 0.3; } 50% { transform: scale(1.1) rotate(10deg); opacity: 1; } }
+
+/* fade-out on dismiss */
+.onb.onb-exit { animation: onbExit 460ms cubic-bezier(0.4,0,1,1) forwards; }
+@keyframes onbExit { to { opacity: 0; visibility: hidden; transform: scale(1.04); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .onb-gator-img, .onb-gator-wrap::after, .ill-chev, .ill-mini, .ill-hand,
+  .ill-q, .ill-opt.correct, .ill-glass, .ill-arrow, .ill-spark, .onb-tap-hint { animation: none !important; }
+  .onb-stage, .onb-card-title, .onb-card-text { animation-duration: 1ms; }
+}
 </style>
 </head>
 <body>
+<!-- ─── ONBOARDING (first launch) ─────────────────── -->
+<div class="onb" id="onboarding" role="dialog" aria-label="Welcome">
+  <!-- Phase 1: loading splash -->
+  <div class="onb-phase onb-load" id="onbLoad">
+    <div class="onb-gator-wrap"><img class="onb-gator-img" src="alligator.svg" alt="" /></div>
+    <div class="onb-wordmark">
+      <span class="onb-the">The</span>
+      <span class="onb-name">Alligator Guide</span>
+    </div>
+    <div class="onb-progress"><div class="onb-progress-fill" id="onbProgress"></div></div>
+    <div class="onb-tagline"><span data-en>Behind the Bar</span><span data-ru>За барной стойкой</span></div>
+  </div>
+  <!-- Phase 2: coach steps -->
+  <div class="onb-phase onb-steps" id="onbSteps" hidden>
+    <button class="onb-skip" id="onbSkip"><span data-en>Skip</span><span data-ru>Пропустить</span></button>
+    <div class="onb-stage" id="onbStage"></div>
+    <div class="onb-card">
+      <div class="onb-card-title" id="onbTitle"></div>
+      <div class="onb-card-text" id="onbText"></div>
+      <div class="onb-dots" id="onbDots"></div>
+      <div class="onb-tap-hint" id="onbTapHint"></div>
+    </div>
+  </div>
+</div>
 
 <!-- ─── HEADER ─────────────────────────────────────── -->
 <header class="header">
@@ -5037,6 +5223,117 @@ function openCaimanModal() {
   document.getElementById('modalClose').addEventListener('click', closeModal);
   openModal();
 }
+
+/* ══════════════════════════════════════════════════
+   ONBOARDING — first-launch splash + coach tour
+══════════════════════════════════════════════════ */
+(function initOnboarding() {
+  const root = document.getElementById('onboarding');
+  if (!root || document.documentElement.classList.contains('onb-seen')) return;
+
+  const loadEl = document.getElementById('onbLoad');
+  const stepsEl = document.getElementById('onbSteps');
+  const stageEl = document.getElementById('onbStage');
+  const titleEl = document.getElementById('onbTitle');
+  const textEl = document.getElementById('onbText');
+  const dotsEl = document.getElementById('onbDots');
+  const hintEl = document.getElementById('onbTapHint');
+  const progressEl = document.getElementById('onbProgress');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // lock scroll while onboarding is up
+  document.body.style.overflow = 'hidden';
+
+  const STEPS = [
+    {
+      stage: `<div class="ill-swipe">
+        <span class="ill-chev l">‹</span>
+        <div class="ill-screens"><div class="ill-mini">🥃</div><span class="ill-hand">👆</span></div>
+        <span class="ill-chev r">›</span>
+      </div>`,
+      title: { en: 'Swipe to explore', ru: 'Свайпай между разделами' },
+      text: { en: 'Slide left or right to move between Bar, Cocktails, Quiz and Match — or tap the menu up top.', ru: 'Листай влево-вправо: Бар, Коктейли, Квиз и Подбор. Или нажми меню сверху.' },
+    },
+    {
+      stage: `<div class="ill-quiz">
+        <div class="ill-q">❓</div>
+        <div class="ill-opts"><span class="ill-opt"></span><span class="ill-opt correct"></span><span class="ill-opt"></span></div>
+      </div>`,
+      title: { en: 'Test yourself', ru: 'Проверь себя' },
+      text: { en: 'Train on the floor with the Quiz — guess the whisky from its profile and climb the difficulty.', ru: 'Тренируйся прямо на смене: угадывай виски по профилю и поднимай сложность.' },
+    },
+    {
+      stage: `<div class="ill-upsell">
+        <span class="ill-glass">🥃</span>
+        <span class="ill-arrow">↑</span>
+        <span class="ill-glass up">🥃</span>
+        <span class="ill-spark">✨</span>
+      </div>`,
+      title: { en: 'Sell like a pro', ru: 'Продавай как профи' },
+      text: { en: "Use Match to read a guest's taste and recommend the perfect pour — plus a premium trade-up.", ru: 'В Подборе считывай вкус гостя и предлагай идеальный виски — и premium на ступень выше.' },
+    },
+  ];
+
+  let step = -1;
+  let advancing = false;
+
+  function renderStep(i) {
+    const s = STEPS[i];
+    const isLast = i === STEPS.length - 1;
+    stageEl.innerHTML = s.stage;
+    titleEl.innerHTML = `<span data-en>${s.title.en}</span><span data-ru>${s.title.ru}</span>`;
+    textEl.innerHTML = `<span data-en>${s.text.en}</span><span data-ru>${s.text.ru}</span>`;
+    dotsEl.innerHTML = STEPS.map((_, k) => `<div class="onb-dot${k === i ? ' on' : ''}"></div>`).join('');
+    hintEl.innerHTML = isLast
+      ? `<span data-en>Tap to start</span><span data-ru>Тапни, чтобы начать</span>`
+      : `<span data-en>Tap to continue</span><span data-ru>Тапни, чтобы продолжить</span>`;
+    // retrigger entrance animation
+    [stageEl, titleEl, textEl].forEach(el => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
+  }
+
+  function next() {
+    if (advancing) return;
+    step++;
+    if (step >= STEPS.length) { finish(); return; }
+    renderStep(step);
+  }
+
+  function finish() {
+    advancing = true;
+    try { localStorage.setItem('ag_onboarded_v1', '1'); } catch (e) {}
+    root.classList.add('onb-exit');
+    document.body.style.overflow = '';
+    setTimeout(() => { root.style.display = 'none'; document.documentElement.classList.add('onb-seen'); }, 470);
+  }
+
+  // Advance on tap anywhere within the steps phase (but not the Skip button)
+  stepsEl.addEventListener('click', e => {
+    if (e.target.closest('#onbSkip')) return;
+    next();
+  });
+  document.getElementById('onbSkip').addEventListener('click', finish);
+
+  // Loading phase → animate progress, then reveal steps
+  const LOAD_MS = reduced ? 700 : 3200;
+  const start = performance.now();
+  (function tick(now) {
+    const p = Math.min(1, (now - start) / LOAD_MS);
+    progressEl.style.width = (p * 100).toFixed(1) + '%';
+    if (p < 1) requestAnimationFrame(tick);
+    else {
+      loadEl.setAttribute('hidden', '');
+      stepsEl.removeAttribute('hidden');
+      step = 0;
+      renderStep(0);
+    }
+  })(start);
+
+  // Expose a manual replay for testing/demo
+  window.replayOnboarding = function () {
+    try { localStorage.removeItem('ag_onboarded_v1'); } catch (e) {}
+    location.reload();
+  };
+})();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
