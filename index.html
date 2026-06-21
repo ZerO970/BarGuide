@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="louie-light">
+<html lang="en" data-theme="louie">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -210,7 +210,7 @@
   border-color: var(--gold-muted); box-shadow: 0 0 0 3px oklch(22% 0.085 157 / 0.1);
 }
 
-/* Theme icon cycle: dark🌙 → light☀️ → louie🐊 → louie-light🌿 */
+/* Theme icon cycle: louie🐊 → louie-light🌿 → dark🌙 → light☀️ */
 .icon-gator, .icon-leaf { display: none; font-size: 13px; line-height: 1; }
 [data-theme="louie"] .icon-moon, [data-theme="louie"] .icon-sun { display: none; }
 [data-theme="louie"] .icon-gator { display: block; }
@@ -3409,7 +3409,7 @@ lt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { 
 ══════════════════════════════════════════════════ */
 document.getElementById('themeBtn').addEventListener('click', () => {
   const html = document.documentElement;
-  const cycle = { 'louie-light': 'louie', louie: 'dark', dark: 'light', light: 'louie-light' };
+  const cycle = { louie: 'louie-light', 'louie-light': 'dark', dark: 'light', light: 'louie' };
   html.setAttribute('data-theme', cycle[html.getAttribute('data-theme')] || 'dark');
 });
 
