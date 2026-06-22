@@ -216,15 +216,15 @@
 
 /* ─── Reset & Base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { overflow: hidden; height: 100%; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background: var(--bg-base);
   color: var(--text-primary);
-  min-height: 100dvh;
+  height: 100%;
   -webkit-font-smoothing: antialiased;
   transition: background 300ms ease, color 300ms ease;
-  overflow-x: hidden;
+  overflow: hidden;
   touch-action: pan-y;
 }
 [data-theme="dark"] body::before {
@@ -339,15 +339,22 @@ body { padding-top: 73px; }
   width: 400vw;
   will-change: transform;
   transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
-  min-height: calc(100dvh - 64px);
+  height: calc(100dvh - 73px);
 }
 .screen {
   position: relative; z-index: 1;
   width: 100vw; min-width: 100vw; flex-shrink: 0;
   padding: 28px 24px 80px;
-  display: block !important; /* always in DOM, track slides */
+  display: block !important;
   box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.screen::-webkit-scrollbar { display: none; }
 .screen > * { max-width: 1320px; margin-left: auto; margin-right: auto; }
 /* Nav pill — drum/wheel scroll effect */
 .nav-pill-trigger {
@@ -3439,7 +3446,7 @@ function navSetScreen(screen) {
   currentScreen = screen;
   const idx = SCREEN_ORDER.indexOf(screen);
   slideTrackTo(idx);
-  window.scrollTo(0, 0);
+  document.getElementById('screen-' + screen)?.scrollTo(0, 0);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
   document.querySelectorAll('.nav-pill-item').forEach(b => b.classList.toggle('active', b.dataset.screen === screen));
   navPillLbl.textContent = NAV_LABELS[screen]?.[lang] || screen;
@@ -4051,12 +4058,10 @@ function openCocktailModal(c, backFn) {
 ══════════════════════════════════════════════════ */
 function openModal() {
   document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
   document.getElementById('modalPanel').scrollTop = 0;
 }
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
 }
 document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
@@ -4734,8 +4739,8 @@ syncFavBtn();
       });
     });
   }
-  window.addEventListener('scroll', runParallax, { passive: true });
-  // Also run after categories render
+  // Screens now scroll independently — listen on the bar screen element
+  document.getElementById('screen-bar').addEventListener('scroll', runParallax, { passive: true });
   const _origRenderCats = renderCategories;
   renderCategories = function() { _origRenderCats(); setTimeout(runParallax, 60); };
 })();
@@ -5240,8 +5245,6 @@ function openCaimanModal() {
   const progressEl = document.getElementById('onbProgress');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // lock scroll while onboarding is up
-  document.body.style.overflow = 'hidden';
 
   const STEPS = [
     {
@@ -5302,7 +5305,6 @@ function openCaimanModal() {
     advancing = true;
     try { localStorage.setItem('ag_onboarded_v1', '1'); } catch (e) {}
     root.classList.add('onb-exit');
-    document.body.style.overflow = '';
     setTimeout(() => { root.style.display = 'none'; }, 470);
   }
 
