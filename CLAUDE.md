@@ -7,7 +7,8 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ## Stack & deployment
 
-- **Single file**: `D:\Claude\whisky-guide\index.html` (~5100 lines, no bundler, no framework)
+- **Active file**: `D:\Claude\whisky-guide\index-v2.html` (~7100 lines) — **работай здесь**
+- `index.html` — старая версия (только виски), не трогать
 - **Assets**: `images/bottles/`, `images/bottles_cards/`, `images/Cocktails/`, `alligator.svg`, `icons/`
 - **PWA**: `manifest.json` + `sw.js` (service worker, cache-first for assets, network-first for HTML)
 - **Deployed**: GitHub Pages → `https://github.com/ZerO970/AlligatorGuide`
@@ -18,24 +19,21 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ---
 
-## File structure inside `index.html`
+## File structure inside `index-v2.html` (~7100 lines)
 
 | Lines (approx) | Content |
 |---|---|
 | 1–16 | `<head>`, fonts, no-flash script |
-| 17–1190 | `<style>` — all CSS (tokens, components, themes, responsive) |
-| 1191–1420 | `<body>` HTML — header, onboarding overlay, screens track, modal, compare bar |
-| 1421–3185 | `<script>` — data: `WHISKIES[]`, `CATEGORIES{}`, `COCKTAILS[]`, `TRIVIA[]`, `CARLOS_COCKTAIL` |
-| 3186–3600 | JS — state, lang, theme, nav, search, filters, category/bar render |
-| 3600–3870 | JS — `openWhiskyModal()`, `openCocktailModal()`, `openModal()` / `closeModal()` |
-| 3870–4040 | JS — trivia: `triviaState`, `triviaStart()`, `renderTriviaQ()`, `triviaAnswer()` |
-| 4040–4215 | JS — quiz: `quizState`, `quizNext()`, `quizAnswer()` |
-| 4215–4340 | JS — favourites (`favIds`, localStorage), `renderBar` patch |
-| 4340–4430 | JS — `initSwipe()` — carousel drag, drum pill animation |
-| 4430–4565 | JS — compare: `compareIds`, `syncCompareBar()`, `openCompareModal()` |
-| 4565–5070 | JS — match (guest sommelier): `matchState`, `buildLadder()`, `renderMatchStep()` |
-| 5070–5230 | JS — easter egg (`openCaimanModal()`), init (`renderCategories()`, `slideTrackTo()`) |
-| 5230–5340 | JS — `initOnboarding()`, service worker registration |
+| 17–1200 | `<style>` — all CSS |
+| 1200–1450 | `<body>` HTML |
+| 1450–3450 | `<script>` data: `WHISKIES[]`, `RUMS[]`, `COGNACS[]`, `ARMAGNACS[]`, `VODKAS[]`, `GINS[]`, `TEQUILAS[]`, `MEZCALS[]`, `ABSINTHES[]` |
+| 3450–3730 | `COCKTAILS[]` — 67 коктейлей (whisky×20, gin×13, tequila×10, rum×10, vodka×8, cognac×6) |
+| 3730–4000 | `CATEGORIES{}`, `SPIRIT_TYPES[]`, `MAIN_MENU[]`, `COCKTAIL_IMG{}`, `TRIVIA[]` |
+| 4000–4250 | JS — state, lang, theme, nav |
+| 4250–4750 | JS — `renderAllSpiritsGrid()`, `renderGenericSpiritGrid()`, `openSpiritModal()`, `renderBar()` |
+| 4750–5550 | JS — `findSpirit()`, `renderCocktails()`, `openWhiskyModal()` |
+| 5550–5800 | JS — `openCocktailModal()` |
+| 5800–end | JS — trivia, quiz, match, favourites, compare, onboarding |
 
 ---
 
@@ -99,11 +97,12 @@ Color system: **OKLCH** throughout. Token variables defined per theme in CSS.
 {
   id: 'old-fashioned',
   name: 'Old Fashioned', icon: '🍊',
+  baseSpirit: 'whisky',                        // 'whisky'|'gin'|'tequila'|'rum'|'vodka'|'cognac'
   tagline: { en: '...', ru: '...' },
-  topWhiskies: ['knob-creek-bourbon', ...],   // up to 3 whisky IDs
+  topWhiskies: ['knob-creek-bourbon', ...],    // up to 3 spirit IDs (any category, not just whisky)
   topReasons: { 'knob-creek-bourbon': { en: '...', ru: '...' } },
   history: { en: '...', ru: '...' },
-  story: { en: '...', ru: '...' },            // optional bartender story
+  story: { en: '...', ru: '...' },             // optional bartender story
   spec: {
     en: { glass: '...', ingredients: [...], method: '...', garnish: '...' },
     ru: { ... }
@@ -111,7 +110,18 @@ Color system: **OKLCH** throughout. Token variables defined per theme in CSS.
 }
 ```
 
+**67 cocktails total**: whisky×20, gin×13, tequila×10, rum×10, vodka×8, cognac×6.
+
 Cocktail image map: `COCKTAIL_IMG` object (id → filename in `images/Cocktails/`).
+Cocktails without image fall back to `c.icon` (emoji) automatically.
+
+### activeSpirit & filtering
+```
+let activeSpirit = null;  // set when user enters a spirit section
+```
+- `renderCocktails()` filters `COCKTAILS` by `c.baseSpirit === activeSpirit` when set
+- Set in the spirit section entry function; reset to `null` on back-to-home
+- `findSpirit(id)` — searches ALL spirit arrays (WHISKIES, GINS, TEQUILAS, RUMS, VODKAS, COGNACS, MEZCALS, ARMAGNACS) — use instead of `WHISKIES.find` anywhere spirits from multiple categories may appear
 
 ### Trivia question
 ```js
@@ -161,17 +171,16 @@ All user-facing strings use `{ en: '...', ru: '...' }` objects, accessed via `t(
 
 ## Common tasks
 
-### Add a new whisky
-1. Add entry to `WHISKIES[]` array (copy existing entry as template)
-2. Add card image to `images/bottles/` (thumbnail shown on grid)
-3. Add hero image to `images/bottles_cards/` (same filename — shown in modal)
-4. Add both paths to `sw.js` ASSETS array
-5. Bump SW cache version before pushing
+### Add a new whisky / spirit
+1. Add entry to the correct array: `WHISKIES[]`, `GINS[]`, `TEQUILAS[]`, `RUMS[]`, `VODKAS[]`, `COGNACS[]`, `MEZCALS[]`
+2. Add card image to `images/bottles/` + hero to `images/bottles_cards/`
+3. Add both paths to `sw.js` ASSETS array
+4. Bump SW cache version before pushing
 
 ### Add a new cocktail
-1. Add entry to `COCKTAILS[]` array
-2. Add photo to `images/Cocktails/`
-3. Add mapping to `COCKTAIL_IMG` object (id → filename)
+1. Add entry to `COCKTAILS[]` — include `baseSpirit` field
+2. `topWhiskies` = up to 3 IDs from ANY spirit array matching the cocktail's category
+3. Add photo to `images/Cocktails/` + mapping to `COCKTAIL_IMG` (no image = emoji fallback, that's fine)
 4. Add path to `sw.js` ASSETS array
 5. Bump SW cache version
 
@@ -195,7 +204,7 @@ VERSION=$(date +"%Y%m%d-%H%M") && sed -i "s|const CACHE = 'alligator-guide-[^']*
 - **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. Code is in `renderBar` patch (~line 4380) and `syncCompareBar()` (~line 4567).
 - **Swipe doesn't init Quiz/Match** — `quizNext()` triggers on pill click only; if user swipes to quiz screen it's blank until they tap. Low priority, quick fix: call `quizNext()` inside `navSetScreen`.
 - **Search is EN-only** — `renderBar()` searches `w.nose.tags.en` regardless of active language. Fix: also search `w.nose.tags[lang]`.
-- **`alligator.svg` = 1.9MB** — large for an SVG (embedded raster inside). Safe to optimize.
+
 
 ---
 
