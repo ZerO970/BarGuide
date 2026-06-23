@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <filter id="grain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="4" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
+      <feBlend in="SourceGraphic" in2="gray" mode="overlay" result="blended"/>
+      <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+    </filter>
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#0d120e"/>
+
+  <!-- Subtle grain overlay -->
+  <rect width="800" height="450" fill="#1a2018" opacity="0.45" filter="url(#grain)"/>
+
+  <!-- Vignette -->
+  <rect width="800" height="450" fill="url(#vignette)"/>
+
+  <!-- Top gold accent line -->
+  <rect x="0" y="0" width="800" height="1.5" fill="#C9A237" opacity="0.85"/>
+
+  <!-- "louie" watermark — large, italic, semi-transparent, upper-right -->
+  <text
+    x="560" y="230"
+    font-family="'IM Fell English', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif"
+    font-size="210"
+    font-style="italic"
+    font-weight="400"
+    fill="#C9A237"
+    opacity="0.055"
+    text-anchor="middle"
+    letter-spacing="-4"
+    transform="rotate(-6, 560, 230)">louie</text>
+
+  <!-- Corner accents — top left -->
+  <line x1="28" y1="28" x2="68" y2="28" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+  <line x1="28" y1="28" x2="28" y2="68" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+
+  <!-- Corner accents — top right -->
+  <line x1="772" y1="28" x2="732" y2="28" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+  <line x1="772" y1="28" x2="772" y2="68" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+
+  <!-- Corner accents — bottom left -->
+  <line x1="28" y1="422" x2="68" y2="422" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+  <line x1="28" y1="422" x2="28" y2="382" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+
+  <!-- Corner accents — bottom right -->
+  <line x1="772" y1="422" x2="732" y2="422" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+  <line x1="772" y1="422" x2="772" y2="382" stroke="#C9A237" stroke-width="1" opacity="0.55"/>
+</svg>

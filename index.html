@@ -4725,6 +4725,7 @@ document.getElementById('themeBtn').addEventListener('click', () => {
   const html = document.documentElement;
   const cycle = { louie: 'louie-light', 'louie-light': 'dark', dark: 'light', light: 'louie' };
   html.setAttribute('data-theme', cycle[html.getAttribute('data-theme')] || 'dark');
+  renderMainHome();
 });
 
 /* ══════════════════════════════════════════════════
@@ -4820,7 +4821,7 @@ const MAIN_MENU = [
   {
     id: 'on-the-menu',
     icon: '📋',
-    photo: 'images/ui/card-menu.jpg',
+    photo: { louie: 'images/ui/card-menu-dark.svg', default: 'images/ui/card-menu.jpg' },
     tag: { en: 'Updates', ru: 'Обновления' },
     en: { title: 'On the Menu', desc: 'New arrivals & changes.' },
     ru: { title: 'Обновления', desc: 'Новинки и изменения.' },
@@ -4846,8 +4847,12 @@ function renderMainHome() {
   function cardHTML(item, cls) {
     const txt = lang === 'ru' ? item.ru : item.en;
     const tagLbl = item.tag ? (lang === 'ru' ? item.tag.ru : item.tag.en) : '';
-    const media = item.photo
-      ? `<img class="main-card-photo" src="${item.photo}" alt="" loading="lazy">`
+    const theme = document.documentElement.getAttribute('data-theme');
+    const photoSrc = item.photo && typeof item.photo === 'object'
+      ? (item.photo[theme] || item.photo.default)
+      : item.photo;
+    const media = photoSrc
+      ? `<img class="main-card-photo" src="${photoSrc}" alt="" loading="lazy">`
       : `<div class="main-card-fallback">${item.icon}</div>`;
     return `
       <div class="main-card ${cls}${item.available ? '' : ' inactive'}"
