@@ -7,8 +7,7 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ## Stack & deployment
 
-- **Active file**: `D:\Claude\whisky-guide\index-v2.html` (~7100 lines) — **работай здесь**
-- `index.html` — старая версия (только виски), не трогать
+- **Single file**: `D:\Claude\whisky-guide\index.html` (~7100 lines) — **работай здесь**
 - **Assets**: `images/bottles/`, `images/bottles_cards/`, `images/Cocktails/`, `alligator.svg`, `icons/`
 - **PWA**: `manifest.json` + `sw.js` (service worker, cache-first for assets, network-first for HTML)
 - **Deployed**: GitHub Pages → `https://github.com/ZerO970/AlligatorGuide`

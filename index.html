@@ -610,6 +610,14 @@ body { padding-top: 73px; }
   border-radius: 18px; pointer-events: none;
 }
 .serve-chip { font-size: 0.6rem; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--border-subtle); color: var(--text-muted); }
+.nose-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.nose-chip { font-size: 0.62rem; font-weight: 500; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.01em; }
+.nc-blue   { background: oklch(16% 0.06 220 / 0.8); color: oklch(60% 0.12 220); border: 1px solid oklch(28% 0.08 220 / 0.5); }
+.nc-purple { background: oklch(16% 0.06 290 / 0.8); color: oklch(60% 0.11 290); border: 1px solid oklch(28% 0.08 290 / 0.5); }
+.nc-amber  { background: oklch(16% 0.08 70  / 0.8); color: oklch(60% 0.14 70);  border: 1px solid oklch(30% 0.10 70  / 0.5); }
+.nc-coral  { background: oklch(16% 0.06 30  / 0.8); color: oklch(60% 0.12 30);  border: 1px solid oklch(28% 0.08 30  / 0.5); }
+.nc-green  { background: oklch(14% 0.06 145 / 0.8); color: oklch(56% 0.12 145); border: 1px solid oklch(26% 0.08 145 / 0.5); }
+.nc-pink   { background: oklch(16% 0.06 350 / 0.8); color: oklch(60% 0.12 350); border: 1px solid oklch(28% 0.08 350 / 0.5); }
 
 /* ─── Empty State ───────────────────────────────────────── */
 .empty-state { grid-column: 1/-1; text-align: center; padding: 64px 24px; }
@@ -4908,6 +4916,17 @@ function renderSpiritHome() {
 }
 
 /* ── Generic spirit grid + modal (non-whisky) ── */
+function noseChipClass(tag) {
+  const t = tag.toLowerCase();
+  if (/citrus|lemon|lime|grapefr|orange|fresh|crisp|clean|light|mineral|saline|salt|soda/.test(t)) return 'nc-blue';
+  if (/floral|rose|lavend|violet|flower|jasmine|blossom|elder|perfume/.test(t)) return 'nc-purple';
+  if (/vanilla|honey|caramel|sweet|chocol|toffee|maple|sugar|butterscotch|molasses|cream/.test(t)) return 'nc-amber';
+  if (/spice|pepper|ginger|cinnamon|clove|anise|herb|menthol|mint|smoke|tobacco|leather/.test(t)) return 'nc-coral';
+  if (/fruit|tropical|banana|mango|pineapple|cherry|berry|apple|pear|peach|apricot|plum|fig/.test(t)) return 'nc-pink';
+  if (/agave|vegetal|grass|green|earth|wood|oak|barrel|almond|nut|grain|malt/.test(t)) return 'nc-green';
+  return 'nc-blue';
+}
+
 function renderSpiritFilters(spiritId) {
   const st = SPIRIT_TYPES.find(s => s.id === spiritId);
   if (!st) return;
@@ -4976,16 +4995,18 @@ function renderAllSpiritsGrid() {
     return;
   }
   grid.innerHTML = allItems.map(item => {
-    const noseTags = (item.nose?.tags?.[lang] || item.nose?.tags?.en || []).slice(0, 3).join(' · ');
+    const noseArr = (item.nose?.tags?.[lang] || item.nose?.tags?.en || []).slice(0, 3);
     const imgHTML = item.img ? `<img class="card-img-a" src="${item.img}" alt="" loading="lazy" onerror="this.style.display='none';this.closest('article').classList.remove('has-img-a')">` : '';
     const imgClass = item.img ? ' has-img-a' : '';
+    const chipsHTML = noseArr.length ? `<div class="nose-chips">${noseArr.map(t => `<span class="nose-chip ${noseChipClass(t)}">${t}</span>`).join('')}</div>` : '';
+    const cocktailsHTML = item.cocktails?.length ? `<div class="card-serve-chips" style="margin-bottom:6px">${item.cocktails.slice(0,2).map(c=>`<span class="serve-chip">${c.name}</span>`).join('')}</div>` : '';
     return `<article class="card${imgClass}" data-spirit="${item._spiritId}" data-id="${item.id}" role="button" tabindex="0">
       ${imgHTML}
       <div class="card-header"><span class="badge badge-type">${item.type || item._spiritId}</span></div>
       <div class="card-name">${item.name}</div>
       <div class="card-region">${item.origin || (item.region ? (item.region[lang] || item.region.en) : '') || ''}</div>
-      ${noseTags ? `<div class="card-nose-preview">${noseTags}</div>` : ''}
-      <div class="card-footer"><span class="card-meta"><span class="card-abv">${item.abv || ''}</span></span></div>
+      ${chipsHTML}${cocktailsHTML}
+      <div class="card-footer"><span class="card-meta"><span class="card-abv">${item.abv || ''}</span>${item.price ? `<span class="card-price">${item.price}</span>` : ''}</span></div>
     </article>`;
   }).join('');
   grid.querySelectorAll('article.card').forEach(card => {
@@ -5024,9 +5045,11 @@ function renderGenericSpiritGrid(spiritId) {
     return;
   }
   grid.innerHTML = items.map(item => {
-    const noseTags = (item.nose?.tags?.[lang] || item.nose?.tags?.en || []).slice(0, 3).join(' · ');
+    const noseArr = (item.nose?.tags?.[lang] || item.nose?.tags?.en || []).slice(0, 3);
     const imgHTML = item.img ? `<img class="card-img-a" src="${item.img}" alt="" loading="lazy" onerror="this.style.display='none';this.closest('article').classList.remove('has-img-a')">` : '';
     const imgClass = item.img ? ' has-img-a' : '';
+    const chipsHTML = noseArr.length ? `<div class="nose-chips">${noseArr.map(t => `<span class="nose-chip ${noseChipClass(t)}">${t}</span>`).join('')}</div>` : '';
+    const cocktailsHTML = item.cocktails?.length ? `<div class="card-serve-chips" style="margin-bottom:6px">${item.cocktails.slice(0,2).map(c=>`<span class="serve-chip">${c.name}</span>`).join('')}</div>` : '';
     return `
       <article class="card${imgClass}${item.onShelf ? ' card-on-shelf' : ''}" data-spirit="${spiritId}" data-id="${item.id}" role="button" tabindex="0">
         ${imgHTML}
@@ -5036,9 +5059,9 @@ function renderGenericSpiritGrid(spiritId) {
         </div>
         <div class="card-name">${item.name}</div>
         <div class="card-region">${item.origin || ''}</div>
-        ${noseTags ? `<div class="card-nose-preview">${noseTags}</div>` : ''}
+        ${chipsHTML}${cocktailsHTML}
         <div class="card-footer">
-          <span class="card-meta"><span class="card-abv">${item.abv || ''}</span></span>
+          <span class="card-meta"><span class="card-abv">${item.abv || ''}</span>${item.price ? `<span class="card-price">${item.price}</span>` : ''}</span>
         </div>
       </article>`;
   }).join('');
@@ -5195,7 +5218,7 @@ function renderOnTheMenu() {
   document.getElementById('otm86Empty').hidden = false;
 }
 
-function navSetScreen(screen) {
+function navSetScreen(screen, keepContext = false) {
   currentScreen = screen;
   const idx = SCREEN_ORDER.indexOf(screen);
   slideTrackTo(idx);
@@ -5211,18 +5234,53 @@ function navSetScreen(screen) {
     closeSearch();
     document.getElementById('controlsPanel').style.display = 'none';
   }
-  // When navigating to bar from another screen, reset to mainHome
   if (screen === 'bar') {
-    activeSpirit = null;
-    currentCat = null;
-    document.getElementById('mainHome').hidden = false;
-    document.getElementById('spiritHome').hidden = true;
-    document.getElementById('catHome').hidden = true;
-    document.getElementById('catDetail').hidden = true;
-    document.getElementById('controlsPanel').style.display = '';
-    document.getElementById('whiskeyGrid').style.display = 'none';
-    renderAllSpiritsFilters();
-    renderMainHome();
+    if (keepContext && activeSpirit) {
+      // Swipe back — restore the spirit view we came from
+      document.getElementById('controlsPanel').style.display = '';
+      document.getElementById('mainHome').hidden = true;
+      document.getElementById('spiritHome').hidden = true;
+      if (activeSpirit === 'whisky') {
+        if (currentCat) {
+          document.getElementById('catHome').hidden = true;
+          document.getElementById('catDetail').removeAttribute('hidden');
+          document.getElementById('whiskeyGrid').style.display = '';
+          renderCategoryDetail();
+        } else {
+          document.getElementById('catHome').removeAttribute('hidden');
+          document.getElementById('catDetail').hidden = true;
+          document.getElementById('whiskeyGrid').style.display = 'none';
+          renderCategories();
+        }
+      } else {
+        document.getElementById('catHome').hidden = true;
+        document.getElementById('catDetail').hidden = true;
+        document.getElementById('whiskeyGrid').style.display = '';
+        renderSpiritFilters(activeSpirit);
+        renderGenericSpiritGrid(activeSpirit);
+        if (!document.getElementById('spiritBackBtn')) {
+          const grid = document.getElementById('whiskeyGrid');
+          const backBtn = document.createElement('button');
+          backBtn.className = 'back-btn';
+          backBtn.id = 'spiritBackBtn';
+          backBtn.innerHTML = `‹ <span>${lang === 'ru' ? 'Алкоголь' : 'Spirits'}</span>`;
+          backBtn.onclick = exitSpirit;
+          grid.parentNode.insertBefore(backBtn, grid);
+        }
+      }
+    } else {
+      // Nav pill tap or no spirit context — go to mainHome
+      activeSpirit = null;
+      currentCat = null;
+      document.getElementById('mainHome').hidden = false;
+      document.getElementById('spiritHome').hidden = true;
+      document.getElementById('catHome').hidden = true;
+      document.getElementById('catDetail').hidden = true;
+      document.getElementById('controlsPanel').style.display = '';
+      document.getElementById('whiskeyGrid').style.display = 'none';
+      renderAllSpiritsFilters();
+      renderMainHome();
+    }
   }
   if (screen === 'cocktails') renderCocktails();
   if (screen === 'on-the-menu') renderOnTheMenu();
@@ -6526,7 +6584,7 @@ syncFavBtn();
 
     resetPill();
     if (nextIdx !== idx) {
-      navSetScreen(SCREEN_ORDER[nextIdx]);
+      navSetScreen(SCREEN_ORDER[nextIdx], dir === -1);
     } else {
       slideTrackTo(idx, true, true); // snap back
     }
