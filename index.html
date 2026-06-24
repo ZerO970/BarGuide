@@ -809,6 +809,15 @@ body { padding-top: 73px; }
 .history-text { font-size: 0.83rem; line-height: 1.7; color: var(--text-secondary); }
 .history-text strong { color: var(--gold-bright); font-weight: 600; }
 
+/* ─── Cocktail Controls ─────────────────────────────────── */
+.cktl-controls { margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px; }
+.cktl-search-wrap { position: relative; }
+.cktl-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+.cktl-search-input { width: 100%; padding: 9px 14px 9px 36px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 10px; color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; box-sizing: border-box; }
+.cktl-search-input::placeholder { color: var(--text-muted); }
+.cktl-search-input:focus { border-color: var(--gold-dim); box-shadow: 0 0 0 3px oklch(60% 0.12 72 / 0.1); }
+.cktl-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+
 /* ─── Cocktail Screen ───────────────────────────────────── */
 .cocktail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 .ccard {
@@ -1740,6 +1749,22 @@ body.lang-ru [data-ru] { display: revert; }
   <div class="hero-bar">
     <h1><span data-en>Pick a <em>Cocktail.</em></span><span data-ru>Выбери <em>Коктейль.</em></span></h1>
     <p><span data-en>Find the best whisky for the drink — with history & top recommendations.</span><span data-ru>Подбери лучший виски под напиток — с историей и топ-рекомендациями.</span></p>
+  </div>
+  <div class="cktl-controls" id="cocktailControls">
+    <div class="cktl-search-wrap">
+      <svg class="cktl-search-icon" width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input class="cktl-search-input" id="cocktailSearch" type="search" autocomplete="off" spellcheck="false"
+        placeholder="Search cocktails…" />
+    </div>
+    <div class="cktl-filters" id="cocktailFilters">
+      <button class="filter-chip active" data-cktl-filter="all"><span data-en>All</span><span data-ru>Все</span></button>
+      <button class="filter-chip" data-cktl-filter="whisky">🥃 <span data-en>Whisky</span><span data-ru>Виски</span></button>
+      <button class="filter-chip" data-cktl-filter="gin">🫙 <span data-en>Gin</span><span data-ru>Джин</span></button>
+      <button class="filter-chip" data-cktl-filter="tequila">🌵 <span data-en>Tequila</span><span data-ru>Текила</span></button>
+      <button class="filter-chip" data-cktl-filter="rum">🍹 <span data-en>Rum</span><span data-ru>Ром</span></button>
+      <button class="filter-chip" data-cktl-filter="vodka">🧊 <span data-en>Vodka</span><span data-ru>Водка</span></button>
+      <button class="filter-chip" data-cktl-filter="cognac">🍇 <span data-en>Cognac</span><span data-ru>Коньяк</span></button>
+    </div>
   </div>
   <div class="cocktail-grid" id="cocktailGrid"></div>
 </div>
@@ -4696,6 +4721,7 @@ function setLang(l) {
   document.getElementById('lRu').classList.toggle('active', ru);
   document.getElementById('langToggle').setAttribute('aria-checked', ru);
   document.getElementById('searchInput').placeholder = ru ? 'Поиск по названию, региону, вкусу…' : 'Search by name, region, flavor…';
+  document.getElementById('cocktailSearch').placeholder = ru ? 'Поиск коктейлей…' : 'Search cocktails…';
   document.getElementById('resultsCount').textContent = '';
   if (navPillLbl) navPillLbl.textContent = NAV_LABELS[currentScreen]?.[l] || currentScreen;
   if (currentCat) {
@@ -5100,14 +5126,16 @@ function openSpiritModal(spiritId, itemId) {
   const heroSrc = item.img ? item.img.replace('images/bottles/', 'images/bottles_cards/') : null;
   const heroFallback = item.img || null;
 
-  const cocktailListHtml = (item.cocktails || []).map(c => `
-    <div class="ci">
+  const cocktailListHtml = (item.cocktails || []).map(c => {
+    const linked = COCKTAILS.find(x => c.name === x.name || c.name.startsWith(x.name + ' ') || c.name.startsWith(x.name + '(') || c.name.startsWith(x.name.split(' ')[0] + ' ' + x.name.split(' ')[1]));
+    return `<div class="ci${linked ? ' ci-link' : ''}"${linked ? ` data-cid="${linked.id}"` : ''}>
       <span class="ci-icon">${c.icon}</span>
       <div>
-        <div class="ci-name">${c.name}</div>
+        <div class="ci-name">${c.name}${linked ? '<span class="ci-arrow">›</span>' : ''}</div>
         <div class="ci-desc">${ru ? c.desc.ru : c.desc.en}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const html = `
     ${heroSrc ? `<div class="modal-hero modal-hero-cocktail">
@@ -5155,6 +5183,12 @@ function openSpiritModal(spiritId, itemId) {
   document.getElementById('modalBody').innerHTML = html;
   openModal();
   document.getElementById('modalClose')?.addEventListener('click', closeModal);
+  document.querySelectorAll('.ci-link[data-cid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const cocktail = COCKTAILS.find(x => x.id === el.dataset.cid);
+      if (cocktail) openCocktailModal(cocktail, () => openSpiritModal(spiritId, itemId));
+    });
+  });
 }
 
 function enterSpiritType() {
@@ -5287,7 +5321,13 @@ function navSetScreen(screen, keepContext = false) {
       renderMainHome();
     }
   }
-  if (screen === 'cocktails') renderCocktails();
+  if (screen === 'cocktails') {
+    cocktailSearch = '';
+    cocktailFilter = 'all';
+    document.getElementById('cocktailSearch').value = '';
+    document.querySelectorAll('[data-cktl-filter]').forEach(c => c.classList.toggle('active', c.dataset.cktlFilter === 'all'));
+    renderCocktails();
+  }
   if (screen === 'on-the-menu') renderOnTheMenu();
 }
 
@@ -5732,10 +5772,19 @@ function findSpirit(id) {
     || null;
 }
 
+let cocktailSearch = '';
+let cocktailFilter = 'all';
+
 function renderCocktails() {
-  const list = activeSpirit ? COCKTAILS.filter(c => c.baseSpirit === activeSpirit) : COCKTAILS;
+  const q = cocktailSearch.toLowerCase().trim();
+  const f = activeSpirit || cocktailFilter;
+
+  let list = COCKTAILS;
+  if (f && f !== 'all') list = list.filter(c => c.baseSpirit === f);
+  if (q) list = list.filter(c => c.name.toLowerCase().includes(q));
+
   const grid = document.getElementById('cocktailGrid');
-  grid.innerHTML = list.map(c => {
+  grid.innerHTML = list.length ? list.map(c => {
     const pills = c.topWhiskies.map(id => {
       const w = findSpirit(id);
       return w ? `<span class="ccard-wpill">${w.name}</span>` : '';
@@ -5753,7 +5802,7 @@ function renderCocktails() {
           <div class="ccard-whisky-pills">${pills}</div>
         </div>
       </div>`;
-  }).join('');
+  }).join('') : `<div class="empty-state"><p>${lang === 'en' ? 'No cocktails found' : 'Ничего не найдено'}</p></div>`;
 
   grid.querySelectorAll('.ccard').forEach(card => {
     const go = () => { const c = COCKTAILS.find(x => x.id === card.dataset.cid); if (c) openCocktailModal(c); };
@@ -5761,6 +5810,20 @@ function renderCocktails() {
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
   });
 }
+
+// Cocktail search & filter events
+document.getElementById('cocktailSearch').addEventListener('input', e => {
+  cocktailSearch = e.target.value;
+  renderCocktails();
+});
+
+document.getElementById('cocktailFilters').addEventListener('click', e => {
+  const chip = e.target.closest('[data-cktl-filter]');
+  if (!chip) return;
+  cocktailFilter = chip.dataset.cktlFilter;
+  document.querySelectorAll('[data-cktl-filter]').forEach(c => c.classList.toggle('active', c === chip));
+  renderCocktails();
+});
 
 /* ══════════════════════════════════════════════════
    WHISKY MODAL
@@ -5933,11 +5996,11 @@ function openCocktailModal(c, backFn) {
     ${cHeroSrc ? `<div class="modal-hero modal-hero-cocktail">
       <div class="modal-hero-bg" style="background-image:url('${cHeroSrc}')"></div>
       <img src="${cHeroSrc}" alt="${c.name}" loading="lazy" style="object-fit:cover;padding:0;filter:none;">
-      ${backFn ? `<button class="modal-hero-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
+      ${backFn ? `<button class="modal-hero-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back' : 'Назад'}</button>` : ''}
       <button class="modal-hero-close" id="modalClose">${svgClose}</button>
     </div>` : ''}
     <div class="modal-title-area" style="padding-bottom:4px">
-      ${!cHeroSrc && backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back to whisky' : 'Назад к виски'}</button>` : ''}
+      ${!cHeroSrc && backFn ? `<button class="modal-back" id="modalBackBtn">‹ ${lang === 'en' ? 'Back' : 'Назад'}</button>` : ''}
       <div style="font-size:2rem;margin-bottom:6px">${c.icon}</div>
       <div class="modal-name">${c.name}</div>
       <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px">${t(c.tagline)}</div>
