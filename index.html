@@ -503,13 +503,15 @@ body { padding-top: 73px; }
 }
 .cat-back-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 500;
-  color: var(--text-muted); background: none; border: none; cursor: pointer;
-  padding: 0; margin-bottom: 20px; transition: color 150ms ease;
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+  background: var(--recommend-bg); border: 1px solid var(--gold-dim); border-radius: 999px;
+  cursor: pointer; color: var(--gold-mid);
+  padding: 7px 14px 7px 10px; margin-bottom: 20px; letter-spacing: 0.03em;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease, transform 100ms ease;
 }
-.cat-back-btn:hover { color: var(--gold-bright); }
-.cat-back-btn svg { transition: transform 200ms ease; }
-.cat-back-btn:hover svg { transform: translateX(-3px); }
+.cat-back-btn:hover { color: var(--gold-bright); border-color: var(--gold-mid); background: var(--recommend-border); }
+.cat-back-btn:active { transform: scale(0.97); }
+.cat-back-btn svg { flex-shrink: 0; opacity: 0.8; }
 
 .cat-header-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
 .cat-header-icon { font-size: 2.4rem; line-height: 1; flex-shrink: 0; }
@@ -1452,14 +1454,17 @@ body.lang-ru [data-ru] { display: revert; }
    BACK BUTTON
 ═══════════════════════════════════════════════════════════ */
 .back-btn {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: none; border: none; cursor: pointer;
-  color: var(--text-muted); font-size: 0.85rem; font-weight: 500;
-  padding: 12px 16px 0; letter-spacing: 0.02em;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 160ms;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--recommend-bg); border: 1px solid var(--gold-dim); border-radius: 999px;
+  cursor: pointer; color: var(--gold-mid);
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+  padding: 7px 14px 7px 10px; margin-bottom: 20px;
+  letter-spacing: 0.03em; -webkit-tap-highlight-color: transparent;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease, transform 100ms ease;
 }
-.back-btn:active { color: var(--text-primary); }
+.back-btn:hover { color: var(--gold-bright); border-color: var(--gold-mid); background: var(--recommend-border); }
+.back-btn:active { transform: scale(0.97); }
+.back-btn svg { flex-shrink: 0; opacity: 0.8; }
 
 /* ═══════════════════════════════════════════════════════════
    SPIRIT MODAL HEADER (no image fallback)
@@ -1688,7 +1693,7 @@ body.lang-ru [data-ru] { display: revert; }
 
   <!-- ── VIEW: Spirit Type Selector ── -->
   <div id="spiritHome" hidden>
-    <button class="back-btn" onclick="exitSpiritType()">‹ <span data-en>Home</span><span data-ru>Главная</span></button>
+    <button class="back-btn" onclick="exitSpiritType()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-en>Home</span><span data-ru>Главная</span></button>
     <div class="hero-bar" style="padding-top:8px">
       <h1><span data-en>Choose a <em>Spirit.</em></span><span data-ru>Выбери <em>категорию.</em></span></h1>
     </div>
@@ -1697,7 +1702,7 @@ body.lang-ru [data-ru] { display: revert; }
 
   <!-- ── VIEW: Category Home ── -->
   <div id="catHome" hidden>
-    <button class="back-btn" onclick="exitSpirit()">‹ <span data-en>Alcohol</span><span data-ru>Алкоголь</span></button>
+    <button class="back-btn" onclick="exitSpirit()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-en>Alcohol</span><span data-ru>Алкоголь</span></button>
     <div class="hero-bar">
       <h1><span data-en>Know What's <em>Behind the Bar.</em></span><span data-ru>Знай что стоит <em>за баром.</em></span></h1>
       <p><span data-en>Tasting notes, cocktail pairings & serve recommendations — curated for the team.</span><span data-ru>Вкусовые профили, коктейли и советы по подаче — для своих.</span></p>
@@ -5224,7 +5229,7 @@ function enterSpirit(spiritId) {
     const backBtn = document.createElement('button');
     backBtn.className = 'back-btn';
     backBtn.id = 'spiritBackBtn';
-    backBtn.innerHTML = `‹ <span>${lang === 'ru' ? 'Алкоголь' : 'Spirits'}</span>`;
+    backBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${lang === 'ru' ? 'Алкоголь' : 'Spirits'}</span>`;
     backBtn.onclick = exitSpirit;
     if (!document.getElementById('spiritBackBtn')) {
       grid.parentNode.insertBefore(backBtn, grid);
@@ -5302,7 +5307,7 @@ function navSetScreen(screen, keepContext = false) {
           const backBtn = document.createElement('button');
           backBtn.className = 'back-btn';
           backBtn.id = 'spiritBackBtn';
-          backBtn.innerHTML = `‹ <span>${lang === 'ru' ? 'Алкоголь' : 'Spirits'}</span>`;
+          backBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${lang === 'ru' ? 'Алкоголь' : 'Spirits'}</span>`;
           backBtn.onclick = exitSpirit;
           grid.parentNode.insertBefore(backBtn, grid);
         }
