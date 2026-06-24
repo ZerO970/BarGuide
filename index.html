@@ -4629,11 +4629,164 @@ const COCKTAILS = [
 ══════════════════════════════════════════════════ */
 /* Event data — override per venue when an event is active */
 window.EVENT_DATA = {
-  active: false,
-  title: '',
-  dateStart: '',
-  dateEnd: '',
-  items: []
+  active: true,
+  title: 'London Essence',
+  dateStart: '2026-06-12',
+  dateEnd: '2026-08-31',
+  items: [
+    {
+      id: 'fille-du-sud',
+      icon: '🍈',
+      name: 'Fille du Sud',
+      tagline: { en: 'Melon, lime & a verbena breeze', ru: 'Дыня, лайм и дыхание вербены' },
+      topWhiskies: [],
+      topReasons: {},
+      history: {
+        en: 'Built around Palmarae Gin and house melonade, finished with a tonic top and a dusting of verbena — a lowball take on a Riviera afternoon.',
+        ru: 'Основа — Palmarae Gin и домашний меллонейд, сверху тоник и пыль вербены — низкий бокал в духе ривьерского полудня.'
+      },
+      spec: {
+        en: {
+          glass: 'Lowball, block ice',
+          ingredients: [
+            '30ml Palmarae Gin',
+            '15ml Melonade',
+            '10ml Clarified Lime',
+            '10ml House Syrup',
+            '15ml Fancy Foamer',
+            '30ml LE Riviera Tonic'
+          ],
+          method: 'Shaken & double strained',
+          garnish: 'Verbena dust'
+        },
+        ru: {
+          glass: 'Lowball, цельный лёд (block)',
+          ingredients: [
+            '30мл Palmarae Gin',
+            '15мл Melonade',
+            '10мл Clarified Lime',
+            '10мл House Syrup',
+            '15мл Fancy Foamer',
+            '30мл LE Riviera Tonic'
+          ],
+          method: 'Шейк и дабл-стрейн',
+          garnish: 'Пыль вербены'
+        }
+      }
+    },
+    {
+      id: 'cote-verte-spritz',
+      icon: '🌿',
+      name: 'Cote Verte Spritz',
+      tagline: { en: 'Rosé, basil & Italicus', ru: 'Розе, базилик и Italicus' },
+      topWhiskies: [],
+      topReasons: {},
+      history: {
+        en: 'A green-coast spritz: gin and rosé over basil and elderflower, lengthened with tonic and served over ice balls in a wine glass.',
+        ru: 'Спритц «зелёного побережья»: джин и розе на базилике и бузине, удлинённый тоником, подаётся на шарах льда в винном бокале.'
+      },
+      spec: {
+        en: {
+          glass: 'Wine glass, ice balls',
+          ingredients: [
+            '30ml Palmarae Gin',
+            '25ml Whispering Angel',
+            '15ml Italicus',
+            '10ml House Syrup',
+            '15ml Clarified Lemon',
+            '3x Basil Leaves',
+            '60ml LE Riviera Tonic'
+          ],
+          method: 'Shaken & double strained',
+          garnish: 'Bamboo leaf'
+        },
+        ru: {
+          glass: 'Винный бокал, ice balls',
+          ingredients: [
+            '30мл Palmarae Gin',
+            '25мл Whispering Angel',
+            '15мл Italicus',
+            '10мл House Syrup',
+            '15мл Clarified Lemon',
+            '3x листа базилика',
+            '60мл LE Riviera Tonic'
+          ],
+          method: 'Шейк и дабл-стрейн',
+          garnish: 'Лист бамбука'
+        }
+      }
+    },
+    {
+      id: 'palmarae-tonic',
+      icon: '🌴',
+      name: 'Palmarae & Tonic',
+      tagline: { en: 'The house G&T', ru: 'Домашний джин-тоник' },
+      topWhiskies: [],
+      topReasons: {},
+      history: {
+        en: 'No fuss, no shaker — just Palmarae Gin built long over ice and topped with LE Riviera Tonic.',
+        ru: 'Без шейкера и лишних движений — Palmarae Gin собирается прямо на льду и доливается LE Riviera Tonic.'
+      },
+      spec: {
+        en: {
+          glass: 'Highball, normal ice',
+          ingredients: [
+            '40ml Palmarae Gin',
+            'Top up LE Riviera Tonic'
+          ],
+          method: 'Built',
+          garnish: 'Orange wedge & mint sprig'
+        },
+        ru: {
+          glass: 'Highball, обычный лёд',
+          ingredients: [
+            '40мл Palmarae Gin',
+            'Долить LE Riviera Tonic'
+          ],
+          method: 'Билд (build)',
+          garnish: 'Дольки апельсина и веточка мяты'
+        }
+      }
+    },
+    {
+      id: 'bardot-au-soleil',
+      icon: '☀️',
+      name: 'Bardot au Soleil',
+      tagline: { en: 'Zero-proof, turmeric & nasturtium', ru: 'Безалкогольный, куркума и настурция' },
+      topWhiskies: [],
+      topReasons: {},
+      history: {
+        en: 'The N/A star of the menu — Seedlip Garden with turmeric-tarragon honey and lemon, lengthened with tonic and finished with edible nasturtium.',
+        ru: 'Безалкогольная звезда меню — Seedlip Garden с куркумно-тарагоновым мёдом и лимоном, удлинённый тоником и завершённый съедобной настурцией.'
+      },
+      spec: {
+        en: {
+          glass: 'Highball, normal ice',
+          ingredients: [
+            '40ml Seedlip Garden N/A',
+            '40ml Turmeric & Tarragon Honey',
+            '15ml Lemon',
+            '5ml Fancy Foam',
+            '75ml LE Riviera Tonic'
+          ],
+          method: 'Shaken & double strained',
+          garnish: 'Nasturtium'
+        },
+        ru: {
+          glass: 'Highball, обычный лёд',
+          ingredients: [
+            '40мл Seedlip Garden N/A',
+            '40мл Turmeric & Tarragon Honey',
+            '15мл Lemon',
+            '5мл Fancy Foam',
+            '75мл LE Riviera Tonic'
+          ],
+          method: 'Шейк и дабл-стрейн',
+          garnish: 'Настурция'
+        }
+      }
+    }
+  ]
 };
 
 const CATEGORIES = {
