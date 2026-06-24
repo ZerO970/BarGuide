@@ -5127,7 +5127,7 @@ function openSpiritModal(spiritId, itemId) {
   const heroFallback = item.img || null;
 
   const cocktailListHtml = (item.cocktails || []).map(c => {
-    const linked = COCKTAILS.find(x => c.name === x.name || c.name.startsWith(x.name + ' ') || c.name.startsWith(x.name + '(') || c.name.startsWith(x.name.split(' ')[0] + ' ' + x.name.split(' ')[1]));
+    const linked = findLinkedCocktail(c.name, spiritId);
     return `<div class="ci${linked ? ' ci-link' : ''}"${linked ? ` data-cid="${linked.id}"` : ''}>
       <span class="ci-icon">${c.icon}</span>
       <div>
@@ -5760,6 +5760,27 @@ const COCKTAIL_IMG = {
   'painkiller':             'Painkiller.jpg',
 };
 
+function findLinkedCocktail(cName, spiritId) {
+  // Forward: spirit's cocktail name starts with / equals / ends with a COCKTAILS entry name
+  const fwd = COCKTAILS.find(x =>
+    cName === x.name ||
+    cName.startsWith(x.name + ' ') ||
+    cName.startsWith(x.name + '(') ||
+    (x.name.split(' ').length >= 2 && cName.startsWith(x.name.split(' ')[0] + ' ' + x.name.split(' ')[1])) ||
+    cName.endsWith(' ' + x.name)   // e.g. "Whisky Highball" → "Highball", "Smoky Negroni" → "Negroni"
+  );
+  if (fwd) return fwd;
+
+  // Reverse: c.name is a suffix of a COCKTAILS name — e.g. "Martini" → "Vodka Martini"
+  const rev = COCKTAILS.filter(x => x.name.endsWith(' ' + cName));
+  if (!rev.length) return null;
+  if (rev.length === 1) return rev[0];
+  // Ambiguous: prefer the one whose name contains the spirit type, then by baseSpirit
+  return rev.find(x => spiritId && x.name.toLowerCase().includes(spiritId))
+      || rev.find(x => spiritId && x.baseSpirit === spiritId)
+      || null;
+}
+
 function findSpirit(id) {
   return WHISKIES.find(x => x.id === id)
     || (typeof GINS !== 'undefined' && GINS.find(x => x.id === id))
@@ -5896,7 +5917,7 @@ function openWhiskyModal(w, backFn) {
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'Cocktails' : 'Коктейли'}</div>
       <div class="cocktail-list">${w.cocktails.map(c => {
-        const linked = COCKTAILS.find(x => c.name === x.name || c.name.startsWith(x.name + ' ') || c.name.startsWith(x.name + '(') || c.name.startsWith(x.name.split(' ')[0]+ ' ' + x.name.split(' ')[1]));
+        const linked = findLinkedCocktail(c.name, 'whisky');
         return `<div class="ci${linked ? ' ci-link' : ''}" ${linked ? `data-cid="${linked.id}"` : ''}>
           <span class="ci-icon">${c.icon}</span>
           <div>
