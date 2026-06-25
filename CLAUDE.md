@@ -18,14 +18,14 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ---
 
-## File structure inside `index-v2.html` (~7100 lines)
+## File structure inside `index.html` (~7300 lines)
 
 | Lines (approx) | Content |
 |---|---|
 | 1–16 | `<head>`, fonts, no-flash script |
 | 17–1200 | `<style>` — all CSS |
 | 1200–1450 | `<body>` HTML |
-| 1450–3450 | `<script>` data: `WHISKIES[]`, `RUMS[]`, `COGNACS[]`, `ARMAGNACS[]`, `VODKAS[]`, `GINS[]`, `TEQUILAS[]`, `MEZCALS[]`, `ABSINTHES[]` |
+| 1450–3450 | `<script>` data: `WHISKIES[]` (74), `RUMS[]` (21), `COGNACS[]` (5), `ARMAGNACS[]`, `VODKAS[]` (8), `GINS[]` (8), `TEQUILAS[]` (15), `MEZCALS[]` (3), `ABSINTHES[]` |
 | 3450–3730 | `COCKTAILS[]` — 67 коктейлей (whisky×20, gin×13, tequila×10, rum×10, vodka×8, cognac×6) |
 | 3730–4000 | `CATEGORIES{}`, `SPIRIT_TYPES[]`, `MAIN_MENU[]`, `COCKTAIL_IMG{}`, `TRIVIA[]` |
 | 4000–4250 | JS — state, lang, theme, nav |
@@ -39,13 +39,66 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 ## Screens & navigation
 
 ```
-SCREEN_ORDER = ['bar', 'cocktails', 'quiz', 'match']
-DOM IDs:      #screen-bar  #screen-cocktails  #screen-quiz  #screen-match
+SCREEN_ORDER = ['event', 'bar', 'cocktails', 'on-the-menu', 'quiz', 'match']
+DOM IDs:      #screen-event  #screen-bar  #screen-cocktails  #screen-on-the-menu  #screen-quiz  #screen-match
 ```
 
-All 4 screens live side-by-side in `#screensTrack` (flex row, 400vw wide).
+All 6 screens live side-by-side in `#screensTrack` (flex row, 600vw wide).
 Navigation via `slideTrackTo(idx)` + `translateX`. Swipe handled by `initSwipe()`.
-`navSetScreen(screen)` — main function to switch screens (resets scroll to top).
+`navSetScreen(screen, keepContext)` — main function to switch screens. `keepContext=true` on swipe-back (preserves spirit view state).
+
+### Nav pill buttons (order in DOM)
+| Button | Behaviour |
+|---|---|
+| **Main** (`id="navMainBtn"`) | `goMainHome()` → shows 4-card main home |
+| **Event** (`data-screen="event"`) | only visible when event is active; amber dot animation |
+| **Alcohol** (`data-screen="bar"`) | `navSetScreen('bar')` → shows spirit type selector |
+| Cocktails / On the Menu / Quiz / Match | `navSetScreen(screen)` as usual |
+
+### Bar screen internal views (all inside `#screen-bar`)
+Navigation between views is DOM-based (hidden/shown), not screen-slide based.
+
+```
+mainHome (#mainHome)          ← goMainHome() lands here
+  └─ click Alcohol card
+spiritHome (#spiritHome)      ← navSetScreen('bar') via Alcohol nav lands here
+  └─ click a spirit type
+  [whisky]  → catHome (#catHome) → catDetail (#catDetail) → whiskeyGrid
+  [others]  → whiskeyGrid directly + spiritBackWrap (← Spirits button)
+```
+
+Key functions:
+- `goMainHome()` — go to 4-card home, highlights Main in nav
+- `enterSpiritType()` — show spiritHome (spirit type list)
+- `exitSpiritType()` — back to mainHome, highlights Main in nav
+- `enterSpirit(id)` — drill into a specific spirit category
+- `exitSpirit()` — back to spiritHome, highlights Alcohol in nav
+- `spiritBackWrap` (`<div id="spiritBackWrap">`) — block wrapper for the dynamic "← Spirits" back button (fixes left-drift on desktop)
+
+---
+
+## Events screen (`#screen-event`)
+
+Appears in nav only when `isEventActiveToday()` returns true (checks `EVENT_DATA.dateStart`/`dateEnd` against today).
+
+### EVENT_DATA structure
+```js
+window.EVENT_DATA = {
+  active: true,
+  title: 'London Essence',          // shown as <em> in hero
+  dateStart: '2026-06-12',
+  dateEnd: '2026-09-30',
+  items: [/* cocktail objects, same shape as COCKTAILS[] */]
+};
+```
+Rendered by `initEventScreen()` on page load. Nav button pulses with amber dot animation (`.nav-event-btn.event-active::before`).
+
+### Sponsor logos
+Below the event cocktail grid, `.event-sponsors` section shows partner brands:
+- **London Essence Co.** — inline SVG monogram (LE mark, `fill="currentColor"`)
+- **Palmarae** — inline SVG wordmark sourced from palmarae.com (`fill="currentColor"`)
+
+Both logos adapt to all 4 themes via `color: var(--text-secondary)`.
 
 ---
 

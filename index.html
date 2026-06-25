@@ -286,8 +286,10 @@ body { padding-top: 73px; }
   transition: max-width 320ms cubic-bezier(0.34,1.05,0.64,1), opacity 200ms ease;
 }
 .nav-pill.open .nav-pill-extras {
-  max-width: 380px; opacity: 1; pointer-events: auto;
+  max-width: calc(100vw - 90px); opacity: 1; pointer-events: auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
 }
+.nav-pill.open .nav-pill-extras::-webkit-scrollbar { display: none; }
 .nav-pill.open .nav-pill-arrow { transform: rotate(180deg); opacity: 0.4; }
 
 /* Individual items inside expanded */
