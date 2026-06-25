@@ -1,4 +1,4 @@
-const CACHE = 'alligator-guide-20260625-0628';
+const CACHE = 'alligator-guide-20260625-0729';
 const ASSETS = [
   '/AlligatorGuide/',
   '/AlligatorGuide/index.html',
@@ -151,6 +151,10 @@ const ASSETS = [
   '/AlligatorGuide/images/ui/card-menu.jpg',
   '/AlligatorGuide/images/ui/card-menu-dark.svg',
   '/AlligatorGuide/images/ui/card-events.jpg',
+  '/AlligatorGuide/images/events/riviera-fille-du-sud.jpg',
+  '/AlligatorGuide/images/events/riviera-cote-verte-spritz.jpg',
+  '/AlligatorGuide/images/events/riviera-palmarae-tonic.jpg',
+  '/AlligatorGuide/images/events/riviera-bardot-au-soleil.jpg',
 ];
 
 self.addEventListener('install', e => {

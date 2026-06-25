@@ -1576,6 +1576,30 @@ body.lang-ru [data-ru] { display: revert; }
   text-transform: uppercase; margin-top: 6px;
 }
 
+/* Riviera modal — radial stripe pattern */
+.modal.modal-riviera {
+  background:
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      oklch(58% 0.14 192 / 0.08) 0deg 3deg,
+      transparent 3deg 6deg
+    ),
+    var(--bg-surface);
+}
+
+/* London Essence event card accent */
+#eventGrid .ccard {
+  border-color: oklch(52% 0.13 192 / 0.5);
+  border-top: 3px solid oklch(58% 0.14 192);
+}
+#eventGrid .ccard:hover {
+  border-color: oklch(58% 0.14 192 / 0.8);
+  border-top-color: oklch(65% 0.15 192);
+}
+#eventGrid .ccard-img::after {
+  background: linear-gradient(to bottom, transparent 50%, oklch(52% 0.13 192 / 0.12) 100%);
+}
+
 /* Event sponsors strip */
 .event-sponsors {
   margin: 36px auto 28px;
@@ -4884,6 +4908,7 @@ window.EVENT_DATA = {
     {
       id: 'fille-du-sud',
       icon: '🍈',
+      img: 'images/events/riviera-fille-du-sud.jpg',
       name: 'Fille du Sud',
       tagline: { en: 'Melon, lime & a verbena breeze', ru: 'Дыня, лайм и дыхание вербены' },
       topWhiskies: [],
@@ -4924,6 +4949,7 @@ window.EVENT_DATA = {
     {
       id: 'cote-verte-spritz',
       icon: '🌿',
+      img: 'images/events/riviera-cote-verte-spritz.jpg',
       name: 'Cote Verte Spritz',
       tagline: { en: 'Rosé, basil & Italicus', ru: 'Розе, базилик и Italicus' },
       topWhiskies: [],
@@ -4966,6 +4992,7 @@ window.EVENT_DATA = {
     {
       id: 'palmarae-tonic',
       icon: '🌴',
+      img: 'images/events/riviera-palmarae-tonic.jpg',
       name: 'Palmarae & Tonic',
       tagline: { en: 'The house G&T', ru: 'Домашний джин-тоник' },
       topWhiskies: [],
@@ -4998,6 +5025,7 @@ window.EVENT_DATA = {
     {
       id: 'bardot-au-soleil',
       icon: '☀️',
+      img: 'images/events/riviera-bardot-au-soleil.jpg',
       name: 'Bardot au Soleil',
       tagline: { en: 'Zero-proof, turmeric & nasturtium', ru: 'Безалкогольный, куркума и настурция' },
       topWhiskies: [],
@@ -5217,12 +5245,19 @@ function initEventScreen() {
       titleEl.innerHTML = `<em>${EVENT_DATA.title}</em>`;
     }
     if (gridEl && EVENT_DATA.items?.length) {
-      gridEl.innerHTML = EVENT_DATA.items.map(item => `
-        <div class="cocktail-card" onclick="openCocktailModal(EVENT_DATA.items.find(i=>i.id==='${item.id}'))">
-          <div class="cocktail-card-icon">${item.icon || '🍸'}</div>
-          <div class="cocktail-card-name">${item.name}</div>
-          <div class="cocktail-card-tag">${item.tagline ? (lang==='ru' ? item.tagline.ru : item.tagline.en) : ''}</div>
-        </div>`).join('');
+      gridEl.innerHTML = EVENT_DATA.items.map(item => {
+        const imgHTML = item.img
+          ? `<img src="${item.img}" alt="${item.name}" loading="lazy">`
+          : `<span style="font-size:3.5rem">${item.icon || '🍸'}</span>`;
+        return `
+        <div class="ccard" onclick="openCocktailModal(EVENT_DATA.items.find(i=>i.id==='${item.id}'))">
+          <div class="ccard-img">${imgHTML}</div>
+          <div class="ccard-body">
+            <div class="ccard-name">${item.name}</div>
+            <div class="ccard-tagline">${item.tagline ? (lang==='ru' ? item.tagline.ru : item.tagline.en) : ''}</div>
+          </div>
+        </div>`;
+      }).join('');
     }
   }
   slideTrackTo(SCREEN_ORDER.indexOf(currentScreen), false);
@@ -6455,7 +6490,9 @@ function openCocktailModal(c, backFn) {
     </div>` : '';
 
   const cImgFile = COCKTAIL_IMG[c.id];
-  const cHeroSrc = cImgFile ? `images/Cocktails/${cImgFile}` : null;
+  const cHeroSrc = cImgFile ? `images/Cocktails/${cImgFile}` : (c.img || null);
+  const isEventCocktail = c.img?.includes('events/');
+  document.getElementById('modalPanel').classList.toggle('modal-riviera', !!isEventCocktail);
   const svgClose = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   document.getElementById('modalBody').innerHTML = `
     ${cHeroSrc ? `<div class="modal-hero modal-hero-cocktail">
@@ -6517,6 +6554,7 @@ function openModal() {
 }
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalPanel').classList.remove('modal-riviera');
 }
 document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
