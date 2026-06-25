@@ -7175,6 +7175,7 @@ syncFavBtn();
 
   document.addEventListener('touchstart', e => {
     if (modalOverlay.classList.contains('open')) return;
+    if (e.target.closest('#navPill')) return; // nav scrolls independently
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     dragDX = 0; dragging = true; axisLocked = false; isHoriz = false;
