@@ -1079,6 +1079,8 @@ body { padding-top: 73px; }
 .ladder-price { font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--gold-bright); }
 .ladder-tags { font-size: 0.74rem; color: var(--text-secondary); margin: 3px 0; }
 .ladder-serve { font-size: 0.74rem; color: var(--gold-muted); font-style: italic; }
+.ladder-upsell { font-size: 0.72rem; color: var(--text-secondary); margin-top: 5px; padding: 4px 8px; background: oklch(60% 0.12 72 / 0.10); border-radius: 6px; line-height: 1.35; }
+.ladder-upsell strong { color: var(--gold-mid); }
 .ladder-arrow { flex-shrink: 0; color: var(--gold-dim); font-size: 1.1rem; }
 .flight-box { margin-top: 16px; padding: 16px; border: 1px dashed var(--gold-dim); border-radius: 16px; background: var(--recommend-bg); text-align: center; }
 .flight-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-bright); margin-bottom: 4px; }
@@ -7476,6 +7478,41 @@ const MATCH_TIER = [
   { en: 'Treat yourself', ru: 'Если побаловать' },
 ];
 
+function mUpsellLine(w, safeW, tierIdx) {
+  if (tierIdx === 0 || !safeW || w.id === safeW.id) return '';
+  const ru = lang === 'ru';
+  const diff = Math.round(mPrice(w) - mPrice(safeW));
+  const sp = safeW.palate || {}, wp = w.palate || {};
+
+  // Find the axis where this bottle is most improved vs safe pick
+  const axes = [
+    { k: 'spice',   en: 'spicier',         ru: 'больше пряности' },
+    { k: 'malt',    en: 'richer malt',      ru: 'богаче солод' },
+    { k: 'fruit',   en: 'more fruit',       ru: 'ярче фрукты' },
+    { k: 'caramel', en: 'deeper caramel',   ru: 'глубже карамель' },
+    { k: 'oak',     en: 'more oak & depth', ru: 'больше дуба и глубины' },
+  ];
+  const best = axes.slice().sort((a, b) => ((wp[b.k] || 0) - (sp[b.k] || 0)) - ((wp[a.k] || 0) - (sp[a.k] || 0)))[0];
+  const abvW = parseFloat(w.abv) || 40;
+  const abvS = parseFloat(safeW.abv) || 40;
+
+  let reason = ru ? best.ru : best.en;
+  if (abvW - abvS >= 6) reason = ru ? 'больше насыщенности (крепче)' : 'more intensity (higher ABV)';
+  if (mSmoke(w) >= 5 && mSmoke(safeW) < 5) reason = ru ? 'дымный характер — совсем другой опыт' : 'smoky character — a different experience';
+
+  const diffStr = diff > 0 ? (ru ? `+£${diff}` : `+£${diff}`) : '';
+
+  if (tierIdx === 1) {
+    return ru
+      ? `👆 Шаг вперёд от <strong>${safeW.name}</strong>${diffStr ? ' (' + diffStr + ')' : ''}: ${reason}.`
+      : `👆 Step up from <strong>${safeW.name}</strong>${diffStr ? ' (' + diffStr + ')' : ''}: ${reason}.`;
+  }
+  // tier 2 — "Treat yourself"
+  return ru
+    ? `⭐ Стоит доплатить${diffStr ? ' ' + diffStr : ''}: ${reason}. Предложи как особый вариант.`
+    : `⭐ Worth the extra${diffStr ? ' ' + diffStr : ''}: ${reason}. Pitch it as the special pick.`;
+}
+
 function renderMatchProgress() {
   const dots = [0, 1, 2].map(i => {
     const cls = i < matchState.step ? 'done' : (i === matchState.step ? 'active' : '');
@@ -7586,6 +7623,7 @@ function renderMatchResults() {
   const budLabel = (MATCH_BUDGET.find(x => x.id === matchState.budget) || {})[ru ? 'ru' : 'en'] || '';
   const summary = `<b>${expLabel}</b> · ${flavLabels} · ${budLabel}${matchState.occasion ? ' · 🎉' : ''}`;
 
+  const safeW = ladder[0] ? ladder[0].w : null;
   const cards = ladder.map((x, i) => {
     const w = x.w;
     const tier = MATCH_TIER[Math.min(i, 2)];
@@ -7593,6 +7631,7 @@ function renderMatchResults() {
     const img = w.img
       ? `<img class="ladder-img" src="${w.img}" alt="" loading="lazy">`
       : `<span class="ladder-img-ph">🥃</span>`;
+    const upsell = mUpsellLine(w, safeW, i);
     return `
       <div class="ladder-card">
         <div class="ladder-tier tier-${Math.min(i, 2)}">${ru ? tier.ru : tier.en}</div>
@@ -7602,6 +7641,7 @@ function renderMatchResults() {
             <div class="ladder-name">${w.name}<span class="ladder-price">${w.priceGbp || ''}</span></div>
             <div class="ladder-tags">${tags}</div>
             <div class="ladder-serve">${mServe(w)}</div>
+            ${upsell ? `<div class="ladder-upsell">${upsell}</div>` : ''}
           </div>
           <span class="ladder-arrow">›</span>
         </div>

@@ -1,4 +1,4 @@
-const CACHE = 'alligator-guide-20260625-1858';
+const CACHE = 'alligator-guide-20260625-1938';
 const ASSETS = [
   '/AlligatorGuide/',
   '/AlligatorGuide/index.html',
