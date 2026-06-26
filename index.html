@@ -1497,6 +1497,10 @@ body.lang-ru [data-ru] { display: revert; }
   object-fit: cover; object-position: center;
   display: block;
 }
+@media (max-width: 640px) {
+  [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
+  [data-id="events"] .main-card-photo { object-position: center 35%; }
+}
 .main-card-fallback {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
@@ -5440,7 +5444,7 @@ function renderMainHome() {
       ? `<img class="main-card-photo" src="${photoSrc}" alt="" loading="lazy"${item.imgPos ? ` style="object-position:${item.imgPos}"` : ''}>`
       : `<div class="main-card-fallback">${item.icon}</div>`;
     return `
-      <div class="main-card ${cls}${item.available ? '' : ' inactive'}"
+      <div class="main-card ${cls}${item.available ? '' : ' inactive'}" data-id="${item.id}"
            ${item.available ? `onclick="MAIN_MENU.find(m=>m.id==='${item.id}').action()"` : ''}>
         ${media}
         <div class="main-card-gradient"></div>
