@@ -309,7 +309,7 @@ body { padding-top: 73px; }
 /* ─── Screens carousel track ──────────────────────────── */
 #screensTrack {
   display: flex;
-  width: 600vw;
+  width: 800vw;
   will-change: transform;
   transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
   height: calc(100dvh - 73px);
@@ -1735,6 +1735,239 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
   html.theme-transitioning .nav-pill-inner,
   html.theme-transitioning .louie-gator-bg { transition: none !important; }
 }
+
+/* ══════════════════════════════════════════════════
+   DAILY SPECIAL
+══════════════════════════════════════════════════ */
+#dailySpecialContainer { margin-top: 16px; }
+.daily-special-card {
+  position: relative; border-radius: 16px; overflow: hidden;
+  background: var(--card-bg); border: 1px solid var(--border);
+  cursor: pointer; transition: transform .15s, box-shadow .15s;
+  min-height: 120px;
+}
+.daily-special-card:active { transform: scale(0.98); }
+.daily-special-img {
+  width: 100%; height: 140px; object-fit: cover; display: block;
+}
+.daily-special-body {
+  padding: 14px 16px 16px;
+}
+.daily-special-label {
+  font-size: .65rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold-mid); margin-bottom: 4px;
+}
+.daily-special-name {
+  font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;
+}
+.daily-special-desc {
+  font-size: .8rem; color: var(--text-secondary); line-height: 1.4;
+}
+.daily-special-emoji {
+  font-size: 2.5rem; text-align: center; padding: 20px 0 4px;
+}
+
+/* ══════════════════════════════════════════════════
+   FLAVOR PROFILE (cocktail modal)
+══════════════════════════════════════════════════ */
+.flavor-profile-grid {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+}
+.fp-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.fp-label {
+  font-size: .72rem; color: var(--text-muted); min-width: 72px; flex-shrink: 0;
+}
+.fp-bar-track {
+  flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.fp-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold-mid), var(--gold-light, #d4af6e));
+  transition: width .4s ease;
+}
+
+/* ══════════════════════════════════════════════════
+   FOOD MENU SCREEN
+══════════════════════════════════════════════════ */
+.food-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 16px; }
+.food-filter-btn {
+  padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-secondary);
+  font-size: .75rem; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.food-filter-btn.active {
+  background: var(--gold-mid); color: #fff; border-color: var(--gold-mid);
+}
+.food-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+@media (max-width: 380px) { .food-grid { grid-template-columns: 1fr; } }
+.food-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; cursor: pointer;
+  transition: transform .12s, box-shadow .12s;
+}
+.food-card:active { transform: scale(0.97); }
+.food-card-img {
+  width: 100%; height: 110px; object-fit: cover; display: block;
+  background: var(--border);
+}
+.food-card-emoji {
+  height: 110px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; background: var(--card-bg-2, var(--border));
+}
+.food-card-body { padding: 10px 12px 12px; }
+.food-card-name {
+  font-size: .88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px;
+}
+.food-card-price {
+  font-size: .75rem; color: var(--gold-mid); font-weight: 600; margin-bottom: 4px;
+}
+.food-card-desc {
+  font-size: .72rem; color: var(--text-muted); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.food-modal-allergens {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+}
+.allergen-tag {
+  font-size: .65rem; padding: 3px 8px; border-radius: 10px;
+  background: var(--border); color: var(--text-muted); font-weight: 600;
+}
+.food-pairing-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.food-pairing-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+  cursor: pointer;
+}
+.food-pairing-item:active { opacity: .7; }
+.food-pairing-name { font-size: .82rem; font-weight: 600; color: var(--text-primary); }
+.food-pairing-type { font-size: .7rem; color: var(--text-muted); }
+
+/* ══════════════════════════════════════════════════
+   CHECKLIST SCREEN
+══════════════════════════════════════════════════ */
+.checklist-role-tabs, .checklist-shift-tabs {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.role-tab, .shift-tab {
+  padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-secondary);
+  font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.role-tab.active, .shift-tab.active {
+  background: var(--gold-mid); color: #fff; border-color: var(--gold-mid);
+}
+.checklist-progress-bar {
+  height: 4px; background: var(--border); border-radius: 2px;
+  margin-bottom: 6px; overflow: hidden;
+}
+.checklist-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--gold-mid); transition: width .3s ease;
+}
+.checklist-progress-label {
+  font-size: .72rem; color: var(--text-muted); margin-bottom: 16px;
+}
+.task-of-day-banner {
+  background: var(--card-bg); border: 1px solid var(--gold-mid);
+  border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.task-of-day-icon { font-size: 1.3rem; flex-shrink: 0; }
+.task-of-day-body {}
+.task-of-day-label {
+  font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--gold-mid); margin-bottom: 2px;
+}
+.task-of-day-text { font-size: .88rem; color: var(--text-primary); font-weight: 600; }
+.checklist-items { display: flex; flex-direction: column; gap: 8px; }
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px; background: var(--card-bg);
+  border: 1px solid var(--border); border-radius: 12px; cursor: pointer;
+  transition: background .12s, border-color .12s;
+}
+.checklist-item.done {
+  background: color-mix(in oklch, var(--gold-mid) 8%, var(--card-bg));
+  border-color: color-mix(in oklch, var(--gold-mid) 30%, var(--border));
+}
+.checklist-item .ci-check {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; margin-top: 1px;
+}
+.checklist-item.done .ci-check {
+  background: var(--gold-mid); border-color: var(--gold-mid); color: #fff;
+}
+.checklist-item .ci-task {
+  font-size: .85rem; color: var(--text-primary); line-height: 1.4;
+}
+.checklist-item.done .ci-task {
+  text-decoration: line-through; color: var(--text-muted);
+}
+.checklist-reset-btn {
+  margin-top: 20px; width: 100%; padding: 12px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-muted);
+  font-size: .8rem; cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════════
+   MANAGER UPDATES OVERLAY
+══════════════════════════════════════════════════ */
+#updatesOverlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+#updatesOverlay.open { opacity: 1; pointer-events: all; }
+#updatesPanel {
+  background: var(--modal-bg, var(--card-bg));
+  border-radius: 20px 20px 0 0; width: 100%; max-width: 640px;
+  max-height: 85dvh; overflow-y: auto; padding: 20px 20px 40px;
+  transform: translateY(30px); transition: transform .25s;
+}
+#updatesOverlay.open #updatesPanel { transform: translateY(0); }
+.updates-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.updates-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.updates-close {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: none; background: var(--border); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); font-size: .85rem;
+}
+.update-item {
+  border-bottom: 1px solid var(--border); padding: 14px 0;
+}
+.update-item:last-child { border-bottom: none; }
+.update-item-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 6px;
+}
+.update-item-title { font-size: .9rem; font-weight: 700; color: var(--text-primary); }
+.update-item-date { font-size: .7rem; color: var(--text-muted); }
+.update-item-body { font-size: .82rem; color: var(--text-secondary); line-height: 1.5; }
+.update-item-tag {
+  display: inline-block; font-size: .62rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 6px; margin-bottom: 6px;
+}
+.update-tag-info { background: color-mix(in oklch, #4a9eff 15%, transparent); color: #4a9eff; }
+.update-tag-urgent { background: color-mix(in oklch, #ff4a4a 15%, transparent); color: #ff4a4a; }
+.update-tag-menu { background: color-mix(in oklch, var(--gold-mid) 20%, transparent); color: var(--gold-mid); }
+.nav-updates-badge {
+  display: inline-block; background: #ff4a4a; color: #fff;
+  border-radius: 8px; font-size: .6rem; font-weight: 700;
+  padding: 1px 5px; margin-left: 4px; vertical-align: middle;
+  line-height: 1.4;
+}
 </style>
 </head>
 <body>
@@ -1793,6 +2026,9 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
           <button class="nav-pill-item" data-screen="bar"><span data-en>Alcohol</span><span data-ru>Алкоголь</span><span class="nav-new-badge" id="navAlcoholBadge"></span></button>
           <button class="nav-pill-item" data-screen="cocktails"><span data-en>Cocktails</span><span data-ru>Коктейли</span></button>
           <button class="nav-pill-item" data-screen="on-the-menu"><span data-en>On the Menu</span><span data-ru>Обновления</span></button>
+          <button class="nav-pill-item" data-screen="food"><span data-en>Food</span><span data-ru>Кухня</span></button>
+          <button class="nav-pill-item" data-screen="checklist"><span data-en>Checklist</span><span data-ru>Чеклист</span></button>
+          <button class="nav-pill-item" id="navUpdatesBtn" onclick="openUpdates()"><span data-en>Updates</span><span data-ru>Обновления</span><span class="nav-updates-badge" id="navUpdatesBadge" style="display:none"></span></button>
           <button class="nav-pill-item" data-screen="quiz"><span data-en>Quiz</span><span data-ru>Квиз</span></button>
           <button class="nav-pill-item" data-screen="match"><span data-en>Match</span><span data-ru>Подбор</span></button>
         </div>
@@ -1851,6 +2087,7 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
   <!-- ── VIEW: Main Home (4 cards) ── -->
   <div id="mainHome">
     <div class="main-home-grid" id="mainHomeGrid"></div>
+    <div id="dailySpecialContainer"></div>
   </div>
 
   <!-- ── VIEW: Spirit Type Selector ── -->
@@ -2082,7 +2319,42 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
 
   <div class="bottle-mode" id="bottleMode" hidden></div>
 </div>
+<!-- ─── SCREEN: FOOD ────────────────────────────────── -->
+<div class="screen" id="screen-food">
+  <div class="hero-bar">
+    <h1><span data-en>Food <em>Menu.</em></span><span data-ru>Меню <em>Кухни.</em></span></h1>
+    <p><span data-en>Descriptions, allergens & cocktail pairings for every dish.</span><span data-ru>Описания, аллергены и коктейльные пэйринги к каждому блюду.</span></p>
+  </div>
+  <div class="food-filters" id="foodFilters"></div>
+  <div class="food-grid" id="foodGrid"></div>
+</div>
+
+<!-- ─── SCREEN: CHECKLIST ──────────────────────────── -->
+<div class="screen" id="screen-checklist">
+  <div class="hero-bar">
+    <h1><span data-en>Shift <em>Checklist.</em></span><span data-ru>Чеклист <em>смены.</em></span></h1>
+    <p><span data-en>Stay sharp. Complete each section before and after service.</span><span data-ru>Держи темп. Выполни каждый раздел до и после сервиса.</span></p>
+  </div>
+  <div id="taskOfDayBanner"></div>
+  <div class="checklist-role-tabs" id="checklistRoleTabs"></div>
+  <div class="checklist-shift-tabs" id="checklistShiftTabs"></div>
+  <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklistProgressFill"></div></div>
+  <div class="checklist-progress-label" id="checklistProgressLabel"></div>
+  <div class="checklist-items" id="checklistItems"></div>
+  <button class="checklist-reset-btn" onclick="resetChecklist()"><span data-en>↺ Reset today's checklist</span><span data-ru>↺ Сбросить чеклист на сегодня</span></button>
+</div>
 </div><!-- /screensTrack -->
+
+<!-- ─── MANAGER UPDATES OVERLAY ─────────────────── -->
+<div id="updatesOverlay">
+  <div id="updatesPanel">
+    <div class="updates-header">
+      <div class="updates-title"><span data-en>📢 Team Updates</span><span data-ru>📢 Обновления команды</span></div>
+      <button class="updates-close" onclick="closeUpdates()">✕</button>
+    </div>
+    <div id="updatesContent"></div>
+  </div>
+</div>
 
 <!-- ─── COMPARE BAR ────────────────────────────────── -->
 <div class="compare-bar" id="compareBar">
@@ -4972,6 +5244,274 @@ const COCKTAILS = [
 ];
 
 /* ══════════════════════════════════════════════════
+   COCKTAIL FLAVOR PROFILES
+══════════════════════════════════════════════════ */
+const COCKTAIL_FLAVOR_PROFILES = {
+  // Whisky
+  'old-fashioned':      { sweet:4, sour:0, bitter:3, smoky:1, spicy:2, fruity:2, floral:0, creamy:0 },
+  'manhattan':          { sweet:3, sour:0, bitter:4, smoky:1, spicy:2, fruity:2, floral:0, creamy:0 },
+  'whisky-sour':        { sweet:3, sour:4, bitter:1, smoky:1, spicy:1, fruity:2, floral:0, creamy:2 },
+  'highball':           { sweet:2, sour:1, bitter:1, smoky:2, spicy:1, fruity:2, floral:1, creamy:0 },
+  'penicillin':         { sweet:2, sour:4, bitter:1, smoky:3, spicy:3, fruity:2, floral:1, creamy:0 },
+  'boulevardier':       { sweet:2, sour:0, bitter:5, smoky:1, spicy:2, fruity:2, floral:0, creamy:0 },
+  'hot-toddy':          { sweet:4, sour:2, bitter:1, smoky:1, spicy:3, fruity:1, floral:1, creamy:0 },
+  'rob-roy':            { sweet:3, sour:0, bitter:3, smoky:2, spicy:2, fruity:2, floral:0, creamy:0 },
+  'paper-plane':        { sweet:2, sour:3, bitter:3, smoky:0, spicy:2, fruity:3, floral:0, creamy:0 },
+  'gold-rush':          { sweet:4, sour:3, bitter:0, smoky:1, spicy:1, fruity:1, floral:1, creamy:0 },
+  'mint-julep':         { sweet:3, sour:1, bitter:1, smoky:0, spicy:1, fruity:0, floral:3, creamy:0 },
+  'vieux-carre':        { sweet:2, sour:0, bitter:3, smoky:1, spicy:3, fruity:2, floral:1, creamy:0 },
+  'sazerac-cocktail':   { sweet:2, sour:0, bitter:3, smoky:0, spicy:3, fruity:1, floral:2, creamy:0 },
+  'whisky-mule':        { sweet:2, sour:3, bitter:1, smoky:1, spicy:4, fruity:2, floral:1, creamy:0 },
+  'jameson-ginger-lime':{ sweet:2, sour:3, bitter:0, smoky:0, spicy:3, fruity:2, floral:1, creamy:0 },
+  'irish-coffee':       { sweet:4, sour:0, bitter:2, smoky:0, spicy:1, fruity:0, floral:0, creamy:5 },
+  'new-york-sour':      { sweet:3, sour:4, bitter:2, smoky:1, spicy:1, fruity:4, floral:0, creamy:2 },
+  'rusty-nail':         { sweet:4, sour:0, bitter:1, smoky:2, spicy:1, fruity:1, floral:2, creamy:0 },
+  'blood-and-sand':     { sweet:3, sour:2, bitter:2, smoky:2, spicy:1, fruity:3, floral:0, creamy:0 },
+  'godfather':          { sweet:4, sour:0, bitter:1, smoky:2, spicy:1, fruity:1, floral:1, creamy:0 },
+  // Gin
+  'negroni':            { sweet:2, sour:0, bitter:5, smoky:0, spicy:1, fruity:2, floral:1, creamy:0 },
+  'gin-and-tonic':      { sweet:1, sour:2, bitter:3, smoky:0, spicy:1, fruity:1, floral:2, creamy:0 },
+  'tom-collins':        { sweet:3, sour:4, bitter:1, smoky:0, spicy:0, fruity:2, floral:2, creamy:0 },
+  'gimlet':             { sweet:3, sour:4, bitter:0, smoky:0, spicy:0, fruity:2, floral:2, creamy:0 },
+  'bees-knees':         { sweet:4, sour:3, bitter:0, smoky:0, spicy:0, fruity:1, floral:3, creamy:0 },
+  'last-word':          { sweet:2, sour:3, bitter:2, smoky:0, spicy:1, fruity:2, floral:2, creamy:0 },
+  'french-75':          { sweet:2, sour:3, bitter:1, smoky:0, spicy:0, fruity:2, floral:3, creamy:1 },
+  'southside':          { sweet:3, sour:3, bitter:0, smoky:0, spicy:0, fruity:1, floral:3, creamy:1 },
+  'aviation':           { sweet:3, sour:3, bitter:0, smoky:0, spicy:0, fruity:2, floral:5, creamy:0 },
+  'martinez':           { sweet:3, sour:0, bitter:4, smoky:0, spicy:2, fruity:2, floral:2, creamy:0 },
+  'clover-club':        { sweet:3, sour:4, bitter:0, smoky:0, spicy:0, fruity:3, floral:2, creamy:2 },
+  'vesper-martini':     { sweet:1, sour:0, bitter:3, smoky:0, spicy:1, fruity:0, floral:2, creamy:0 },
+  'corpse-reviver-2':   { sweet:2, sour:3, bitter:2, smoky:1, spicy:0, fruity:2, floral:2, creamy:0 },
+  // Tequila / Mezcal
+  'margarita':          { sweet:2, sour:5, bitter:1, smoky:0, spicy:1, fruity:2, floral:1, creamy:0 },
+  'paloma':             { sweet:2, sour:4, bitter:2, smoky:0, spicy:0, fruity:4, floral:1, creamy:0 },
+  'spicy-margarita':    { sweet:2, sour:4, bitter:1, smoky:0, spicy:5, fruity:1, floral:0, creamy:0 },
+  'tequila-sunrise':    { sweet:5, sour:2, bitter:0, smoky:0, spicy:0, fruity:5, floral:1, creamy:0 },
+  'oaxacan-old-fashioned':{ sweet:3, sour:0, bitter:2, smoky:4, spicy:2, fruity:1, floral:0, creamy:0 },
+  'el-diablo':          { sweet:3, sour:3, bitter:0, smoky:0, spicy:3, fruity:3, floral:0, creamy:0 },
+  'mezcal-mule':        { sweet:2, sour:3, bitter:0, smoky:4, spicy:4, fruity:1, floral:0, creamy:0 },
+  'naked-and-famous':   { sweet:2, sour:3, bitter:3, smoky:2, spicy:1, fruity:2, floral:0, creamy:0 },
+  'batanga':            { sweet:3, sour:2, bitter:2, smoky:1, spicy:1, fruity:2, floral:0, creamy:0 },
+  'tommy-margarita':    { sweet:2, sour:4, bitter:1, smoky:0, spicy:1, fruity:2, floral:1, creamy:0 },
+  // Rum
+  'mojito':             { sweet:3, sour:3, bitter:0, smoky:0, spicy:0, fruity:2, floral:3, creamy:0 },
+  'daiquiri':           { sweet:2, sour:4, bitter:0, smoky:0, spicy:0, fruity:2, floral:1, creamy:0 },
+  'dark-and-stormy':    { sweet:3, sour:2, bitter:0, smoky:0, spicy:4, fruity:2, floral:0, creamy:0 },
+  'mai-tai':            { sweet:4, sour:3, bitter:1, smoky:0, spicy:1, fruity:5, floral:2, creamy:0 },
+  'jungle-bird':        { sweet:2, sour:3, bitter:4, smoky:0, spicy:1, fruity:4, floral:0, creamy:0 },
+  'daiquiri-hemingway': { sweet:1, sour:5, bitter:2, smoky:0, spicy:0, fruity:3, floral:1, creamy:0 },
+  'rum-old-fashioned':  { sweet:4, sour:0, bitter:2, smoky:0, spicy:2, fruity:3, floral:0, creamy:0 },
+  'el-presidente':      { sweet:3, sour:1, bitter:2, smoky:0, spicy:0, fruity:3, floral:2, creamy:0 },
+  'pina-colada':        { sweet:5, sour:1, bitter:0, smoky:0, spicy:0, fruity:5, floral:1, creamy:5 },
+  'painkiller':         { sweet:5, sour:2, bitter:0, smoky:0, spicy:2, fruity:4, floral:1, creamy:3 },
+  // Vodka
+  'espresso-martini':   { sweet:4, sour:0, bitter:4, smoky:0, spicy:0, fruity:0, floral:0, creamy:2 },
+  'moscow-mule':        { sweet:2, sour:3, bitter:0, smoky:0, spicy:4, fruity:2, floral:0, creamy:0 },
+  'cosmopolitan':       { sweet:3, sour:3, bitter:0, smoky:0, spicy:0, fruity:4, floral:1, creamy:0 },
+  'bloody-mary':        { sweet:1, sour:2, bitter:2, smoky:0, spicy:5, fruity:3, floral:0, creamy:0 },
+  'white-russian':      { sweet:5, sour:0, bitter:2, smoky:0, spicy:0, fruity:0, floral:0, creamy:5 },
+  'vodka-martini':      { sweet:1, sour:0, bitter:2, smoky:0, spicy:0, fruity:0, floral:1, creamy:0 },
+  'black-russian':      { sweet:4, sour:0, bitter:3, smoky:0, spicy:0, fruity:0, floral:0, creamy:0 },
+  'harvey-wallbanger':  { sweet:4, sour:1, bitter:2, smoky:0, spicy:0, fruity:4, floral:2, creamy:0 },
+  // Cognac
+  'sidecar':            { sweet:2, sour:4, bitter:1, smoky:0, spicy:1, fruity:3, floral:2, creamy:0 },
+  'brandy-alexander':   { sweet:5, sour:0, bitter:2, smoky:0, spicy:1, fruity:1, floral:1, creamy:5 },
+  'between-the-sheets': { sweet:2, sour:3, bitter:0, smoky:0, spicy:1, fruity:3, floral:2, creamy:0 },
+  'stinger':            { sweet:3, sour:0, bitter:1, smoky:0, spicy:0, fruity:0, floral:3, creamy:1 },
+  'french-connection':  { sweet:4, sour:0, bitter:2, smoky:0, spicy:1, fruity:2, floral:2, creamy:0 },
+  'bb-cocktail':        { sweet:3, sour:0, bitter:2, smoky:0, spicy:2, fruity:1, floral:3, creamy:0 },
+};
+
+/* ══════════════════════════════════════════════════
+   DAILY SPECIALS  (dayOfWeek: 0=Sun…6=Sat, or use date: 'YYYY-MM-DD' for one-offs)
+══════════════════════════════════════════════════ */
+const DAILY_SPECIALS = [
+  { dayOfWeek:0, type:'cocktail', refId:'new-york-sour',
+    title:{en:'New York Sour Sunday',ru:'Воскресный New York Sour'},
+    desc:{en:'A Whisky Sour crowned with a red wine float — the perfect Sunday drink.',ru:'Whisky Sour с плавающим красным вином — идеальный воскресный коктейль.'} },
+  { dayOfWeek:1, type:'cocktail', refId:'boulevardier',
+    title:{en:'Boulevardier Monday',ru:'Понедельничный Boulevardier'},
+    desc:{en:'The whisky Negroni. Bitter, warming, and absolutely what Mondays need.',ru:'Виски-негрони. Горький, согревающий — именно то, что нужно в понедельник.'} },
+  { dayOfWeek:2, type:'cocktail', refId:'penicillin',
+    title:{en:'Penicillin Tuesday',ru:'Вторничный Penicillin'},
+    desc:{en:'Blended Scotch, lemon, honey, and a smoky Islay float. Medicinal in the best way.',ru:'Скотч, лимон, мёд и дымный плавающий айлей. Лечебный в лучшем смысле.'} },
+  { dayOfWeek:3, type:'cocktail', refId:'espresso-martini',
+    title:{en:'Midweek Espresso Martini',ru:'Среда: Espresso Martini'},
+    desc:{en:'Get through hump day with caffeine and vodka. The crowd-pleaser.',ru:'Пережить среду поможет кофеин и водка. Напиток для всех.'} },
+  { dayOfWeek:4, type:'cocktail', refId:'last-word',
+    title:{en:'Last Word Thursday',ru:'Четверговый Last Word'},
+    desc:{en:'Equal parts gin, Chartreuse, Maraschino and lime. A classic that speaks for itself.',ru:'Равные части джина, Chartreuse, Maraschino и лайма. Классика, говорящая сама за себя.'} },
+  { dayOfWeek:5, type:'cocktail', refId:'negroni',
+    title:{en:'Negroni Friday',ru:'Пятничный Negroni'},
+    desc:{en:'Equal parts gin, Campari, sweet vermouth. The Friday ritual.',ru:'Равные части джина, Campari, сладкого вермута. Пятничный ритуал.'} },
+  { dayOfWeek:6, type:'cocktail', refId:'mai-tai',
+    title:{en:'Saturday Mai Tai',ru:'Субботний Mai Tai'},
+    desc:{en:'Rum, orange curaçao, orgeat, lime. The weekend has officially started.',ru:'Ром, куракао, оргеат, лайм. Выходные официально начались.'} },
+];
+
+/* ══════════════════════════════════════════════════
+   FOOD MENU
+══════════════════════════════════════════════════ */
+const FOOD = [
+  { id:'burrata', name:'Burrata & Heritage Tomato', emoji:'🧀', category:'starter', price:'£12',
+    description:{en:'Creamy burrata with heritage tomatoes, basil oil and sea salt flakes. Simple and perfect.',ru:'Кремовая буррата с томатами, базиликовым маслом и морской солью. Просто и безупречно.'},
+    allergens:['dairy','gluten'], tags:{en:['vegetarian','sharing'],ru:['вегетарианское','на стол']},
+    pairings:['french-75','gimlet'] },
+  { id:'beef-tartare', name:'Beef Tartare', emoji:'🥩', category:'starter', price:'£14',
+    description:{en:'Hand-cut Hereford beef, capers, cornichons, egg yolk, grilled sourdough.',ru:'Нарезанная вручную говядина Херефорд, каперсы, корнишоны, желток, гриль-хлеб.'},
+    allergens:['egg','gluten','mustard'], tags:{en:['raw','classic'],ru:['сырое','классика']},
+    pairings:['manhattan','negroni'] },
+  { id:'oysters', name:'Oysters (3 pcs)', emoji:'🦪', category:'starter', price:'£16',
+    description:{en:'Fresh rock oysters served with shallot vinegar, Tabasco and lemon.',ru:'Свежие устрицы с луковым уксусом, Табаско и лимоном.'},
+    allergens:['molluscs'], tags:{en:['seasonal','raw'],ru:['сезонное','сырое']},
+    pairings:['highball','gimlet'] },
+  { id:'charcuterie', name:'Charcuterie Board', emoji:'🍖', category:'starter', price:'£18',
+    description:{en:'Selection of cured meats, cornichons, sourdough and house mustard.',ru:'Ассорти из вяленых мясных деликатесов, корнишонов, хлеба и домашней горчицы.'},
+    allergens:['gluten','mustard'], tags:{en:['sharing','meat'],ru:['на стол','мясо']},
+    pairings:['old-fashioned','boulevardier'] },
+  { id:'ribeye', name:'28-Day Aged Ribeye', emoji:'🥩', category:'main', price:'£38',
+    description:{en:'28-day dry-aged ribeye, roasted bone marrow butter, watercress, fries.',ru:'28-дневный сухой выдержки рибай, масло с костным мозгом, кресс-салат, фри.'},
+    allergens:['dairy','gluten'], tags:{en:['meat','signature'],ru:['мясо','фирменное']},
+    pairings:['old-fashioned','manhattan'] },
+  { id:'duck-confit', name:'Duck Confit', emoji:'🍗', category:'main', price:'£28',
+    description:{en:'Slow-cooked duck leg, Puy lentils, orange and thyme jus.',ru:'Утиная ножка медленного приготовления, линзы Пюи, соус с апельсином и тимьяном.'},
+    allergens:['celery'], tags:{en:['meat','classic'],ru:['мясо','классика']},
+    pairings:['boulevardier','rusty-nail'] },
+  { id:'sea-bass', name:'Pan-Seared Sea Bass', emoji:'🐟', category:'main', price:'£26',
+    description:{en:'Line-caught sea bass, samphire, lemon beurre blanc, capers.',ru:'Морской окунь, морской самфир, лимонный соус, каперсы.'},
+    allergens:['fish','dairy'], tags:{en:['fish','light'],ru:['рыба','лёгкое']},
+    pairings:['highball','french-75'] },
+  { id:'mushroom-risotto', name:'Wild Mushroom Risotto', emoji:'🍄', category:'main', price:'£22',
+    description:{en:'Carnaroli risotto, porcini, truffle oil, aged Parmesan.',ru:'Ризотто Карнароли, белые грибы, трюфельное масло, выдержанный Пармезан.'},
+    allergens:['dairy','celery'], tags:{en:['vegetarian','rich'],ru:['вегетарианское','насыщенное']},
+    pairings:['negroni','martinez'] },
+  { id:'truffle-fries', name:'Truffle & Parmesan Fries', emoji:'🍟', category:'snack', price:'£8',
+    description:{en:'Crispy fries tossed in truffle oil and grated Parmesan. The side that steals the show.',ru:'Хрустящий фри с трюфельным маслом и тёртым Пармезаном. Гарнир, который крадёт шоу.'},
+    allergens:['dairy'], tags:{en:['vegetarian','shareable'],ru:['вегетарианское','на стол']},
+    pairings:['boulevardier','negroni'] },
+  { id:'olives', name:'Marinated Olives', emoji:'🫒', category:'snack', price:'£6',
+    description:{en:'Nocellara and Castelvetrano olives with citrus zest, garlic and herbs.',ru:'Оливки Носеллара и Кастельветрано с цедрой, чесноком и травами.'},
+    allergens:[], tags:{en:['vegan','light'],ru:['веганское','лёгкое']},
+    pairings:['vesper-martini','gin-and-tonic'] },
+  { id:'cheese-board', name:'British Cheese Board', emoji:'🧀', category:'dessert', price:'£16',
+    description:{en:'Three British cheeses, quince paste, grapes, oat biscuits.',ru:'Три британских сыра, паста из айвы, виноград, овсяное печенье.'},
+    allergens:['dairy','gluten'], tags:{en:['classic','sharing'],ru:['классика','на стол']},
+    pairings:['rusty-nail','french-connection'] },
+  { id:'chocolate-fondant', name:'Chocolate Fondant', emoji:'🍫', category:'dessert', price:'£10',
+    description:{en:'Warm dark chocolate fondant with salted caramel ice cream.',ru:'Тёплый фондан из тёмного шоколада со сливочным мороженым с солёной карамелью.'},
+    allergens:['dairy','gluten','egg'], tags:{en:['sweet','indulgent'],ru:['сладкое','насыщенное']},
+    pairings:['espresso-martini','brandy-alexander'] },
+];
+
+/* ══════════════════════════════════════════════════
+   WEEKLY TASKS
+══════════════════════════════════════════════════ */
+const WEEKLY_TASKS = {
+  0: { en:'Deep clean behind the bar — refrigerators, speed rail, drip trays.',       ru:'Глубокая уборка за баром — холодильники, рейл, поддоны.' },
+  1: { en:'Full bottle stock count and reorder report.',                                 ru:'Полный учёт запасов и формирование заказа.' },
+  2: { en:'Clean and polish all spirits shelves; dust bottles.',                        ru:'Чистка и полировка полок с духами; протирка бутылок.' },
+  3: { en:'Deep clean cocktail station: strainers, peelers, muddlers, shakers.',        ru:'Глубокая чистка коктейльной станции: стрейнеры, пилеры, мадлеры, шейкеры.' },
+  4: { en:'Glassware audit — check for chips, cracks; retire damaged stock.',           ru:'Аудит стекла — проверка на сколы и трещины; списание повреждённого.' },
+  5: { en:'Garnish prep day — prep lemon/orange twists, herbs, dehydrated garnishes.',  ru:'День подготовки гарниров — твисты, зелень, дегидрированные гарниры.' },
+  6: { en:'Review specials and update team on any menu or spirits changes.',            ru:'Разбор специального предложения и обновление команды по изменениям в меню.' },
+};
+
+/* ══════════════════════════════════════════════════
+   CHECKLISTS
+══════════════════════════════════════════════════ */
+const CHECKLISTS = {
+  manager: {
+    opening: [
+      { id:'m-op-1', task:{en:'Check today\'s reservations and VIP notes.',                    ru:'Проверить бронирования дня и VIP-заметки.'} },
+      { id:'m-op-2', task:{en:'Confirm all staff present and assign stations.',                 ru:'Подтвердить присутствие персонала и распределить станции.'} },
+      { id:'m-op-3', task:{en:'Count and verify cash float.',                                   ru:'Посчитать и проверить кассовый аванс.'} },
+      { id:'m-op-4', task:{en:'Brief team on daily specials and any 86\'d items.',              ru:'Провести брифинг по спецпредложениям и блюдам 86.'} },
+      { id:'m-op-5', task:{en:'Confirm bar and floor are clean and fully set up.',              ru:'Убедиться, что бар и зал чисты и полностью готовы.'} },
+      { id:'m-op-6', task:{en:'Check that the checklist app is updated on all devices.',        ru:'Убедиться, что приложение обновлено на всех устройствах.'} },
+    ],
+    during: [
+      { id:'m-du-1', task:{en:'Walk the floor every 30 mins — check table turns and guest satisfaction.', ru:'Обходить зал каждые 30 мин — проверять оборот столов и удовлетворённость гостей.'} },
+      { id:'m-du-2', task:{en:'Monitor bar queue — deploy staff if wait exceeds 5 minutes.',              ru:'Следить за очередью — привлечь персонал если ожидание > 5 мин.'} },
+      { id:'m-du-3', task:{en:'Review covers vs. forecast — adjust staffing if needed.',                  ru:'Сравнить фактические заказы с прогнозом — скорректировать стаффинг.'} },
+      { id:'m-du-4', task:{en:'Handle any guest complaints immediately and document them.',                ru:'Решать жалобы гостей немедленно и фиксировать их.'} },
+    ],
+    closing: [
+      { id:'m-cl-1', task:{en:'Complete end-of-day cash reconciliation and Z-read.',            ru:'Провести дневную кассовую сверку и Z-отчёт.'} },
+      { id:'m-cl-2', task:{en:'Sign off on bar waste and breakages log.',                       ru:'Подписать журнал списания и боя стекла.'} },
+      { id:'m-cl-3', task:{en:'Check all doors, windows and alarm system.',                     ru:'Проверить все двери, окна и систему сигнализации.'} },
+      { id:'m-cl-4', task:{en:'File incident reports if any occurred during service.',          ru:'Подать рапорты об инцидентах, если они были в течение смены.'} },
+      { id:'m-cl-5', task:{en:'Leave briefing note for opening manager.',                       ru:'Оставить инструктивную записку для открывающего менеджера.'} },
+    ],
+  },
+  bartender: {
+    opening: [
+      { id:'b-op-1', task:{en:'Check stock levels — spirits, mixers, garnishes, ice.',          ru:'Проверить запасы — духи, миксеры, гарниры, лёд.'} },
+      { id:'b-op-2', task:{en:'Cut and prep all fresh garnishes (citrus, herbs).',              ru:'Нарезать и подготовить все свежие гарниры (цитрус, зелень).'} },
+      { id:'b-op-3', task:{en:'Batch cocktails if on menu (e.g. syrups, cordials).',           ru:'Приготовить батчи если есть в меню (сиропы, кордиалы).'} },
+      { id:'b-op-4', task:{en:'Polish all glassware and ensure correct stock at station.',      ru:'Натереть всё стекло и проверить правильный запас на станции.'} },
+      { id:'b-op-5', task:{en:'Test all taps, check CO2 and gas pressure.',                    ru:'Протестировать краны, проверить давление CO2 и газа.'} },
+      { id:'b-op-6', task:{en:'Fill ice well and check ice machine.',                           ru:'Заполнить льдом и проверить ледогенератор.'} },
+    ],
+    during: [
+      { id:'b-du-1', task:{en:'Restock garnishes and juices mid-service as needed.',           ru:'Пополнять гарниры и соки в течение сервиса по мере необходимости.'} },
+      { id:'b-du-2', task:{en:'Keep bar top clean — wipe spills immediately.',                 ru:'Держать барную стойку чистой — немедленно убирать пролитое.'} },
+      { id:'b-du-3', task:{en:'Rotate perishable stock (FIFO — first in, first out).',        ru:'Ротировать скоропортящийся запас (FIFO — первый пришёл, первый ушёл).'} },
+    ],
+    closing: [
+      { id:'b-cl-1', task:{en:'Empty and clean all ice wells. Sanitise drain.',               ru:'Опустошить и почистить все льдовые ванны. Санировать слив.'} },
+      { id:'b-cl-2', task:{en:'Cover all fresh garnishes and store correctly.',                ru:'Накрыть все свежие гарниры и убрать на хранение.'} },
+      { id:'b-cl-3', task:{en:'Clean and sanitise all bar surfaces, mats and taps.',          ru:'Почистить и санировать все поверхности, маты и краны.'} },
+      { id:'b-cl-4', task:{en:'Rinse all shakers, strainers and tools. Put to dry.',          ru:'Прополоскать все шейкеры, стрейнеры и инструменты. Поставить сушиться.'} },
+      { id:'b-cl-5', task:{en:'Complete waste log — note bottles finished during service.',   ru:'Заполнить журнал списания — отметить законченные бутылки.'} },
+      { id:'b-cl-6', task:{en:'Turn off all bar equipment (blenders, glasswasher).',          ru:'Выключить всё барное оборудование (блендеры, посудомойку).'} },
+    ],
+  },
+  waiter: {
+    opening: [
+      { id:'w-op-1', task:{en:'Polish and set all cutlery, glassware and crockery.',          ru:'Натереть и выставить все приборы, стекло и посуду.'} },
+      { id:'w-op-2', task:{en:'Check all tables are clean, levelled and fully set.',          ru:'Проверить, что все столы чисты, ровные и полностью накрыты.'} },
+      { id:'w-op-3', task:{en:'Learn today\'s specials, 86\'d items and allergy updates.',    ru:'Выучить спецпредложения дня, позиции 86 и обновления по аллергенам.'} },
+      { id:'w-op-4', task:{en:'Stock and organise service station (napkins, menus, etc.).',   ru:'Заполнить и организовать станцию сервиса (салфетки, меню и т.д.).'} },
+      { id:'w-op-5', task:{en:'Check POS terminal is logged in and printing correctly.',      ru:'Проверить, что кассовый терминал авторизован и печатает корректно.'} },
+    ],
+    during: [
+      { id:'w-du-1', task:{en:'Greet all guests within 60 seconds of being seated.',          ru:'Приветствовать всех гостей в течение 60 секунд после посадки.'} },
+      { id:'w-du-2', task:{en:'Upsell: suggest daily special to every table.',                ru:'Апсейл: предлагать дневное спецпредложение каждому столику.'} },
+      { id:'w-du-3', task:{en:'Clear empty glasses proactively — offer refills.',             ru:'Проактивно убирать пустые бокалы — предлагать повтор.'} },
+      { id:'w-du-4', task:{en:'Check back with every table 2 minutes after food arrives.',   ru:'Вернуться к каждому столику через 2 минуты после подачи еды.'} },
+    ],
+    closing: [
+      { id:'w-cl-1', task:{en:'Clear and reset all tables for next service.',                 ru:'Убрать и сервировать все столы к следующей смене.'} },
+      { id:'w-cl-2', task:{en:'Return all menus, stands and table items to storage.',        ru:'Вернуть все меню, подставки и предметы со столов на хранение.'} },
+      { id:'w-cl-3', task:{en:'Clean and tidy service station.',                             ru:'Почистить и привести в порядок станцию сервиса.'} },
+      { id:'w-cl-4', task:{en:'Check floor for any lost property. Hand to manager.',         ru:'Проверить зал на забытые вещи. Передать менеджеру.'} },
+    ],
+  },
+};
+
+/* ══════════════════════════════════════════════════
+   MANAGER UPDATES
+══════════════════════════════════════════════════ */
+const MANAGER_UPDATES = [
+  { id:'upd-1', date:'2026-06-26', tag:'urgent',
+    title:{en:'86: Laphroaig Quarter Cask — Out of Stock',ru:'86: Laphroaig Quarter Cask — нет на складе'},
+    body:{en:'We are currently out of Laphroaig Quarter Cask. Suggest Talisker 10 or Ardbeg Wee Beastie as alternatives for peaty/smoky requests.',
+          ru:'Laphroaig Quarter Cask закончился. Предлагайте Talisker 10 или Ardbeg Wee Beastie как альтернативу для запросов на торфяной/дымный виски.'} },
+  { id:'upd-2', date:'2026-06-25', tag:'menu',
+    title:{en:'New Arrival: The Yamazaki 18',ru:'Новинка: The Yamazaki 18'},
+    body:{en:'The Yamazaki 18 is now on shelf. Serve neat in a Glencairn. Price: £35 per 50ml. Please familiarise yourselves with the tasting notes in the app.',
+          ru:'The Yamazaki 18 теперь на полке. Подавать чистым в Гленкерн. Цена: £35 за 50мл. Ознакомьтесь с вкусовыми нотами в приложении.'} },
+  { id:'upd-3', date:'2026-06-24', tag:'info',
+    title:{en:'Team Reminder: Glassware Standards',ru:'Напоминание команде: стандарты стекла'},
+    body:{en:'Please ensure all glassware is polished before service. We had two complaints last week about water marks. No exceptions.',
+          ru:'Убедитесь, что всё стекло натёрто перед сервисом. На прошлой неделе было две жалобы на следы от воды. Без исключений.'} },
+  { id:'upd-4', date:'2026-06-20', tag:'info',
+    title:{en:'London Essence Event Running Until Aug 31',ru:'Ивент London Essence — до 31 августа'},
+    body:{en:'The London Essence cocktail menu is active until August 31. All 6 event cocktails are available. Upsell at every opportunity — guests love the presentation.',
+          ru:'Коктейльное меню London Essence активно до 31 августа. Все 6 коктейлей доступны. Предлагайте при каждой возможности — гости в восторге от подачи.'} },
+];
+
+/* ══════════════════════════════════════════════════
    CATEGORIES
 ══════════════════════════════════════════════════ */
 /* Event data — override per venue when an event is active */
@@ -5282,6 +5822,8 @@ const NAV_LABELS = {
   'on-the-menu':{ en: 'On the Menu', ru: 'Обновления' },
   quiz:         { en: 'Quiz',        ru: 'Квиз' },
   match:        { en: 'Match',       ru: 'Подбор' },
+  food:         { en: 'Food',        ru: 'Кухня' },
+  checklist:    { en: 'Checklist',   ru: 'Чеклист' },
 };
 
 let activeSpirit = null; // set when user drills into a spirit type (e.g. 'whisky')
@@ -5293,7 +5835,7 @@ const headerInner = document.querySelector('.header-inner');
 
 /* Screen order always includes event at idx 0 to match DOM order.
    When event is inactive, swipe is bounded so users start at 'bar'. */
-const SCREEN_ORDER = ['event', 'bar', 'cocktails', 'on-the-menu', 'quiz', 'match'];
+const SCREEN_ORDER = ['event', 'bar', 'cocktails', 'on-the-menu', 'quiz', 'match', 'food', 'checklist'];
 const screensTrack = document.getElementById('screensTrack');
 
 function slideTrackTo(idx, animated = true, snapBack = false) {
@@ -5441,6 +5983,7 @@ function renderMainHome() {
   hidden.forEach(m => { html += cardHTML(m, 'hero'); });
 
   grid.innerHTML = html;
+  renderDailySpecial();
 }
 
 /* ══════════════════════════════════════════════════
@@ -5956,6 +6499,8 @@ function navSetScreen(screen, keepContext = false) {
     renderCocktails();
   }
   if (screen === 'on-the-menu') renderOnTheMenu();
+  if (screen === 'food') renderFood();
+  if (screen === 'checklist') initChecklist();
 }
 
 function navOpen() {
@@ -6661,6 +7206,33 @@ function openCocktailModal(c, backFn) {
       <div class="whisky-recs">${recs}</div>
     </div>
     ${specHTML}
+    ${(function() {
+      const fp = COCKTAIL_FLAVOR_PROFILES[c.id];
+      if (!fp) return '';
+      const dims = [
+        { key: 'sweet',   en: 'Sweet',   ru: 'Сладкий' },
+        { key: 'sour',    en: 'Sour',    ru: 'Кислый' },
+        { key: 'bitter',  en: 'Bitter',  ru: 'Горький' },
+        { key: 'smoky',   en: 'Smoky',   ru: 'Дымный' },
+        { key: 'spicy',   en: 'Spicy',   ru: 'Острый' },
+        { key: 'fruity',  en: 'Fruity',  ru: 'Фруктовый' },
+        { key: 'floral',  en: 'Floral',  ru: 'Цветочный' },
+        { key: 'creamy',  en: 'Creamy',  ru: 'Сливочный' },
+      ];
+      const active = dims.filter(d => fp[d.key] > 0);
+      if (!active.length) return '';
+      const bars = active.map(d =>
+        `<div class="fp-row">
+          <span class="fp-label">${lang === 'ru' ? d.ru : d.en}</span>
+          <div class="fp-bar-track"><div class="fp-bar-fill" style="width:${fp[d.key] * 20}%"></div></div>
+        </div>`
+      ).join('');
+      return `<div class="divider"></div>
+        <div class="section">
+          <div class="section-title">${lang === 'en' ? 'Flavor Profile' : 'Вкусовой профиль'}</div>
+          <div class="flavor-profile-grid">${bars}</div>
+        </div>`;
+    })()}
     <div class="section">
       <div class="section-title">${lang === 'en' ? 'History & Origin' : 'История и происхождение'}</div>
       <p class="history-text">${t(c.history)}</p>
@@ -8195,6 +8767,336 @@ function openCaimanModal() {
     location.reload();
   };
 })();
+
+/* ══════════════════════════════════════════════════
+   DAILY SPECIAL
+══════════════════════════════════════════════════ */
+function renderDailySpecial() {
+  const container = document.getElementById('dailySpecialContainer');
+  if (!container) return;
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  const dow = today.getDay();
+  const special = DAILY_SPECIALS.find(s =>
+    (s.date && s.date === todayStr) || (!s.date && s.dayOfWeek === dow)
+  );
+  if (!special) { container.innerHTML = ''; return; }
+
+  let linked = null;
+  if (special.type === 'cocktail') linked = COCKTAILS.find(c => c.id === special.refId);
+  else if (special.type === 'spirit') linked = findSpirit(special.refId);
+  else if (special.type === 'food') linked = FOOD.find(f => f.id === special.refId);
+
+  const imgFile = linked && special.type === 'cocktail' ? COCKTAIL_IMG[linked.id] : null;
+  const imgSrc  = imgFile ? `images/Cocktails/${imgFile}` : (special.img || null);
+
+  container.innerHTML = `
+    <div class="daily-special-card" onclick="openDailySpecialModal()">
+      ${imgSrc
+        ? `<img class="daily-special-img" src="${imgSrc}" alt="${t(special.title)}" loading="lazy">`
+        : `<div class="daily-special-emoji">${linked?.icon || special.emoji || '⭐'}</div>`}
+      <div class="daily-special-body">
+        <div class="daily-special-label">${lang === 'en' ? "Today's Special" : 'Спецпредложение дня'}</div>
+        <div class="daily-special-name">${t(special.title)}</div>
+        <div class="daily-special-desc">${t(special.desc)}</div>
+      </div>
+    </div>`;
+}
+
+window.openDailySpecialModal = function() {
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  const dow = today.getDay();
+  const special = DAILY_SPECIALS.find(s =>
+    (s.date && s.date === todayStr) || (!s.date && s.dayOfWeek === dow)
+  );
+  if (!special) return;
+  if (special.type === 'cocktail') {
+    const c = COCKTAILS.find(x => x.id === special.refId);
+    if (c) openCocktailModal(c);
+  } else if (special.type === 'spirit') {
+    const w = findSpirit(special.refId);
+    if (w) openWhiskyModal(w);
+  } else if (special.type === 'food') {
+    const f = FOOD.find(x => x.id === special.refId);
+    if (f) openFoodModal(f);
+  }
+};
+
+/* ══════════════════════════════════════════════════
+   FOOD MENU
+══════════════════════════════════════════════════ */
+let foodFilter = 'all';
+
+function renderFood() {
+  const categories = [
+    { id: 'all',     en: 'All',     ru: 'Все' },
+    { id: 'starter', en: 'Starters',ru: 'Закуски' },
+    { id: 'main',    en: 'Mains',   ru: 'Основные' },
+    { id: 'dessert', en: 'Desserts',ru: 'Десерты' },
+    { id: 'snack',   en: 'Snacks',  ru: 'Снеки' },
+  ];
+  const filtersEl = document.getElementById('foodFilters');
+  if (filtersEl) {
+    filtersEl.innerHTML = categories.map(cat =>
+      `<button class="food-filter-btn${foodFilter === cat.id ? ' active' : ''}"
+         onclick="setFoodFilter('${cat.id}')">${lang === 'ru' ? cat.ru : cat.en}</button>`
+    ).join('');
+  }
+  const list = foodFilter === 'all' ? FOOD : FOOD.filter(f => f.category === foodFilter);
+  const grid = document.getElementById('foodGrid');
+  if (!grid) return;
+  grid.innerHTML = list.map(f => `
+    <div class="food-card" onclick="openFoodModal(FOOD.find(x=>x.id==='${f.id}'))">
+      ${f.img
+        ? `<img class="food-card-img" src="${f.img}" alt="${f.name}" loading="lazy">`
+        : `<div class="food-card-emoji">${f.emoji || '🍽️'}</div>`}
+      <div class="food-card-body">
+        <div class="food-card-name">${f.name}</div>
+        <div class="food-card-price">${f.price}</div>
+        <div class="food-card-desc">${t(f.description)}</div>
+      </div>
+    </div>`).join('');
+}
+
+window.setFoodFilter = function(cat) {
+  foodFilter = cat;
+  renderFood();
+};
+
+window.openFoodModal = function(f) {
+  if (!f) return;
+  const svgClose = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const allergenHTML = f.allergens?.length
+    ? `<div class="food-modal-allergens">${f.allergens.map(a => `<span class="allergen-tag">${a}</span>`).join('')}</div>`
+    : '';
+  const pairingsHTML = f.pairings?.length
+    ? `<div class="divider"></div>
+       <div class="section">
+         <div class="section-title">${lang === 'en' ? 'Pairs Well With' : 'Отлично сочетается с'}</div>
+         <div class="food-pairing-list">
+           ${f.pairings.map(id => {
+             const c = COCKTAILS.find(x => x.id === id);
+             if (c) return `<div class="food-pairing-item" onclick="closeModal();openCocktailModal(COCKTAILS.find(x=>x.id==='${id}'))">
+               <span style="font-size:1.4rem">${c.icon}</span>
+               <div><div class="food-pairing-name">${c.name}</div><div class="food-pairing-type">${lang === 'en' ? 'Cocktail' : 'Коктейль'}</div></div>
+             </div>`;
+             const s = findSpirit(id);
+             if (s) return `<div class="food-pairing-item" onclick="closeModal();openWhiskyModal(findSpirit('${id}'))">
+               <span style="font-size:1.4rem">🥃</span>
+               <div><div class="food-pairing-name">${s.name}</div><div class="food-pairing-type">${lang === 'en' ? 'Spirit' : 'Спирт'}</div></div>
+             </div>`;
+             return '';
+           }).join('')}
+         </div>
+       </div>`
+    : '';
+  document.getElementById('modalBody').innerHTML = `
+    ${f.img ? `<div class="modal-hero modal-hero-cocktail">
+      <div class="modal-hero-bg" style="background-image:url('${f.img}')"></div>
+      <img src="${f.img}" alt="${f.name}" loading="lazy" style="object-fit:cover;padding:0;filter:none;">
+      <button class="modal-hero-close" id="modalClose">${svgClose}</button>
+    </div>` : ''}
+    <div class="modal-title-area" style="padding-bottom:4px">
+      ${!f.img ? `<button class="modal-hero-close" id="modalClose" style="position:absolute;top:14px;right:14px">${svgClose}</button>` : ''}
+      <div style="font-size:2rem;margin-bottom:6px">${f.emoji || '🍽️'}</div>
+      <div class="modal-name">${f.name}</div>
+      <div style="font-size:.8rem;color:var(--gold-mid);font-weight:600;margin-top:4px">${f.price}</div>
+    </div>
+    <div class="modal-content">
+      <div class="divider" style="margin-top:8px"></div>
+      <div class="section">
+        <div class="section-title">${lang === 'en' ? 'Description' : 'Описание'}</div>
+        <p class="history-text">${t(f.description)}</p>
+        ${allergenHTML ? `<div class="section-title" style="margin-top:12px">${lang === 'en' ? 'Allergens' : 'Аллергены'}</div>${allergenHTML}` : ''}
+      </div>
+      ${pairingsHTML}
+    </div>`;
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  openModal();
+};
+
+/* ══════════════════════════════════════════════════
+   CHECKLIST
+══════════════════════════════════════════════════ */
+const CHECKLIST_KEY  = 'ag_checklist_v1';
+const CHECKLIST_ROLE = 'ag_checklist_role';
+const CHECKLIST_SHIFT = 'ag_checklist_shift';
+
+function getChecklistState() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(CHECKLIST_KEY) || '{}');
+    const today = new Date().toISOString().slice(0, 10);
+    if (raw.date !== today) return { date: today, checked: {} };
+    return raw;
+  } catch { return { date: new Date().toISOString().slice(0, 10), checked: {} }; }
+}
+
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch {}
+}
+
+function initChecklist() {
+  const role  = localStorage.getItem(CHECKLIST_ROLE) || 'bartender';
+  const shift = localStorage.getItem(CHECKLIST_SHIFT) || 'opening';
+
+  const taskBanner = document.getElementById('taskOfDayBanner');
+  if (taskBanner) {
+    const task = WEEKLY_TASKS[new Date().getDay()];
+    taskBanner.innerHTML = task ? `
+      <div class="task-of-day-banner">
+        <div class="task-of-day-icon">📋</div>
+        <div class="task-of-day-body">
+          <div class="task-of-day-label">${lang === 'en' ? "Today's Task" : 'Задача дня'}</div>
+          <div class="task-of-day-text">${t(task)}</div>
+        </div>
+      </div>` : '';
+  }
+
+  const roles = [
+    { id: 'manager',   en: 'Manager',   ru: 'Менеджер' },
+    { id: 'bartender', en: 'Bartender', ru: 'Бармен' },
+    { id: 'waiter',    en: 'Waiter',    ru: 'Официант' },
+  ];
+  const roleTabs = document.getElementById('checklistRoleTabs');
+  if (roleTabs) {
+    roleTabs.innerHTML = roles.map(r =>
+      `<button class="role-tab${role === r.id ? ' active' : ''}"
+         onclick="switchChecklistRole('${r.id}')">${lang === 'ru' ? r.ru : r.en}</button>`
+    ).join('');
+  }
+
+  const shifts = [
+    { id: 'opening', en: 'Opening', ru: 'Открытие' },
+    { id: 'during',  en: 'During',  ru: 'В процессе' },
+    { id: 'closing', en: 'Closing', ru: 'Закрытие' },
+  ];
+  const shiftTabs = document.getElementById('checklistShiftTabs');
+  if (shiftTabs) {
+    shiftTabs.innerHTML = shifts.map(s =>
+      `<button class="shift-tab${shift === s.id ? ' active' : ''}"
+         onclick="switchChecklistShift('${s.id}')">${lang === 'ru' ? s.ru : s.en}</button>`
+    ).join('');
+  }
+
+  renderChecklist(role, shift);
+}
+
+function renderChecklist(role, shift) {
+  const items = (CHECKLISTS[role] && CHECKLISTS[role][shift]) || [];
+  const state = getChecklistState();
+  const doneCount = items.filter(item => state.checked[item.id]).length;
+
+  const fill = document.getElementById('checklistProgressFill');
+  const label = document.getElementById('checklistProgressLabel');
+  if (fill) fill.style.width = items.length ? `${(doneCount / items.length) * 100}%` : '0%';
+  if (label) label.textContent = items.length
+    ? (lang === 'en' ? `${doneCount} of ${items.length} done` : `${doneCount} из ${items.length} выполнено`)
+    : '';
+
+  const container = document.getElementById('checklistItems');
+  if (!container) return;
+  container.innerHTML = items.map(item => {
+    const done = !!state.checked[item.id];
+    return `<div class="checklist-item${done ? ' done' : ''}" onclick="toggleChecklistItem('${item.id}','${role}','${shift}')">
+      <div class="ci-check">${done ? '✓' : ''}</div>
+      <div class="ci-task">${t(item.task)}</div>
+    </div>`;
+  }).join('');
+}
+
+window.switchChecklistRole = function(role) {
+  try { localStorage.setItem(CHECKLIST_ROLE, role); } catch {}
+  initChecklist();
+};
+
+window.switchChecklistShift = function(shift) {
+  try { localStorage.setItem(CHECKLIST_SHIFT, shift); } catch {}
+  initChecklist();
+};
+
+window.toggleChecklistItem = function(id, role, shift) {
+  const state = getChecklistState();
+  state.checked[id] = !state.checked[id];
+  saveChecklistState(state);
+  renderChecklist(role, shift);
+};
+
+window.resetChecklist = function() {
+  const today = new Date().toISOString().slice(0, 10);
+  saveChecklistState({ date: today, checked: {} });
+  const role  = localStorage.getItem(CHECKLIST_ROLE)  || 'bartender';
+  const shift = localStorage.getItem(CHECKLIST_SHIFT) || 'opening';
+  renderChecklist(role, shift);
+};
+
+/* ══════════════════════════════════════════════════
+   MANAGER UPDATES
+══════════════════════════════════════════════════ */
+const UPDATES_SEEN_KEY = 'ag_updates_seen_v1';
+
+function getSeenUpdates() {
+  try { return new Set(JSON.parse(localStorage.getItem(UPDATES_SEEN_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function markUpdatesSeen(ids) {
+  try { localStorage.setItem(UPDATES_SEEN_KEY, JSON.stringify([...ids])); } catch {}
+  updateUpdatesBadge();
+}
+
+function updateUpdatesBadge() {
+  const seen = getSeenUpdates();
+  const unseen = MANAGER_UPDATES.filter(u => !seen.has(u.id)).length;
+  const badge = document.getElementById('navUpdatesBadge');
+  if (badge) {
+    badge.style.display = unseen > 0 ? '' : 'none';
+    badge.textContent = String(unseen);
+  }
+}
+
+window.openUpdates = function() {
+  const overlay = document.getElementById('updatesOverlay');
+  if (!overlay) return;
+  renderUpdates();
+  overlay.classList.add('open');
+  // Mark all as seen after viewing
+  const allIds = new Set(MANAGER_UPDATES.map(u => u.id));
+  setTimeout(() => { markUpdatesSeen(allIds); }, 1500);
+  navClose();
+};
+
+window.closeUpdates = function() {
+  document.getElementById('updatesOverlay')?.classList.remove('open');
+};
+
+document.getElementById('updatesOverlay')?.addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeUpdates();
+});
+
+function renderUpdates() {
+  const seen = getSeenUpdates();
+  const content = document.getElementById('updatesContent');
+  if (!content) return;
+  const tagLabels = { info: 'Info', urgent: 'Urgent', menu: 'Menu' };
+  content.innerHTML = MANAGER_UPDATES.map(u => {
+    const isNew = !seen.has(u.id);
+    return `<div class="update-item">
+      <div class="update-item-header">
+        <div>
+          <span class="update-item-tag update-tag-${u.tag}">${tagLabels[u.tag] || u.tag}</span>
+          ${isNew ? '<span class="update-item-tag" style="background:color-mix(in oklch,#4a9eff 15%,transparent);color:#4a9eff;margin-left:4px">NEW</span>' : ''}
+          <div class="update-item-title">${t(u.title)}</div>
+        </div>
+        <div class="update-item-date">${u.date}</div>
+      </div>
+      <div class="update-item-body">${t(u.body)}</div>
+    </div>`;
+  }).join('');
+}
+
+// Initialise badge on load
+updateUpdatesBadge();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
