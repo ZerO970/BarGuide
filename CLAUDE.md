@@ -85,20 +85,42 @@ Appears in nav only when `isEventActiveToday()` returns true (checks `EVENT_DATA
 ```js
 window.EVENT_DATA = {
   active: true,
-  title: 'London Essence',          // shown as <em> in hero
+  title: 'London Essence',
   dateStart: '2026-06-12',
-  dateEnd: '2026-09-30',
-  items: [/* cocktail objects, same shape as COCKTAILS[] */]
+  dateEnd: '2026-08-31',
+  items: [/* cocktail objects — same shape as COCKTAILS[], plus img: 'images/events/...' */]
 };
 ```
-Rendered by `initEventScreen()` on page load. Nav button pulses with amber dot animation (`.nav-event-btn.event-active::before`).
+Each item can have `img` field pointing to `images/events/` → shown as hero in modal and as `.ccard` image.
+
+Rendered by `initEventScreen()`. Event grid uses `.ccard` components (not simple `.cocktail-card`).
+Nav button: amber dot `::before` animation instead of opacity flash.
+
+### Riviera modal
+When opening an event cocktail, `#modalPanel` gets class `.modal-riviera` → `repeating-conic-gradient` radial sunburst pattern in teal (8% opacity). Removed on `closeModal()`.
 
 ### Sponsor logos
-Below the event cocktail grid, `.event-sponsors` section shows partner brands:
-- **London Essence Co.** — inline SVG monogram (LE mark, `fill="currentColor"`)
-- **Palmarae** — inline SVG wordmark sourced from palmarae.com (`fill="currentColor"`)
+`.event-sponsors` section below the grid — "In partnership with":
+- **London Essence Co.** — inline SVG LE monogram (`fill="currentColor"`)
+- **Palmarae** — inline SVG wordmark from palmarae.com (`fill="currentColor"`)
 
-Both logos adapt to all 4 themes via `color: var(--text-secondary)`.
+---
+
+## NEW badge system
+
+Spirits with `addedAt: "YYYY-MM-DD"` field show NEW badges for 14 days after that date.
+
+```js
+isNew(item)          // true if addedAt within 14 days
+isSeen(id)           // checks localStorage ag_seen_v1 (Set of IDs)
+markSeen(id)         // called in openWhiskyModal + openSpiritModal
+updateNewBadges()    // updates nav Alcohol badge count + rerenders spiritHome
+```
+
+- **Nav**: `#navAlcoholBadge` shows unseen new count (red pill)
+- **Spirit type list**: per-category `NEW N` badge replaces the `›` arrow
+- **Spirit cards**: gold border + `NEW` badge replaces balance label
+- **localStorage key**: `ag_seen_v1` (JSON array of seen IDs)
 
 ---
 
@@ -108,11 +130,37 @@ Both logos adapt to all 4 themes via `color: var(--text-secondary)`.
 `louie` (dark green) → `louie-light` (sage) → `dark` (charcoal) → `light` (cream)
 
 Default: `data-theme="louie"` on `<html>`.
+**Persisted**: saved to `localStorage` as `ag_theme`. No-flash inline `<script>` in `<head>` restores it before CSS renders.
 
 Alligator branding (logo, gator watermark) activates in `louie` and `louie-light` themes.
 Fixed background gator: `.louie-gator-bg` div, `position:fixed`, `z-index:0`.
 
 Color system: **OKLCH** throughout. Token variables defined per theme in CSS.
+
+### Splash screen (onboarding)
+Light themes (`louie-light`, `light`) get a separate CSS variant: sage-to-cream gradient, alligator in dark forest green (`mix-blend-mode: multiply`). Selectors: `[data-theme="louie-light"] .onb`, `[data-theme="light"] .onb`.
+
+### Theme-switching card images (`MAIN_MENU`)
+Cards support `photo` as either a string (all themes) or an object keyed by theme name:
+```js
+photo: {
+  louie: 'images/ui/card-alcohol.webp',      // dark night version
+  dark:  'images/ui/card-alcohol.webp',
+  'louie-light': 'images/ui/card-alcohol-light.jpg',  // bright day version
+  light: 'images/ui/card-alcohol-light.jpg'
+}
+```
+Current day/night pairs in `images/ui/`:
+| Card | Dark | Light |
+|---|---|---|
+| Alcohol | `card-alcohol.webp` | `card-alcohol-light.jpg` |
+| Cocktails | `card-cocktails.webp` | `card-cocktails-light.jpg` |
+| On the Menu | `card-menu-dark.svg` (louie+dark) | `card-menu.jpg` (louie-light+light) |
+| Events | `card-events.jpg` | `card-events-light.jpg` |
+
+Cards also support `imgPos` (string, e.g. `'center 20%'`) → applied as inline `style="object-position:..."`.
+`data-id="${item.id}"` on each `.main-card` div enables CSS targeting per card.
+Mobile overrides in `@media (max-width: 640px)`: `[data-theme="louie"] [data-id="on-the-menu"]`, etc.
 
 ---
 
