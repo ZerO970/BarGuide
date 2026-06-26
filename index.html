@@ -207,12 +207,10 @@
   border-color: var(--gold-muted); box-shadow: 0 0 0 3px oklch(22% 0.085 157 / 0.1);
 }
 
-/* Theme icon cycle: louie🐊 → louie-light🌿 → dark🌙 → light☀️ */
-.icon-gator, .icon-leaf { display: none; font-size: 13px; line-height: 1; }
-[data-theme="louie"] .icon-moon, [data-theme="louie"] .icon-sun { display: none; }
-[data-theme="louie"] .icon-gator { display: block; }
-[data-theme="louie-light"] .icon-moon, [data-theme="louie-light"] .icon-sun, [data-theme="louie-light"] .icon-gator { display: none; }
-[data-theme="louie-light"] .icon-leaf { display: block; }
+/* Theme icon: louie🌙 → louie-light☀️ */
+.icon-gator, .icon-leaf { display: none; }
+[data-theme="louie-light"] .icon-sun  { display: block; }
+[data-theme="louie-light"] .icon-moon { display: none; }
 [data-theme="light"] .icon-gator, [data-theme="light"] .icon-leaf { display: none; }
 
 /* ─── Reset & Base ──────────────────────────────────────── */
@@ -1500,7 +1498,7 @@ body.lang-ru [data-ru] { display: revert; }
 @media (max-width: 640px) {
   [data-theme="louie"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
   [data-theme="dark"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
-  [data-theme="louie-light"] [data-id="on-the-menu"] .main-card-photo { object-position: 40% center; }
+  [data-theme="louie-light"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
   [data-id="events"] .main-card-photo { object-position: center 35%; }
 }
 .main-card-fallback {
@@ -1779,6 +1777,21 @@ body.lang-ru [data-ru] { display: revert; }
   background: oklch(60% 0.17 150); display: none;
 }
 .nav-otm-badge.visible { display: block; }
+
+/* ─── Theme Crossfade Images ─────────────────────── */
+.card-photo--dark,
+.card-photo--light { transition: opacity 2880ms ease-out; }
+.card-photo--light { opacity: 0; }
+[data-theme="louie-light"] .card-photo--dark,
+[data-theme="light"]       .card-photo--dark  { opacity: 0; }
+[data-theme="louie-light"] .card-photo--light,
+[data-theme="light"]       .card-photo--light { opacity: 1; }
+
+/* ─── Theme Background Transition ────────────────── */
+html.theme-transitioning body             { transition: background 1800ms ease, color 1800ms ease !important; }
+html.theme-transitioning .header          { transition: background 1800ms ease, border-color 1800ms ease !important; }
+html.theme-transitioning .nav-pill-inner  { transition: background 1800ms ease, border-color 1800ms ease !important; }
+html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !important; }
 </style>
 </head>
 <body>
@@ -5302,11 +5315,12 @@ lt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { 
 ══════════════════════════════════════════════════ */
 document.getElementById('themeBtn').addEventListener('click', () => {
   const html = document.documentElement;
-  const cycle = { louie: 'louie-light', 'louie-light': 'dark', dark: 'light', light: 'louie' };
+  const cycle = { louie: 'louie-light', 'louie-light': 'louie' };
   const next = cycle[html.getAttribute('data-theme')] || 'dark';
+  html.classList.add('theme-transitioning');
   html.setAttribute('data-theme', next);
   localStorage.setItem('ag_theme', next);
-  renderMainHome();
+  setTimeout(() => html.classList.remove('theme-transitioning'), 1900);
 });
 
 
@@ -5411,7 +5425,7 @@ const MAIN_MENU = [
   {
     id: 'on-the-menu',
     icon: '📋',
-    photo: { louie: 'images/ui/card-menu-dark.svg', dark: 'images/ui/card-menu-dark.svg', default: 'images/ui/card-menu.jpg' },
+    photo: { louie: 'images/ui/card-menu-louie.jpg', dark: 'images/ui/card-menu-louie.jpg', default: 'images/ui/card-menu.jpg' },
     tag: { en: 'Updates', ru: 'Обновления' },
     en: { title: 'On the Menu', desc: 'New arrivals & changes.' },
     ru: { title: 'Обновления', desc: 'Новинки и изменения.' },
@@ -5438,12 +5452,17 @@ function renderMainHome() {
   function cardHTML(item, cls) {
     const txt = lang === 'ru' ? item.ru : item.en;
     const tagLbl = item.tag ? (lang === 'ru' ? item.tag.ru : item.tag.en) : '';
-    const theme = document.documentElement.getAttribute('data-theme');
-    const photoSrc = item.photo && typeof item.photo === 'object'
-      ? (item.photo[theme] || item.photo.default)
-      : item.photo;
-    const media = photoSrc
-      ? `<img class="main-card-photo" src="${photoSrc}" alt="" loading="lazy"${item.imgPos ? ` style="object-position:${item.imgPos}"` : ''}>`
+    let darkSrc = '', lightSrc = '';
+    if (item.photo && typeof item.photo === 'object') {
+      darkSrc  = item.photo.louie || item.photo.dark  || item.photo.default || '';
+      lightSrc = item.photo['louie-light'] || item.photo.light || item.photo.default || '';
+    } else if (item.photo) {
+      darkSrc = lightSrc = item.photo;
+    }
+    const posStyle = item.imgPos ? ` style="object-position:${item.imgPos}"` : '';
+    const media = (darkSrc || lightSrc)
+      ? `<img class="main-card-photo card-photo--dark"  src="${darkSrc  || lightSrc}" alt=""${posStyle}>
+         <img class="main-card-photo card-photo--light" src="${lightSrc || darkSrc}"  alt=""${posStyle}>`
       : `<div class="main-card-fallback">${item.icon}</div>`;
     return `
       <div class="main-card ${cls}${item.available ? '' : ' inactive'}" data-id="${item.id}"
