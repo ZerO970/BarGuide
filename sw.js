@@ -1,4 +1,4 @@
-const CACHE = 'alligator-guide-20260626-0211';
+const CACHE = 'alligator-guide-20260626-0250';
 const ASSETS = [
   '/AlligatorGuide/',
   '/AlligatorGuide/index.html',
@@ -147,7 +147,9 @@ const ASSETS = [
   '/AlligatorGuide/images/Cocktails/Whisky Mule.webp',
   '/AlligatorGuide/images/Cocktails/Jameson, Ginger & Lime.avif',
   '/AlligatorGuide/images/ui/card-alcohol.webp',
+  '/AlligatorGuide/images/ui/card-alcohol-light.jpg',
   '/AlligatorGuide/images/ui/card-cocktails.webp',
+  '/AlligatorGuide/images/ui/card-cocktails-light.jpg',
   '/AlligatorGuide/images/ui/card-menu.jpg',
   '/AlligatorGuide/images/ui/card-menu-dark.svg',
   '/AlligatorGuide/images/ui/card-events.jpg',

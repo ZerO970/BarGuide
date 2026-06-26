@@ -1499,6 +1499,7 @@ body.lang-ru [data-ru] { display: revert; }
 }
 @media (max-width: 640px) {
   [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
+  [data-theme="louie-light"] [data-id="on-the-menu"] .main-card-photo { object-position: 40% center; }
   [data-id="events"] .main-card-photo { object-position: center 35%; }
 }
 .main-card-fallback {
@@ -5389,7 +5390,7 @@ const MAIN_MENU = [
   {
     id: 'alcohol',
     icon: '🥃',
-    photo: 'images/ui/card-alcohol.webp',
+    photo: { louie: 'images/ui/card-alcohol.webp', dark: 'images/ui/card-alcohol.webp', 'louie-light': 'images/ui/card-alcohol-light.jpg', light: 'images/ui/card-alcohol-light.jpg' },
     tag: { en: 'Spirits', ru: 'Спириты' },
     en: { title: 'Alcohol', desc: 'Tasting notes, regions & profiles.' },
     ru: { title: 'Алкоголь', desc: 'Вкусы, регионы и профили спиритов.' },
@@ -5399,7 +5400,7 @@ const MAIN_MENU = [
   {
     id: 'cocktails',
     icon: '🍸',
-    photo: 'images/ui/card-cocktails.webp',
+    photo: { louie: 'images/ui/card-cocktails.webp', dark: 'images/ui/card-cocktails.webp', 'louie-light': 'images/ui/card-cocktails-light.jpg', light: 'images/ui/card-cocktails-light.jpg' },
     tag: { en: 'Recipes', ru: 'Рецепты' },
     en: { title: 'Cocktails', desc: 'Specs & top spirits for every drink.' },
     ru: { title: 'Коктейли', desc: 'Рецепты и лучшие спириты.' },
