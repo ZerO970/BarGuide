@@ -292,6 +292,38 @@ body { padding-top: 73px; }
 .nav-pill.open .nav-pill-extras::-webkit-scrollbar { display: none; }
 .nav-pill.open .nav-pill-arrow { transform: rotate(180deg); opacity: 0.4; }
 
+/* ─── NEW badge system ──────────────────────────────── */
+@keyframes badgePop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.nav-new-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box;
+  background: oklch(58% 0.22 30); color: #fff;
+  font-size: 0.58rem; font-weight: 700; border-radius: 99px;
+  margin-left: 4px; line-height: 1; vertical-align: middle;
+  animation: badgePop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-new-badge:empty { display: none; }
+.badge-new {
+  color: #fff;
+  background: oklch(58% 0.22 30);
+  border: 1px solid oklch(68% 0.22 30 / 0.5);
+  animation: badgePop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.card.is-new {
+  border-color: var(--gold-mid);
+  box-shadow: 0 0 0 1px oklch(72% 0.16 60 / 0.35), var(--shadow-card);
+}
+.spirit-card-new-badge {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 99px; flex-shrink: 0;
+  background: oklch(58% 0.22 30 / 0.12); color: oklch(65% 0.20 30);
+  border: 1px solid oklch(58% 0.22 30 / 0.3);
+  animation: badgePop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* Individual items inside expanded */
 .nav-pill-item {
   padding: 5px 13px; border-radius: 999px; border: none; background: transparent;
@@ -1756,7 +1788,7 @@ body.lang-ru [data-ru] { display: revert; }
         <div class="nav-pill-extras" id="navPillExtras">
           <button class="nav-pill-item active" id="navMainBtn" onclick="goMainHome()"><span data-en>Main</span><span data-ru>Главная</span></button>
           <button class="nav-pill-item nav-event-btn" data-screen="event" id="navEventBtn" hidden><span data-en>Event</span><span data-ru>Ивент</span></button>
-          <button class="nav-pill-item" data-screen="bar"><span data-en>Alcohol</span><span data-ru>Алкоголь</span></button>
+          <button class="nav-pill-item" data-screen="bar"><span data-en>Alcohol</span><span data-ru>Алкоголь</span><span class="nav-new-badge" id="navAlcoholBadge"></span></button>
           <button class="nav-pill-item" data-screen="cocktails"><span data-en>Cocktails</span><span data-ru>Коктейли</span></button>
           <button class="nav-pill-item" data-screen="on-the-menu"><span data-en>On the Menu</span><span data-ru>Обновления</span></button>
           <button class="nav-pill-item" data-screen="quiz"><span data-en>Quiz</span><span data-ru>Квиз</span></button>
@@ -2299,7 +2331,8 @@ const WHISKIES = [
       { name: "Rob Roy", icon: "🍸", desc: { en: "Nikka's fruit complexity adds a new dimension to the classic Scotch Manhattan variant.", ru: "Фруктовая сложность Nikka добавляет новое измерение классическому вермутовому коктейлю." } },
     ],
     history: { en: "Nikka was founded in 1934 by Masataka Taketsuru, who learned distillation in Scotland before returning to Japan. 'From The Barrel' is a blended whisky — malt and grain whiskies married in small casks after blending, raising the ABV above 50%. The iconic rectangular bottle is as admired as the whisky inside.", ru: "Nikka основана в 1934 году Масатакой Такэцуру, изучившим дистилляцию в Шотландии. «From The Barrel» купажирует солод и зерновой виски в малых бочках, поднимая крепость выше 50%. Легендарная прямоугольная бутылка." },
-    img: 'images/bottles/nikka-from-the-barrel.webp', imgVariant: 'a'
+    img: 'images/bottles/nikka-from-the-barrel.webp', imgVariant: 'a',
+    addedAt: "2026-06-25"
   },
 
   {
@@ -3522,7 +3555,8 @@ const WHISKIES = [
       { name: "Neat", icon: "✨", desc: { en: "At this price and quality, serve neat in a Glencairn. Add a single drop of water if the guest wants to open up the nose.", ru: "По этой цене и качеству подавать чистым в Гленкерн. Добавить каплю воды, если гость хочет раскрыть нос." } }
     ],
     history: { en: "The Yamazaki 18 is widely considered one of the finest whiskies ever produced. In 2003, Jim Murray awarded it Best Single Malt in Whisky Bible, the first time a Japanese whisky had won — a moment that changed how the world viewed Japanese whisky. Aged in multiple cask types including the rare Mizunara Japanese oak, it is extraordinarily difficult to source and commands high prices globally.", ru: "Yamazaki 18 повсеместно считается одним из лучших виски когда-либо произведённых. В 2003 году Джим Мюррей присудил ему звание лучшего односолодового в Whisky Bible — первый раз японский виски получил эту награду, и этот момент изменил взгляд мира на японский виски. Выдержанный в нескольких типах бочек, включая редкий японский дуб мизунара." },
-    img: 'images/bottles/yamazaki-18.jpg', imgVariant: 'a'
+    img: 'images/bottles/yamazaki-18.jpg', imgVariant: 'a',
+    addedAt: "2026-06-25"
   },
   {
     id: "toyonaga-okukuma",
@@ -3543,7 +3577,8 @@ const WHISKIES = [
       { name: "Neat / Rocks", icon: "🥃", desc: { en: "Best appreciated slowly, neat or with a single large cube to open the dark fruit.", ru: "Лучше всего раскрывается медленно, чистым или с одним крупным кубиком." } }
     ],
     history: { en: "Made by the Toyonaga Distillery in Kumamoto's Kuma Valley — a region famous for rice shochu for over 500 years — Okukuma starts life as a rice-based shochu before spending at least 7 years in ex-whisky sherry casks. Because Japanese tax law classifies spirits by colour absorbance rather than ingredients, this whisky-strength, whisky-tasting spirit is legally a shochu, not a whisky — one of the more fascinating category-benders in the Japanese spirits world.", ru: "Произведён на дистиллерии Toyonaga в долине Кума префектуры Кумамото — регионе, известном рисовым сёчу уже более 500 лет. Okukuma начинает жизнь как рисовый сёчу, затем проводит не менее 7 лет в хересных бочках из-под виски. Поскольку японское налоговое законодательство классифицирует спиртные напитки по цветопоглощению, а не по сырью, этот напиток крепости и вкуса виски юридически остаётся сёчу — один из самых интересных пограничных случаев в японском мире спиртных напитков." },
-    img: 'images/bottles/toyonaga-okukuma.jpg', imgVariant: 'a'
+    img: 'images/bottles/toyonaga-okukuma.jpg', imgVariant: 'a',
+    addedAt: "2026-06-25"
   },
   {
     id: "ichiro-malt-wine-wood-reserve",
@@ -3564,7 +3599,8 @@ const WHISKIES = [
       { name: "Neat", icon: "✨", desc: { en: "Serve neat in a Glencairn — the wine-cask character is the whole point, don't dilute it.", ru: "Подавать чистым в Гленкерн — характер винной бочки — это вся суть, не разбавлять." } }
     ],
     history: { en: "Part of Ichiro Akuto's celebrated Leaf Series, this is a blend of malt whisky from his own Chichibu distillery and the last remaining stocks of the closed Hanyu distillery (built by his grandfather). The whisky is finished in 'Ovum' — egg-shaped French oak casks from the Charentes region of France, more commonly used for Bordeaux wine than whisky.", ru: "Часть знаменитой серии Leaf от Ичиро Акуто — купаж солодового виски его собственной дистиллерии Chichibu и последних запасов закрытой дистиллерии Hanyu (основанной его дедом). Виски доводится в бочках Ovum — яйцевидных французских дубовых бочках из региона Шаранта, которые чаще используют для бордоских вин, чем для виски." },
-    img: 'images/bottles/ichiro-malt-wine-wood-reserve.jpg', imgVariant: 'a'
+    img: 'images/bottles/ichiro-malt-wine-wood-reserve.jpg', imgVariant: 'a',
+    addedAt: "2026-06-25"
   },
   {
     id: "ichiro-malt-mwr",
@@ -3585,7 +3621,8 @@ const WHISKIES = [
       { name: "Neat", icon: "✨", desc: { en: "Neat, room temperature. Give it a few minutes to open — the incense notes build with air.", ru: "Чистым, комнатной температуры. Дать пару минут раскрыться — ладанные ноты усиливаются с воздухом." } }
     ],
     history: { en: "Mizunara is a rare Japanese oak — slow-growing, highly porous and difficult to coopers — that imparts a distinctive sandalwood-incense character almost never found in Scotch. Ichiro Akuto's MWR (Mizunara Wood Reserve), blending malt from Chichibu and the closed Hanyu distillery, has long been one of the most accessible ways to try whisky matured purely in this wood.", ru: "Мизунара — редкий японский дуб: медленнорастущий, очень пористый и сложный для бочкарей — придаёт характерную сандалово-ладанную ноту, почти не встречающуюся в скотче. MWR (Mizunara Wood Reserve) от Ичиро Акуто, купаж солода Chichibu и закрытой Hanyu, долгое время был одним из самых доступных способов попробовать виски, выдержанный исключительно в этой древесине." },
-    img: 'images/bottles/ichiro-malt-mwr.jpg', imgVariant: 'a'
+    img: 'images/bottles/ichiro-malt-mwr.jpg', imgVariant: 'a',
+    addedAt: "2026-06-25"
   },
   {
     id: "ichiro-malt-double-distilleries",
@@ -5391,6 +5428,54 @@ function renderMainHome() {
   grid.innerHTML = html;
 }
 
+/* ══════════════════════════════════════════════════
+   NEW BADGE SYSTEM
+   Tracks unseen newly-added spirits via localStorage.
+   addedAt: "YYYY-MM-DD" on any spirit entry triggers badges.
+══════════════════════════════════════════════════ */
+const NEW_DAYS = 14;
+
+function isNew(item) {
+  if (!item.addedAt) return false;
+  const added = new Date(item.addedAt);
+  const now = new Date();
+  return (now - added) / 86400000 <= NEW_DAYS;
+}
+
+function _getSeenSet() {
+  try { return new Set(JSON.parse(localStorage.getItem('ag_seen_v1') || '[]')); }
+  catch { return new Set(); }
+}
+
+function isSeen(id) { return _getSeenSet().has(id); }
+
+function markSeen(id) {
+  try {
+    const set = _getSeenSet();
+    if (!set.has(id)) {
+      set.add(id);
+      localStorage.setItem('ag_seen_v1', JSON.stringify([...set]));
+      updateNewBadges();
+    }
+  } catch {}
+}
+
+function updateNewBadges() {
+  // Count unseen new spirits across all types
+  const seen = _getSeenSet();
+  let total = 0;
+  SPIRIT_TYPES.forEach(st => {
+    if (st.available) st.data().forEach(item => {
+      if (isNew(item) && !seen.has(item.id)) total++;
+    });
+  });
+  const badge = document.getElementById('navAlcoholBadge');
+  if (badge) badge.textContent = total > 0 ? String(total) : '';
+  // Refresh spiritHome if it's currently visible
+  const sh = document.getElementById('spiritHome');
+  if (sh && !sh.hidden) renderSpiritHome();
+}
+
 /* ── Spirit Type Selector ── */
 const SPIRIT_TYPES = [
   { id: 'whisky',   icon: '🥃', en: 'Whisky',    ru: 'Виски',      available: true,  data: () => WHISKIES },
@@ -5406,11 +5491,16 @@ const SPIRIT_TYPES = [
 function renderSpiritHome() {
   const grid = document.getElementById('spiritGrid');
   if (!grid) return;
+  const seen = _getSeenSet();
   grid.innerHTML = SPIRIT_TYPES.map(s => {
     const count = s.available ? s.data().length : 0;
     const countLabel = s.available
       ? `${count} ${lang === 'ru' ? 'позиций' : 'bottles'}`
       : (lang === 'ru' ? 'Скоро' : 'Coming soon');
+    const unseenNew = s.available ? s.data().filter(i => isNew(i) && !seen.has(i.id)).length : 0;
+    const newBadge = unseenNew > 0
+      ? `<span class="spirit-card-new-badge">NEW ${unseenNew}</span>`
+      : (s.available ? '<div class="spirit-card-arrow">›</div>' : '');
     return `
       <div class="spirit-card${s.available ? '' : ' coming-soon'}"
            ${s.available ? `onclick="enterSpirit('${s.id}')"` : ''}>
@@ -5419,7 +5509,7 @@ function renderSpiritHome() {
           <div class="spirit-card-name">${lang === 'ru' ? s.ru : s.en}</div>
           <div class="spirit-card-count">${countLabel}</div>
         </div>
-        ${s.available ? '<div class="spirit-card-arrow">›</div>' : ''}
+        ${newBadge}
       </div>`;
   }).join('');
 }
@@ -5583,6 +5673,7 @@ function renderGenericSpiritGrid(spiritId) {
 }
 
 function openSpiritModal(spiritId, itemId) {
+  markSeen(itemId);
   const st = SPIRIT_TYPES.find(s => s.id === spiritId);
   if (!st) return;
   const item = st.data().find(i => i.id === itemId);
@@ -6157,12 +6248,13 @@ function renderBar() {
           : `<img class="card-img-b" src="${w.img}" alt="" loading="lazy"${imgPos}>`)
       : '';
     const imgClass = w.img ? ` has-img-${w.imgVariant}` : '';
+    const isNewCard = isNew(w) && !isSeen(w.id);
     return `
-      <article class="card${imgClass}" data-id="${w.id}" role="button" tabindex="0">
+      <article class="card${imgClass}${isNewCard ? ' is-new' : ''}" data-id="${w.id}" role="button" tabindex="0">
         ${imgHTML}
         <div class="card-header">
           <span class="badge badge-type">${t(w.typeLabel)}</span>
-          <span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>
+          ${isNewCard ? '<span class="badge badge-new">NEW</span>' : `<span class="badge badge-${w.balance}">${t(w.balanceLabel)}</span>`}
         </div>
         <div class="card-name">${w.name}</div>
         <div class="card-region">${t(w.region)}</div>
@@ -6366,6 +6458,7 @@ document.getElementById('cocktailFilters').addEventListener('click', e => {
    WHISKY MODAL
 ══════════════════════════════════════════════════ */
 function openWhiskyModal(w, backFn) {
+  markSeen(w.id);
   const p = w.palate;
   const flavors = [
     { l: lang === 'en' ? 'Spice' : 'Пряность', v: p.spice },
@@ -7896,6 +7989,7 @@ renderCategories();
 renderCocktails();
 renderOnTheMenu();
 renderAllSpiritsFilters();
+updateNewBadges();
 initEventScreen();
 // Set initial track position without animation
 slideTrackTo(SCREEN_ORDER.indexOf(currentScreen), false);
