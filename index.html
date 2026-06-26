@@ -1420,6 +1420,45 @@ body.lang-ru [data-ru] { display: revert; }
 @keyframes onbRise { 0%,100% { transform: translateY(3px); opacity: 0.5; } 50% { transform: translateY(-6px); opacity: 1; } }
 @keyframes onbSpark { 0%,100% { transform: scale(0.6) rotate(-10deg); opacity: 0.3; } 50% { transform: scale(1.1) rotate(10deg); opacity: 1; } }
 
+/* ── Light-theme splash overrides ── */
+[data-theme="louie-light"] .onb,
+[data-theme="light"] .onb {
+  background: radial-gradient(
+    120% 90% at 50% 18%,
+    oklch(90% 0.030 148) 0%,
+    oklch(94% 0.018 130) 45%,
+    oklch(97% 0.008 80)  100%
+  );
+  color: oklch(22% 0.04 80);
+}
+[data-theme="louie-light"] .onb::before,
+[data-theme="light"] .onb::before { opacity: 0.18; }
+
+[data-theme="louie-light"] .onb-gator-img,
+[data-theme="light"] .onb-gator-img {
+  mix-blend-mode: multiply;
+  filter:
+    brightness(0)
+    sepia(1) saturate(2.8) hue-rotate(110deg) brightness(0.36)
+    drop-shadow(0 8px 28px oklch(40% 0.08 140 / 0.18));
+}
+[data-theme="louie-light"] .onb-the,
+[data-theme="light"] .onb-the { color: oklch(40% 0.08 78); }
+
+[data-theme="louie-light"] .onb-name,
+[data-theme="light"] .onb-name { color: oklch(22% 0.05 80); }
+
+[data-theme="louie-light"] .onb-progress,
+[data-theme="light"] .onb-progress { background: oklch(55% 0.06 140 / 0.20); }
+
+[data-theme="louie-light"] .onb-progress-fill,
+[data-theme="light"] .onb-progress-fill {
+  background: linear-gradient(90deg, oklch(42% 0.10 140), oklch(36% 0.08 78));
+  box-shadow: 0 0 10px oklch(42% 0.10 140 / 0.4);
+}
+[data-theme="louie-light"] .onb-tagline,
+[data-theme="light"] .onb-tagline { color: oklch(46% 0.06 130); }
+
 /* fade-out on dismiss */
 .onb.onb-exit { animation: onbExit 460ms cubic-bezier(0.4,0,1,1) forwards; }
 @keyframes onbExit { to { opacity: 0; visibility: hidden; transform: scale(1.04); } }
