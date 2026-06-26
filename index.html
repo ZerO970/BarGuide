@@ -1498,7 +1498,8 @@ body.lang-ru [data-ru] { display: revert; }
   display: block;
 }
 @media (max-width: 640px) {
-  [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
+  [data-theme="louie"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
+  [data-theme="dark"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
   [data-theme="louie-light"] [data-id="on-the-menu"] .main-card-photo { object-position: 40% center; }
   [data-id="events"] .main-card-photo { object-position: center 35%; }
 }
@@ -5410,7 +5411,7 @@ const MAIN_MENU = [
   {
     id: 'on-the-menu',
     icon: '📋',
-    photo: { louie: 'images/ui/card-menu-dark.svg', default: 'images/ui/card-menu.jpg' },
+    photo: { louie: 'images/ui/card-menu-dark.svg', dark: 'images/ui/card-menu-dark.svg', default: 'images/ui/card-menu.jpg' },
     tag: { en: 'Updates', ru: 'Обновления' },
     en: { title: 'On the Menu', desc: 'New arrivals & changes.' },
     ru: { title: 'Обновления', desc: 'Новинки и изменения.' },
@@ -5420,7 +5421,7 @@ const MAIN_MENU = [
   {
     id: 'events',
     icon: '🎉',
-    photo: 'images/ui/card-events.jpg',
+    photo: { louie: 'images/ui/card-events.jpg', dark: 'images/ui/card-events.jpg', 'louie-light': 'images/ui/card-events-light.jpg', light: 'images/ui/card-events-light.jpg' },
     imgPos: 'center 20%',
     tag: { en: 'Tonight', ru: 'Сегодня' },
     en: { title: 'Events', desc: 'Special menus & collaborations.' },
