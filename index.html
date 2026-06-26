@@ -5416,6 +5416,7 @@ const MAIN_MENU = [
     id: 'events',
     icon: '🎉',
     photo: 'images/ui/card-events.jpg',
+    imgPos: 'center 20%',
     tag: { en: 'Tonight', ru: 'Сегодня' },
     en: { title: 'Events', desc: 'Special menus & collaborations.' },
     ru: { title: 'Ивенты', desc: 'Спецменю и коллаборации.' },
@@ -5436,7 +5437,7 @@ function renderMainHome() {
       ? (item.photo[theme] || item.photo.default)
       : item.photo;
     const media = photoSrc
-      ? `<img class="main-card-photo" src="${photoSrc}" alt="" loading="lazy">`
+      ? `<img class="main-card-photo" src="${photoSrc}" alt="" loading="lazy"${item.imgPos ? ` style="object-position:${item.imgPos}"` : ''}>`
       : `<div class="main-card-fallback">${item.icon}</div>`;
     return `
       <div class="main-card ${cls}${item.available ? '' : ' inactive'}"
