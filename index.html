@@ -792,6 +792,29 @@ body { padding-top: 73px; }
 .cktl-search-input::placeholder { color: var(--text-muted); }
 .cktl-search-input:focus { border-color: var(--gold-dim); box-shadow: 0 0 0 3px oklch(60% 0.12 72 / 0.1); }
 .cktl-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.fw-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 150ms ease; white-space: nowrap; }
+.fw-btn:hover { border-color: var(--gold-dim); color: var(--gold-bright); background: var(--recommend-bg); }
+.fw-btn.fw-active { border-color: var(--gold-mid); color: var(--gold-bright); background: var(--recommend-bg); }
+.fw-active-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.fw-active-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; color: #000; cursor: pointer; border: none; line-height: 1.4; }
+.fw-active-chip::after { content: '×'; margin-left: 3px; opacity: 0.7; font-weight: 700; }
+.fw-clear-all { padding: 3px 9px; background: transparent; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.7rem; cursor: pointer; }
+.fw-overlay { position: fixed; inset: 0; background: oklch(0% 0 0 / 0.65); z-index: 800; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 250ms ease; }
+.fw-overlay.open { opacity: 1; pointer-events: all; }
+.fw-panel { width: 100%; max-width: 460px; background: var(--bg-base); border-radius: 24px 24px 0 0; padding: 12px 24px 44px; display: flex; flex-direction: column; align-items: center; gap: 12px; transform: translateY(60px); transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.fw-overlay.open .fw-panel { transform: translateY(0); }
+.fw-handle { width: 36px; height: 4px; background: var(--border-subtle); border-radius: 2px; flex-shrink: 0; margin-bottom: 2px; }
+.fw-panel-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.fw-panel-hint { font-size: 0.72rem; color: var(--text-muted); }
+.fw-svg-wrap { width: 268px; height: 268px; flex-shrink: 0; }
+.fw-svg-wrap svg { overflow: visible; width: 100%; height: 100%; }
+.fw-seg { cursor: pointer; transition: opacity 180ms, filter 180ms; opacity: 0.62; }
+.fw-seg:hover { opacity: 0.85; }
+.fw-seg.sel { opacity: 1; filter: drop-shadow(0 0 7px var(--fw-col,#fff6)); }
+.fw-seg path { stroke: var(--bg-base); stroke-width: 3.5; }
+.fw-actions { display: flex; gap: 10px; width: 100%; }
+.fw-cancel-btn { flex: 1; padding: 11px; border: 1px solid var(--border-subtle); border-radius: 12px; background: transparent; color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 0.85rem; cursor: pointer; }
+.fw-apply-btn { flex: 2; padding: 11px; border: none; border-radius: 12px; background: var(--gold-mid); color: #000; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 
 /* ─── Cocktail Screen ───────────────────────────────────── */
 .cocktail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
@@ -2169,6 +2192,11 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
       <button class="filter-chip" data-cktl-filter="rum">🍹 <span data-en>Rum</span><span data-ru>Ром</span></button>
       <button class="filter-chip" data-cktl-filter="vodka">🧊 <span data-en>Vodka</span><span data-ru>Водка</span></button>
       <button class="filter-chip" data-cktl-filter="cognac">🍇 <span data-en>Cognac</span><span data-ru>Коньяк</span></button>
+      <button class="fw-btn" id="flavorWheelBtn" onclick="openFlavorWheel()">🎨 <span data-en>Flavor</span><span data-ru>Вкус</span></button>
+    </div>
+    <div class="fw-active-row" id="fwActiveRow" style="display:none">
+      <div id="fwActiveChips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      <button class="fw-clear-all" onclick="clearFlavorFilter()"><span data-en>Clear</span><span data-ru>Сбросить</span></button>
     </div>
   </div>
   <div class="cocktail-grid" id="cocktailGrid"></div>
@@ -2365,6 +2393,20 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
 </div>
 
 <!-- ─── MODAL ──────────────────────────────────────── -->
+<!-- ─── FLAVOR WHEEL OVERLAY ───────────────────────── -->
+<div class="fw-overlay" id="fwOverlay" onclick="fwOverlayClick(event)">
+  <div class="fw-panel" id="fwPanel">
+    <div class="fw-handle"></div>
+    <div class="fw-panel-title"><span data-en>Pick a Flavor Profile</span><span data-ru>Выберите вкус</span></div>
+    <div class="fw-panel-hint"><span data-en>Tap segments · multi-select OK</span><span data-ru>Тап по сегменту · можно несколько</span></div>
+    <div class="fw-svg-wrap" id="fwSvgWrap"></div>
+    <div class="fw-actions">
+      <button class="fw-cancel-btn" onclick="closeFlavorWheel()"><span data-en>Cancel</span><span data-ru>Отмена</span></button>
+      <button class="fw-apply-btn" id="fwApplyBtn" onclick="applyFlavorFilter()"><span data-en>Show Cocktails</span><span data-ru>Найти коктейли</span></button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalPanel">
     <div class="modal-drag"></div>
@@ -6964,6 +7006,8 @@ function findSpirit(id) {
 
 let cocktailSearch = '';
 let cocktailFilter = 'all';
+let flavorFilter = [];
+let fwSelected = [];
 
 function renderCocktails() {
   const q = cocktailSearch.toLowerCase().trim();
@@ -6972,6 +7016,13 @@ function renderCocktails() {
   let list = COCKTAILS;
   if (f && f !== 'all') list = list.filter(c => c.baseSpirit === f);
   if (q) list = list.filter(c => c.name.toLowerCase().includes(q));
+  if (flavorFilter.length > 0) {
+    list = list.filter(c => {
+      const fp = COCKTAIL_FLAVOR_PROFILES[c.id];
+      if (!fp) return false;
+      return flavorFilter.some(key => (fp[key] || 0) >= 3);
+    });
+  }
 
   const grid = document.getElementById('cocktailGrid');
   grid.innerHTML = list.length ? list.map(c => {
@@ -7014,6 +7065,148 @@ document.getElementById('cocktailFilters').addEventListener('click', e => {
   document.querySelectorAll('[data-cktl-filter]').forEach(c => c.classList.toggle('active', c === chip));
   renderCocktails();
 });
+
+/* ══════════════════════════════════════════════════
+   FLAVOR WHEEL
+══════════════════════════════════════════════════ */
+const FLAVOR_DIMS = [
+  { key:'sweet',  emoji:'🍬', en:'Sweet',   ru:'Сладкий',   color:'#f59e0b' },
+  { key:'fruity', emoji:'🍓', en:'Fruity',  ru:'Фруктовый', color:'#fb923c' },
+  { key:'spicy',  emoji:'🌶', en:'Spicy',   ru:'Острый',    color:'#ef4444' },
+  { key:'smoky',  emoji:'💨', en:'Smoky',   ru:'Дымный',    color:'#78716c' },
+  { key:'bitter', emoji:'🌿', en:'Bitter',  ru:'Горький',   color:'#22c55e' },
+  { key:'sour',   emoji:'🍋', en:'Sour',    ru:'Кислый',    color:'#a3e635' },
+  { key:'floral', emoji:'🌸', en:'Floral',  ru:'Цветочный', color:'#e879f9' },
+  { key:'creamy', emoji:'🥛', en:'Creamy',  ru:'Кремовый',  color:'#a78bfa' },
+];
+
+function buildFlavorWheel() {
+  const CX = 134, CY = 134, R = 110, RINNER = 46, N = FLAVOR_DIMS.length;
+  const toRad = d => d * Math.PI / 180;
+  const pt = (radius, angleDeg) => [
+    CX + radius * Math.cos(toRad(angleDeg)),
+    CY + radius * Math.sin(toRad(angleDeg))
+  ];
+  const DEG = 360 / N;
+  let svg = `<svg viewBox="0 0 268 268" xmlns="http://www.w3.org/2000/svg">`;
+
+  FLAVOR_DIMS.forEach((dim, i) => {
+    const a0 = i * DEG - 90, a1 = (i + 1) * DEG - 90;
+    const [ox0, oy0] = pt(R, a0), [ox1, oy1] = pt(R, a1);
+    const [ix1, iy1] = pt(RINNER, a1), [ix0, iy0] = pt(RINNER, a0);
+    const path = `M${ox0.toFixed(2)},${oy0.toFixed(2)} A${R},${R} 0 0,1 ${ox1.toFixed(2)},${oy1.toFixed(2)} L${ix1.toFixed(2)},${iy1.toFixed(2)} A${RINNER},${RINNER} 0 0,0 ${ix0.toFixed(2)},${iy0.toFixed(2)} Z`;
+    const mid = a0 + DEG / 2;
+    const [ex, ey] = pt((R + RINNER) / 2, mid);
+    const [lx, ly] = pt(R + 16, mid);
+    const label = lang === 'ru' ? dim.ru : dim.en;
+    svg += `<g class="fw-seg" data-key="${dim.key}" style="--fw-col:${dim.color}" onclick="fwToggle('${dim.key}')">
+      <path d="${path}" fill="${dim.color}"/>
+      <text x="${ex.toFixed(2)}" y="${ey.toFixed(2)}" text-anchor="middle" dominant-baseline="middle" font-size="17" style="pointer-events:none">${dim.emoji}</text>
+    </g>
+    <text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" text-anchor="middle" dominant-baseline="middle" font-size="8.5" fill="var(--text-secondary)" font-family="Inter,sans-serif" style="pointer-events:none">${label}</text>`;
+  });
+
+  svg += `<circle cx="${CX}" cy="${CY}" r="${RINNER - 2}" fill="var(--bg-base)"/>
+  <text id="fwCenterLine1" x="${CX}" y="${CY - 7}" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="var(--text-muted)" font-family="Inter,sans-serif" style="pointer-events:none">${lang === 'en' ? 'Tap to' : 'Нажмите'}</text>
+  <text id="fwCenterLine2" x="${CX}" y="${CY + 7}" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="var(--text-muted)" font-family="Inter,sans-serif" style="pointer-events:none">${lang === 'en' ? 'select' : 'на вкус'}</text>
+  </svg>`;
+  return svg;
+}
+
+function openFlavorWheel() {
+  fwSelected = [...flavorFilter];
+  document.getElementById('fwSvgWrap').innerHTML = buildFlavorWheel();
+  fwRefreshWheel();
+  document.getElementById('fwOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFlavorWheel() {
+  document.getElementById('fwOverlay').classList.remove('open');
+  if (!document.getElementById('modalOverlay').classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
+}
+
+function fwOverlayClick(e) {
+  if (e.target === document.getElementById('fwOverlay')) closeFlavorWheel();
+}
+
+function fwToggle(key) {
+  const idx = fwSelected.indexOf(key);
+  if (idx >= 0) fwSelected.splice(idx, 1); else fwSelected.push(key);
+  fwRefreshWheel();
+}
+
+function fwRefreshWheel() {
+  document.querySelectorAll('.fw-seg').forEach(seg =>
+    seg.classList.toggle('sel', fwSelected.includes(seg.dataset.key))
+  );
+  const c1 = document.getElementById('fwCenterLine1');
+  const c2 = document.getElementById('fwCenterLine2');
+  if (c1 && c2) {
+    if (fwSelected.length) {
+      c1.textContent = lang === 'en' ? `${fwSelected.length}` : `${fwSelected.length}`;
+      c2.textContent = lang === 'en' ? 'selected' : 'выбрано';
+    } else {
+      c1.textContent = lang === 'en' ? 'Tap to' : 'Нажмите';
+      c2.textContent = lang === 'en' ? 'select' : 'на вкус';
+    }
+  }
+  const n = fwCountMatches();
+  const btn = document.getElementById('fwApplyBtn');
+  if (btn) {
+    if (fwSelected.length === 0) {
+      btn.textContent = lang === 'en' ? 'Show All' : 'Показать все';
+    } else {
+      btn.textContent = lang === 'en' ? `Show ${n} cocktail${n === 1 ? '' : 's'}` : `Найти коктейли (${n})`;
+    }
+  }
+}
+
+function fwCountMatches() {
+  if (!fwSelected.length) return COCKTAILS.length;
+  return COCKTAILS.filter(c => {
+    const fp = COCKTAIL_FLAVOR_PROFILES[c.id];
+    return fp && fwSelected.some(k => (fp[k] || 0) >= 3);
+  }).length;
+}
+
+function applyFlavorFilter() {
+  flavorFilter = [...fwSelected];
+  closeFlavorWheel();
+  renderCocktails();
+  fwUpdateBtn();
+}
+
+function clearFlavorFilter() {
+  flavorFilter = [];
+  fwSelected = [];
+  renderCocktails();
+  fwUpdateBtn();
+}
+
+function fwRemoveOne(key) {
+  flavorFilter = flavorFilter.filter(k => k !== key);
+  fwSelected = [...flavorFilter];
+  renderCocktails();
+  fwUpdateBtn();
+}
+
+function fwUpdateBtn() {
+  const btn = document.getElementById('flavorWheelBtn');
+  if (btn) btn.classList.toggle('fw-active', flavorFilter.length > 0);
+  const row = document.getElementById('fwActiveRow');
+  const chips = document.getElementById('fwActiveChips');
+  if (!row || !chips) return;
+  if (!flavorFilter.length) { row.style.display = 'none'; return; }
+  row.style.display = 'flex';
+  chips.innerHTML = flavorFilter.map(key => {
+    const d = FLAVOR_DIMS.find(x => x.key === key);
+    if (!d) return '';
+    return `<button class="fw-active-chip" style="background:${d.color}" onclick="fwRemoveOne('${key}')">${d.emoji} ${lang === 'ru' ? d.ru : d.en}</button>`;
+  }).join('');
+}
 
 /* ══════════════════════════════════════════════════
    WHISKY MODAL
