@@ -1493,7 +1493,7 @@ body.lang-ru [data-ru] { display: revert; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; object-position: center;
-  display: block; z-index: 0;
+  display: block;
 }
 @media (max-width: 640px) {
   [data-theme="louie"] [data-id="on-the-menu"] .main-card-photo { object-position: 30% center; }
@@ -1507,7 +1507,7 @@ body.lang-ru [data-ru] { display: revert; }
   font-size: 3.2rem; opacity: 0.5;
 }
 .main-card-gradient {
-  position: absolute; inset: 0; z-index: 1;
+  position: absolute; inset: 0;
   background: linear-gradient(
     to top,
     oklch(7% 0.03 155 / 0.97) 0%,
@@ -1780,7 +1780,7 @@ body.lang-ru [data-ru] { display: revert; }
 
 /* ─── Theme Crossfade Images ─────────────────────── */
 .card-photo--dark,
-.card-photo--light { transition: opacity 2880ms ease-out; will-change: opacity; }
+.card-photo--light { transition: opacity 2880ms ease-out; }
 .card-photo--light { opacity: 0; }
 [data-theme="louie-light"] .card-photo--dark,
 [data-theme="light"]       .card-photo--dark  { opacity: 0; }
