@@ -7834,7 +7834,7 @@ syncFavBtn();
 
   function currentIdx() { return SCREEN_ORDER.indexOf(currentScreen); }
   // Minimum swipe index: 0 if event is active, 1 (bar) otherwise
-  function minIdx() { return isEventActiveToday() ? 0 : 1; }
+  function minIdx() { return 1; } // Event screen never reachable by swipe — nav button only
 
   function applyDrag(dx) {
     const idx = currentIdx();
