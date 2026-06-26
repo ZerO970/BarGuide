@@ -126,11 +126,13 @@ updateNewBadges()    // updates nav Alcohol badge count + rerenders spiritHome
 
 ## Themes
 
-4 themes cycle on theme button click:
-`louie` (dark green) → `louie-light` (sage) → `dark` (charcoal) → `light` (cream)
+2 themes cycle on theme button click (the generic `dark`/`light` themes were removed):
+`louie` (dark green) → `louie-light` (sage)
 
 Default: `data-theme="louie"` on `<html>`.
-**Persisted**: saved to `localStorage` as `ag_theme`. No-flash inline `<script>` in `<head>` restores it before CSS renders.
+**Persisted**: saved to `localStorage` as `ag_theme`. No-flash inline `<script>` in `<head>` restores it before CSS renders, and **migrates legacy values** (`dark`→`louie`, `light`→`louie-light`) so returning users aren't stranded on a removed theme.
+
+**Theme crossfade ("light switch"):** main-home cards stack two `<img>` (`.card-photo--dark` + `.card-photo--light`); on theme change the photos crossfade via opacity (2880ms) while bg/header/nav transition via the `theme-transitioning` class (1800ms). `.main-card` uses `isolation:isolate` + `translateZ(0)` to keep gradient/badges glued during the fade (iOS Safari compositing fix). `prefers-reduced-motion` disables both.
 
 Alligator branding (logo, gator watermark) activates in `louie` and `louie-light` themes.
 Fixed background gator: `.louie-gator-bg` div, `position:fixed`, `z-index:0`.
@@ -301,9 +303,9 @@ VERSION=$(date +"%Y%m%d-%H%M") && sed -i "s|const CACHE = 'alligator-guide-[^']*
 
 ## Known issues / deferred
 
-- **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. Code is in `renderBar` patch (~line 4380) and `syncCompareBar()` (~line 4567).
-- **Swipe doesn't init Quiz/Match** — `quizNext()` triggers on pill click only; if user swipes to quiz screen it's blank until they tap. Low priority, quick fix: call `quizNext()` inside `navSetScreen`.
-- **Search is EN-only** — `renderBar()` searches `w.nose.tags.en` regardless of active language. Fix: also search `w.nose.tags[lang]`.
+- **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. `syncCompareBar()`/`openCompareModal()` still use `WHISKIES.find` (whisky-only) — switch to `findSpirit()` if the feature ever ships for multiple categories.
+- ~~Swipe doesn't init Quiz/Match~~ — **fixed**: `navSetScreen` calls `quizNext()` when reaching the quiz screen.
+- ~~Search is EN-only~~ — **fixed**: `renderBar()` search now includes `w.nose.tags[lang]` + EN fallback + `palateNotes[lang]`.
 
 
 ---
