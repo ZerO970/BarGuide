@@ -1198,9 +1198,11 @@ body.lang-ru [data-ru] { display: revert; }
 @media (min-width: 768px) {
   .nav-pill-trigger { display: none; }
   .nav-pill-extras {
-    max-width: 500px; opacity: 1; pointer-events: auto; overflow: visible;
+    max-width: min(800px, calc(100vw - 260px)); opacity: 1; pointer-events: auto;
+    overflow-x: auto; scrollbar-width: none;
     transition: none;
   }
+  .nav-pill-extras::-webkit-scrollbar { display: none; }
   /* Logo always visible on desktop regardless of nav state */
   .header-inner.nav-open .logo,
   .header-inner.nav-open .logo-louie {
