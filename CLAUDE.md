@@ -171,7 +171,7 @@ FOOD = [
 ```
 
 Categories: `'snack'` | `'starter'` | `'main'` | `'side'` | `'dessert'`.
-Food has no images — uses `emoji` field (`f.img` optional, falls back to emoji).
+Dish photos in `images/food/<id>.jpg` (31 images, ~2.7MB, extracted from the Food Bible `.odp`). Auto-attached after the array: `FOOD.forEach(f => { if (!FOOD_NO_PHOTO.has(f.id)) f.img = 'images/food/'+f.id+'.jpg' })`. Only `red-oak-salad` has no source photo → emoji fallback. `f.img` drives both the card thumbnail and the modal hero.
 Filter tabs are a fixed list in `renderFood()` (all/snack/starter/main/side/dessert), not derived from data.
 `openFoodModal(f)` uses the main `#modalOverlay`; renders Description, Allergens, **💬 Talking Point** (`foh`), **🍷 Wine Pairing** (`wine`), **🍸 Cocktail Pairing** (`pairings`). Empty `foh`/`wine`/`pairings` sections are omitted; empty `price` is omitted.
 
@@ -183,7 +183,7 @@ Some dishes have no listed price in the source PDF (melon-soup, tomato-burrata, 
 1. Add entry to `FOOD[]` — `id`, `name`, `emoji`, `category`, `price`, `description` required; `foh`/`tags`/`pairings`/`wine` optional
 2. `pairings` must be valid IDs from `COCKTAILS[]`; `wine` is free text from the venue wine list
 3. If adding a new `category`, also add a tab to the `categories` array in `renderFood()`
-4. No images needed (emoji fallback)
+4. Add a photo to `images/food/<id>.jpg` + its path to `sw.js` ASSETS (auto-attached by id; emoji fallback if absent)
 
 ---
 
@@ -444,7 +444,7 @@ VERSION=$(date +"%Y%m%d-%H%M") && sed -i "s|const CACHE = 'alligator-guide-[^']*
 ## Known issues / deferred
 
 - **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. `syncCompareBar()`/`openCompareModal()` still use `WHISKIES.find` (whisky-only) — switch to `findSpirit()` if the feature ever ships for multiple categories.
-- ~~Food menu — placeholder content~~ — **done**: replaced with the real House of Louie Summer 26 menu (32 dishes, with `foh` talking points + `wine`/cocktail pairings). Photos not included (PDF images couldn't be extracted in-env; cards are emoji-based by design).
+- ~~Food menu — placeholder content~~ — **done**: real House of Louie Summer 26 menu (32 dishes, `foh` talking points + `wine`/cocktail pairings + 31 dish photos extracted from the `.odp`).
 - ~~Swipe doesn't init Quiz/Match~~ — **fixed**: `navSetScreen` calls `quizNext()` when reaching the quiz screen.
 - ~~Search is EN-only~~ — **fixed**: `renderBar()` search now includes `w.nose.tags[lang]` + EN fallback + `palateNotes[lang]`.
 - ~~Event screen in swipe chain~~ — **fixed**: Event removed from swipe (`minIdx()` always returns 1); accessible via nav button only.
