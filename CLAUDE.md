@@ -7,7 +7,7 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ## Stack & deployment
 
-- **Single file**: `D:\Claude\whisky-guide\index.html` (~7100 lines) — **работай здесь**
+- **Single file**: `D:\Claude\whisky-guide\index.html` (~9300 lines) — **работай здесь**
 - **Assets**: `images/bottles/`, `images/bottles_cards/`, `images/Cocktails/`, `alligator.svg`, `icons/`
 - **PWA**: `manifest.json` + `sw.js` (service worker, cache-first for assets, network-first for HTML)
 - **Deployed**: GitHub Pages → `https://github.com/ZerO970/AlligatorGuide`
@@ -18,42 +18,49 @@ PWA, offline-first, single HTML file. Live at: **https://zero970.github.io/Allig
 
 ---
 
-## File structure inside `index.html` (~7300 lines)
+## File structure inside `index.html` (~9300 lines)
 
 | Lines (approx) | Content |
 |---|---|
 | 1–16 | `<head>`, fonts, no-flash script |
-| 17–1200 | `<style>` — all CSS |
-| 1200–1450 | `<body>` HTML |
-| 1450–3450 | `<script>` data: `WHISKIES[]` (74), `RUMS[]` (21), `COGNACS[]` (5), `ARMAGNACS[]`, `VODKAS[]` (8), `GINS[]` (8), `TEQUILAS[]` (15), `MEZCALS[]` (3), `ABSINTHES[]` |
-| 3450–3730 | `COCKTAILS[]` — 67 коктейлей (whisky×20, gin×13, tequila×10, rum×10, vodka×8, cognac×6) |
-| 3730–4000 | `CATEGORIES{}`, `SPIRIT_TYPES[]`, `MAIN_MENU[]`, `COCKTAIL_IMG{}`, `TRIVIA[]` |
-| 4000–4250 | JS — state, lang, theme, nav |
-| 4250–4750 | JS — `renderAllSpiritsGrid()`, `renderGenericSpiritGrid()`, `openSpiritModal()`, `renderBar()` |
-| 4750–5550 | JS — `findSpirit()`, `renderCocktails()`, `openWhiskyModal()` |
-| 5550–5800 | JS — `openCocktailModal()` |
-| 5800–end | JS — trivia, quiz, match, favourites, compare, onboarding |
+| 17–1940 | `<style>` — all CSS |
+| 1940–2374 | `<body>` HTML — 8 screens + overlays (manager updates, flavor wheel) |
+| 2375–4188 | `<script>` data: `WHISKIES[]` (74), `RUMS[]` (21), `COGNACS[]` (5), `ARMAGNACS[]`, `VODKAS[]` (8), `GINS[]` (8), `TEQUILAS[]` (15), `MEZCALS[]` (3), `ABSINTHES[]` |
+| 4189–5290 | `COCKTAILS[]` — 67 коктейлей (whisky×20, gin×13, tequila×10, rum×10, vodka×8, cognac×6) |
+| 5291–5556 | `COCKTAIL_FLAVOR_PROFILES{}`, `DAILY_SPECIALS[]`, `WEEKLY_TASKS{}`, `CHECKLISTS{}`, `MANAGER_UPDATES[]` |
+| 5557–5900 | `CATEGORIES{}`, `SPIRIT_TYPES[]`, `MAIN_MENU[]`, `COCKTAIL_IMG{}`, `TRIVIA[]`, `EVENT_DATA` |
+| 5900–6550 | JS — state, lang, theme, nav, `renderFood()` dispatch |
+| 6550–7080 | JS — `renderAllSpiritsGrid()`, `renderGenericSpiritGrid()`, `openSpiritModal()`, `renderBar()` |
+| 7080–7215 | JS — Flavor Wheel: `buildFlavorWheel()`, `openFlavorWheel()`, `fwToggle()`, `applyFlavorFilter()` |
+| 7215–8015 | JS — `findSpirit()`, `renderCocktails()`, `openWhiskyModal()` |
+| 8015–8210 | JS — swipe navigation `initSwipe()` |
+| 8210–9115 | JS — compare, trivia, quiz, match, favourites, onboarding |
+| 9115–end | JS — checklist: `renderChecklist()`, `resetChecklist()`, `openFoodModal()`, `renderFood()` |
 
 ---
 
 ## Screens & navigation
 
 ```
-SCREEN_ORDER = ['event', 'bar', 'cocktails', 'on-the-menu', 'quiz', 'match']
-DOM IDs:      #screen-event  #screen-bar  #screen-cocktails  #screen-on-the-menu  #screen-quiz  #screen-match
+SCREEN_ORDER = ['event', 'bar', 'cocktails', 'on-the-menu', 'quiz', 'match', 'food', 'checklist']
+DOM IDs:      #screen-event  #screen-bar  #screen-cocktails  #screen-on-the-menu  #screen-quiz  #screen-match  #screen-food  #screen-checklist
 ```
 
-All 6 screens live side-by-side in `#screensTrack` (flex row, 600vw wide).
+All 8 screens live side-by-side in `#screensTrack` (flex row, **800vw** wide).
 Navigation via `slideTrackTo(idx)` + `translateX`. Swipe handled by `initSwipe()`.
 `navSetScreen(screen, keepContext)` — main function to switch screens. `keepContext=true` on swipe-back (preserves spirit view state).
+
+**Event screen is NOT in the swipe chain** — `minIdx()` always returns `1` (bar). Event is accessible only via its nav button.
 
 ### Nav pill buttons (order in DOM)
 | Button | Behaviour |
 |---|---|
 | **Main** (`id="navMainBtn"`) | `goMainHome()` → shows 4-card main home |
-| **Event** (`data-screen="event"`) | only visible when event is active; amber dot animation |
+| **Event** (`data-screen="event"`) | only visible when event is active; amber dot animation; nav-button-only (not swipeable) |
 | **Alcohol** (`data-screen="bar"`) | `navSetScreen('bar')` → shows spirit type selector |
 | Cocktails / On the Menu / Quiz / Match | `navSetScreen(screen)` as usual |
+| **Food** (`data-screen="food"`) | `navSetScreen('food')` → food menu screen |
+| **Checklist** (`data-screen="checklist"`) | `navSetScreen('checklist')` → shift checklist screen |
 
 ### Bar screen internal views (all inside `#screen-bar`)
 Navigation between views is DOM-based (hidden/shown), not screen-slide based.
@@ -103,6 +110,112 @@ When opening an event cocktail, `#modalPanel` gets class `.modal-riviera` → `r
 `.event-sponsors` section below the grid — "In partnership with":
 - **London Essence Co.** — inline SVG LE monogram (`fill="currentColor"`)
 - **Palmarae** — inline SVG wordmark from palmarae.com (`fill="currentColor"`)
+
+---
+
+## Flavor Wheel (`#fwOverlay`)
+
+Circular SVG filter on the cocktails screen. Opens from the `🎨 Flavor` button in the filter row.
+
+```js
+FLAVOR_DIMS = [
+  { key:'sweet', emoji:'🍬', en:'Sweet',   ru:'Сладкий',   color:'#f59e0b' },
+  { key:'fruity', ... }, { key:'spicy', ... }, { key:'smoky', ... },
+  { key:'bitter', ... }, { key:'sour',  ... }, { key:'floral', ... }, { key:'creamy', ... },
+]
+
+COCKTAIL_FLAVOR_PROFILES = {
+  'old-fashioned': { sweet:4, sour:0, bitter:3, smoky:1, spicy:2, fruity:2, floral:0, creamy:0 },
+  // … 67 cocktails total, scores 0–5
+}
+```
+
+Filter threshold: score **≥ 3** to match. `flavorFilter[]` is the active state; applied in `renderCocktails()`.
+
+Key functions: `openFlavorWheel()`, `closeFlavorWheel()`, `fwToggle(key)`, `applyFlavorFilter()`, `clearFlavorFilter()`, `fwRemoveOne(key)`, `fwUpdateBtn()`.
+Active chips shown in `#fwActiveRow` / `#fwActiveChips` (below filter row). `#flavorWheelBtn` gets `.fw-active` class when filter is on.
+
+---
+
+## Daily Special card (main home)
+
+`DAILY_SPECIALS[]` — 7 entries, one per day of week (`dayOfWeek: 0=Sun…6=Sat`). Can also use `date: 'YYYY-MM-DD'` for one-offs.
+
+```js
+{ dayOfWeek: 1, type: 'cocktail', refId: 'boulevardier',
+  title: { en: 'Boulevardier Monday', ru: 'Понедельничный Boulevardier' },
+  desc:  { en: '...', ru: '...' } }
+```
+
+`type` is always `'cocktail'` for now; `refId` must match an ID in `COCKTAILS[]` (or `FOOD[]` if `type:'food'`).
+Rendered as a card on the main home screen; click opens the relevant cocktail/food modal.
+
+---
+
+## Food Menu screen (`#screen-food`)
+
+```js
+FOOD = [
+  { id: 'ribeye', name: '28-Day Aged Ribeye', emoji: '🥩', category: 'main', price: '£38',
+    description: { en: '...', ru: '...' },
+    allergens: ['dairy', 'gluten'],           // string array
+    tags: { en: ['meat','signature'], ru: ['мясо','фирменное'] },
+    pairings: ['old-fashioned', 'manhattan']  // cocktail IDs from COCKTAILS[]
+  },
+  // …
+]
+```
+
+Categories: `'starter'` | `'main'` | `'snack'` | `'dessert'`.
+12 dishes total. Food has no images — uses `emoji` field.
+Filter tabs rendered dynamically from unique categories. `openFoodModal(f)` uses the main `#modalOverlay`.
+
+### Add a food dish
+1. Add entry to `FOOD[]` — all fields required except `tags`
+2. `pairings` must be valid IDs from `COCKTAILS[]`
+3. No images needed (emoji fallback)
+
+---
+
+## Shift Checklist screen (`#screen-checklist`)
+
+```js
+CHECKLISTS = {
+  manager:   { opening: [{id, task:{en,ru}}, ...], during: [...], closing: [...] },
+  bartender: { opening: [...], during: [...], closing: [...] },
+  waiter:    { opening: [...], during: [...], closing: [...] },
+}
+
+WEEKLY_TASKS = { 0: {en,ru}, 1: {en,ru}, … 6: {en,ru} }  // keyed by dayOfWeek (0=Sun)
+```
+
+State persisted in `localStorage`:
+- `ag_checklist_v1` — `{ date: 'YYYY-MM-DD', checked: { itemId: true } }` — resets when date changes
+- `ag_checklist_role` — last selected role (`'manager'|'bartender'|'waiter'`)
+- `ag_checklist_shift` — last selected shift (`'opening'|'during'|'closing'`)
+
+Key functions: `renderChecklist()`, `resetChecklist()`.
+Progress bar updates on every item toggle.
+
+---
+
+## Manager Updates overlay (`#updatesOverlay`)
+
+```js
+MANAGER_UPDATES = [
+  { id: 'upd-1', date: '2026-06-26', tag: 'urgent',
+    title: { en: '...', ru: '...' },
+    body:  { en: '...', ru: '...' } },
+  // …
+]
+```
+
+Tags: `'urgent'` | `'menu'` | `'info'`.
+`#navUpdatesBadge` pill shows count of unread. Seen IDs stored in `localStorage ag_updates_v1`.
+Key functions: `openUpdates()`, `renderUpdates()`.
+
+### Update manager messages
+Edit `MANAGER_UPDATES[]` directly. Add new entries at the top (they render in order). Remove old ones when stale. Badge auto-resets for returning users who haven't seen the new IDs.
 
 ---
 
@@ -284,7 +397,8 @@ All user-facing strings use `{ en: '...', ru: '...' }` objects, accessed via `t(
 2. `topWhiskies` = up to 3 IDs from ANY spirit array matching the cocktail's category
 3. Add photo to `images/Cocktails/` + mapping to `COCKTAIL_IMG` (no image = emoji fallback, that's fine)
 4. Add path to `sw.js` ASSETS array
-5. Bump SW cache version
+5. Add an entry to `COCKTAIL_FLAVOR_PROFILES` with 8 dimensions (sweet/sour/bitter/smoky/spicy/fruity/floral/creamy), scores 0–5
+6. Bump SW cache version
 
 ### Add trivia questions
 Add objects to `TRIVIA[]` array. Keep `d:` honest (1/2/3). There are currently:
@@ -292,7 +406,7 @@ Add objects to `TRIVIA[]` array. Keep `d:` honest (1/2/3). There are currently:
 
 ### Change default theme
 Edit `data-theme="..."` on the `<html>` tag (line 2).
-Cycle order defined in theme button JS: `louie → louie-light → dark → light`.
+Cycle order defined in theme button JS: `louie → louie-light` (2 active themes; `dark`/`light` removed but migration remains for legacy users).
 
 ### Bump SW cache (required after every push)
 ```bash
@@ -301,11 +415,29 @@ VERSION=$(date +"%Y%m%d-%H%M") && sed -i "s|const CACHE = 'alligator-guide-[^']*
 
 ---
 
+## localStorage keys
+
+| Key | Content |
+|---|---|
+| `ag_theme` | current theme (`louie` or `louie-light`) |
+| `ag_seen_v1` | JSON array of spirit IDs seen by user (NEW badge system) |
+| `ag_onboarded_v1` | `'1'` after first launch (coach tour) |
+| `ag_checklist_v1` | `{ date: 'YYYY-MM-DD', checked: { itemId: true } }` |
+| `ag_checklist_role` | last selected checklist role |
+| `ag_checklist_shift` | last selected checklist shift |
+| `ag_updates_v1` | JSON array of manager update IDs marked as read |
+| `ag_favs_v1` | JSON array of favourited spirit IDs |
+| `ag_compare_v1` | JSON array of spirit IDs in compare tray |
+
+---
+
 ## Known issues / deferred
 
 - **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. `syncCompareBar()`/`openCompareModal()` still use `WHISKIES.find` (whisky-only) — switch to `findSpirit()` if the feature ever ships for multiple categories.
+- **Food menu — placeholder content** — 12 dishes are fictional placeholders; replace with real House of Louie menu when available.
 - ~~Swipe doesn't init Quiz/Match~~ — **fixed**: `navSetScreen` calls `quizNext()` when reaching the quiz screen.
 - ~~Search is EN-only~~ — **fixed**: `renderBar()` search now includes `w.nose.tags[lang]` + EN fallback + `palateNotes[lang]`.
+- ~~Event screen in swipe chain~~ — **fixed**: Event removed from swipe (`minIdx()` always returns 1); accessible via nav button only.
 
 
 ---
