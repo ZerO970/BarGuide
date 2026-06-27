@@ -1870,6 +1870,21 @@ html.theme-transitioning .louie-gator-bg  { transition: opacity 1800ms ease !imp
 .food-pairing-item:active { opacity: .7; }
 .food-pairing-name { font-size: .82rem; font-weight: 600; color: var(--text-primary); }
 .food-pairing-type { font-size: .7rem; color: var(--text-muted); }
+.food-foh-box {
+  background: color-mix(in oklch, var(--gold-mid) 8%, var(--card-bg));
+  border: 1px solid color-mix(in oklch, var(--gold-mid) 28%, var(--border));
+  border-radius: 12px; padding: 11px 14px; margin-top: 8px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.food-foh-icon { font-size: 1.05rem; flex-shrink: 0; line-height: 1.4; }
+.food-foh-text { font-size: .82rem; color: var(--text-primary); line-height: 1.45; font-style: italic; }
+.food-wine-row {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px;
+  padding: 10px 12px; background: var(--card-bg);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.food-wine-icon { font-size: 1.3rem; flex-shrink: 0; }
+.food-wine-text { font-size: .82rem; color: var(--text-primary); line-height: 1.4; }
 
 /* ══════════════════════════════════════════════════
    CHECKLIST SCREEN
@@ -5396,55 +5411,210 @@ const DAILY_SPECIALS = [
 /* ══════════════════════════════════════════════════
    FOOD MENU
 ══════════════════════════════════════════════════ */
+/* House of Louie — Summer 26 Food Bible. emoji-based cards; foh = FOH talking point;
+   wine = sommelier note from the venue list; pairings = COCKTAILS ids. */
 const FOOD = [
-  { id:'burrata', name:'Burrata & Heritage Tomato', emoji:'🧀', category:'starter', price:'£12',
-    description:{en:'Creamy burrata with heritage tomatoes, basil oil and sea salt flakes. Simple and perfect.',ru:'Кремовая буррата с томатами, базиликовым маслом и морской солью. Просто и безупречно.'},
-    allergens:['dairy','gluten'], tags:{en:['vegetarian','sharing'],ru:['вегетарианское','на стол']},
-    pairings:['french-75','gimlet'] },
-  { id:'beef-tartare', name:'Beef Tartare', emoji:'🥩', category:'starter', price:'£14',
-    description:{en:'Hand-cut Hereford beef, capers, cornichons, egg yolk, grilled sourdough.',ru:'Нарезанная вручную говядина Херефорд, каперсы, корнишоны, желток, гриль-хлеб.'},
-    allergens:['egg','gluten','mustard'], tags:{en:['raw','classic'],ru:['сырое','классика']},
-    pairings:['manhattan','negroni'] },
-  { id:'oysters', name:'Oysters (3 pcs)', emoji:'🦪', category:'starter', price:'£16',
-    description:{en:'Fresh rock oysters served with shallot vinegar, Tabasco and lemon.',ru:'Свежие устрицы с луковым уксусом, Табаско и лимоном.'},
-    allergens:['molluscs'], tags:{en:['seasonal','raw'],ru:['сезонное','сырое']},
-    pairings:['highball','gimlet'] },
-  { id:'charcuterie', name:'Charcuterie Board', emoji:'🍖', category:'starter', price:'£18',
-    description:{en:'Selection of cured meats, cornichons, sourdough and house mustard.',ru:'Ассорти из вяленых мясных деликатесов, корнишонов, хлеба и домашней горчицы.'},
-    allergens:['gluten','mustard'], tags:{en:['sharing','meat'],ru:['на стол','мясо']},
-    pairings:['old-fashioned','boulevardier'] },
-  { id:'ribeye', name:'28-Day Aged Ribeye', emoji:'🥩', category:'main', price:'£38',
-    description:{en:'28-day dry-aged ribeye, roasted bone marrow butter, watercress, fries.',ru:'28-дневный сухой выдержки рибай, масло с костным мозгом, кресс-салат, фри.'},
-    allergens:['dairy','gluten'], tags:{en:['meat','signature'],ru:['мясо','фирменное']},
-    pairings:['old-fashioned','manhattan'] },
-  { id:'duck-confit', name:'Duck Confit', emoji:'🍗', category:'main', price:'£28',
-    description:{en:'Slow-cooked duck leg, Puy lentils, orange and thyme jus.',ru:'Утиная ножка медленного приготовления, чечевица Пюи, соус с апельсином и тимьяном.'},
-    allergens:['celery'], tags:{en:['meat','classic'],ru:['мясо','классика']},
-    pairings:['boulevardier','rusty-nail'] },
-  { id:'sea-bass', name:'Pan-Seared Sea Bass', emoji:'🐟', category:'main', price:'£26',
-    description:{en:'Line-caught sea bass, samphire, lemon beurre blanc, capers.',ru:'Морской окунь, морской самфир, лимонный соус, каперсы.'},
-    allergens:['fish','dairy'], tags:{en:['fish','light'],ru:['рыба','лёгкое']},
-    pairings:['highball','french-75'] },
-  { id:'mushroom-risotto', name:'Wild Mushroom Risotto', emoji:'🍄', category:'main', price:'£22',
-    description:{en:'Carnaroli risotto, porcini, truffle oil, aged Parmesan.',ru:'Ризотто Карнароли, белые грибы, трюфельное масло, выдержанный Пармезан.'},
-    allergens:['dairy','celery'], tags:{en:['vegetarian','rich'],ru:['вегетарианское','насыщенное']},
-    pairings:['negroni','martinez'] },
-  { id:'truffle-fries', name:'Truffle & Parmesan Fries', emoji:'🍟', category:'snack', price:'£8',
-    description:{en:'Crispy fries tossed in truffle oil and grated Parmesan. The side that steals the show.',ru:'Хрустящий фри с трюфельным маслом и тёртым Пармезаном. Гарнир, который крадёт шоу.'},
-    allergens:['dairy'], tags:{en:['vegetarian','shareable'],ru:['вегетарианское','на стол']},
-    pairings:['boulevardier','negroni'] },
-  { id:'olives', name:'Marinated Olives', emoji:'🫒', category:'snack', price:'£6',
-    description:{en:'Nocellara and Castelvetrano olives with citrus zest, garlic and herbs.',ru:'Оливки Носеллара и Кастельветрано с цедрой, чесноком и травами.'},
-    allergens:[], tags:{en:['vegan','light'],ru:['веганское','лёгкое']},
-    pairings:['vesper-martini','gin-and-tonic'] },
-  { id:'cheese-board', name:'British Cheese Board', emoji:'🧀', category:'dessert', price:'£16',
-    description:{en:'Three British cheeses, quince paste, grapes, oat biscuits.',ru:'Три британских сыра, паста из айвы, виноград, овсяное печенье.'},
-    allergens:['dairy','gluten'], tags:{en:['classic','sharing'],ru:['классика','на стол']},
-    pairings:['rusty-nail','french-connection'] },
-  { id:'chocolate-fondant', name:'Chocolate Fondant', emoji:'🍫', category:'dessert', price:'£10',
-    description:{en:'Warm dark chocolate fondant with salted caramel ice cream.',ru:'Тёплый фондан из тёмного шоколада со сливочным мороженым с солёной карамелью.'},
-    allergens:['dairy','gluten','egg'], tags:{en:['sweet','indulgent'],ru:['сладкое','насыщенное']},
-    pairings:['espresso-martini','brandy-alexander'] },
+  /* ── SNACKS ── */
+  { id:'maldon-oysters', name:'Maldon Oysters', emoji:'🦪', category:'snack', price:'£5 each',
+    description:{en:'Fresh Maldon oyster from the Essex coast — clean, mineral and lightly briny with a delicate cucumber finish. Served on crushed ice with lemon, mignonette and Tabasco.',ru:'Свежая устрица Maldon с побережья Эссекса — чистая, минеральная, с лёгкой солоноватостью и нежным огуречным финишем. Подаётся на колотом льду с лимоном, миньонетом и Табаско.'},
+    foh:{en:'Very fresh Maldon oysters — clean and mineral with a delicate cucumber finish. Perfect if you enjoy classic British oysters.',ru:'Очень свежие устрицы Maldon — чистые и минеральные, с нежным огуречным финишем. Идеально для любителей классических британских устриц.'},
+    allergens:['molluscs','sulphites'], tags:{en:['raw','mineral'],ru:['сырое','минеральное']},
+    pairings:['french-75','vesper-martini'],
+    wine:{en:'Sancerre or Ruinart Blanc de Blancs',ru:'Sancerre или Ruinart Blanc de Blancs'} },
+  { id:'oscietra-caviar', name:'Oscietra Prestige Caviar', emoji:'🥄', category:'snack', price:'£85 / £135',
+    description:{en:'Oscietra Prestige caviar with rich nutty depth and smooth buttery notes, served traditionally with warm blinis and crème fraîche. Available 30g or 50g.',ru:'Икра Oscietra Prestige с насыщенной ореховой глубиной и мягкими сливочно-масляными нотами, подаётся классически с тёплыми блинами и крем-фреш. Порции 30 г или 50 г.'},
+    foh:{en:'Oscietra Prestige caviar — very elegant, rich, nutty and buttery. Served traditionally with warm blinis and crème fraîche. Never serve with a metal spoon.',ru:'Икра Oscietra Prestige — очень элегантная, насыщенная, ореховая и сливочная. Подаётся с тёплыми блинами и крем-фреш. Никогда не подавать с металлической ложкой.'},
+    allergens:['fish','milk','gluten','egg'], tags:{en:['luxury','signature'],ru:['люкс','фирменное']},
+    pairings:['vesper-martini','vodka-martini'],
+    wine:{en:'Ruinart Blanc de Blancs or Veuve Clicquot',ru:'Ruinart Blanc de Blancs или Veuve Clicquot'} },
+  { id:'baguette-butter', name:'French Baguette & Butter', emoji:'🥖', category:'snack', price:'£6',
+    description:{en:'Freshly baked French baguette served warm with cultured whipped butter. Baked fresh daily.',ru:'Свежеиспечённый французский багет, подаётся тёплым со взбитым культивированным маслом. Выпекается каждый день.'},
+    foh:{en:'Freshly baked French baguette served warm with whipped butter — simple and comforting. Best enjoyed warm.',ru:'Свежий французский багет, подаётся тёплым со взбитым маслом — просто и уютно. Вкуснее всего тёплым.'},
+    allergens:['gluten','milk'], tags:{en:['warm','simple'],ru:['тёплое','простое']},
+    pairings:[],
+    wine:{en:'Saline or any house white',ru:'Saline или любое белое из карты'} },
+  { id:'gougeres', name:'Gougères', emoji:'🧀', category:'snack', price:'£6',
+    description:{en:'Classic French cheese gougères — light, airy choux pastry buns made with aged cheese. Warm and savoury.',ru:'Классические французские гужеры — лёгкие воздушные булочки из заварного теста с выдержанным сыром. Тёплые и пикантные.'},
+    foh:{en:'Classic French cheese gougères — light choux pastry buns with aged cheese. Warm, airy and savoury.',ru:'Классические гужеры — лёгкие булочки из заварного теста с выдержанным сыром. Тёплые, воздушные, пикантные.'},
+    allergens:['gluten','milk','egg'], tags:{en:['warm','cheese'],ru:['тёплое','сырное']},
+    pairings:['french-75','martinez'],
+    wine:{en:'Saint Véran or Ruinart Brut',ru:'Saint Véran или Ruinart Brut'} },
+  { id:'nocellara-olives', name:'Nocellara Olives', emoji:'🫒', category:'snack', price:'£5',
+    description:{en:'Large Sicilian Nocellara olives — vibrant green, meaty and lightly briny. Served at room temperature.',ru:'Крупные сицилийские оливки Nocellara — ярко-зелёные, мясистые, с лёгкой солоноватостью. Подаются комнатной температуры.'},
+    foh:{en:'Sicilian Nocellara olives — large, vibrant green and quite meaty with a light briny flavour.',ru:'Сицилийские оливки Nocellara — крупные, ярко-зелёные и мясистые, с лёгкой солоноватостью.'},
+    allergens:[], tags:{en:['vegan','snack'],ru:['веганское','снек']},
+    pairings:['negroni','vesper-martini'],
+    wine:{en:'Rock Angel rosé',ru:'розе Rock Angel'} },
+
+  /* ── STARTERS ── */
+  { id:'melon-soup', name:'Chilled Melon Soup', emoji:'🍈', category:'starter', price:'',
+    description:{en:'Seasonal cantaloupe melon soup with ricotta, espelette pepper and basil — fresh, delicate and refreshing.',ru:'Сезонный суп из дыни канталупа с рикоттой, перцем эспелет и базиликом — свежий, нежный и освежающий.'},
+    foh:{en:'A very seasonal chilled melon soup finished with ricotta and espelette powder — light and refreshing.',ru:'Очень сезонный холодный суп из дыни с рикоттой и перцем эспелет — лёгкий и освежающий.'},
+    allergens:['milk'], tags:{en:['seasonal','fresh'],ru:['сезонное','свежее']},
+    pairings:['southside','gimlet'],
+    wine:{en:'Riesling or Rock Angel rosé',ru:'Riesling или розе Rock Angel'} },
+  { id:'crispy-egg-peas', name:'Crispy Egg with Peas & Lardon', emoji:'🥚', category:'starter', price:'£10',
+    description:{en:'Crispy panko-coated egg with a soft yolk centre, served on sweet spring peas and smoked lardon.',ru:'Хрустящее яйцо в панировке панко с жидким желтком, на подушке из сладкого зелёного горошка и копчёного лярдона.'},
+    foh:{en:'A crispy panko-coated egg with sweet spring peas and smoky lardon — rich, comforting and classic. Cut it open for the soft yolk.',ru:'Хрустящее яйцо в панко со сладким горошком и копчёным лярдоном — насыщенное, уютное, классическое. Разрежьте — внутри жидкий желток.'},
+    allergens:['egg','gluten','milk','celery','mustard'], tags:{en:['rich','classic'],ru:['насыщенное','классика']},
+    pairings:['gimlet','vodka-martini'],
+    wine:{en:'Saint Véran',ru:'Saint Véran'} },
+  { id:'beef-carpaccio', name:'Beef Carpaccio', emoji:'🥩', category:'starter', price:'£19',
+    description:{en:'Thinly sliced raw beef fillet with rocket pistou and parmesan shavings — light, fresh and flavourful.',ru:'Тонко нарезанная сырая говяжья вырезка с песто из рукколы и стружкой пармезана — лёгкое, свежее и насыщенное.'},
+    foh:{en:'Thinly sliced raw beef with rocket pistou and parmesan shavings — light, fresh and flavourful.',ru:'Тонко нарезанная сырая говядина с песто из рукколы и стружкой пармезана — лёгкое, свежее, ароматное.'},
+    allergens:['milk','gluten'], tags:{en:['raw','light'],ru:['сырое','лёгкое']},
+    pairings:['negroni','boulevardier'],
+    wine:{en:'Etna Judeka or Cissac',ru:'Etna Judeka или Cissac'} },
+  { id:'bream-carpaccio', name:'Sea Bream Carpaccio', emoji:'🐟', category:'starter', price:'£18',
+    description:{en:'Delicate slices of sea bream with a bright passion fruit dressing, chives, poppy seed and lime zest.',ru:'Нежные ломтики морского леща с ярким соусом из маракуйи, шнитт-луком, маком и цедрой лайма.'},
+    foh:{en:'Delicate sea bream with a bright passion fruit dressing — fresh with subtle tropical acidity.',ru:'Нежный морской лещ с ярким соусом из маракуйи — свежо, с лёгкой тропической кислинкой.'},
+    allergens:['fish'], tags:{en:['raw','citrus'],ru:['сырое','цитрус']},
+    pairings:['tommy-margarita','paloma'],
+    wine:{en:'Riesling or Sancerre',ru:'Riesling или Sancerre'} },
+  { id:'artichoke-spinach', name:'Artichoke & Baby Spinach', emoji:'🥬', category:'starter', price:'£18',
+    description:{en:'Fresh artichoke and baby spinach dressed lightly with truffle dressing — light but aromatic and earthy.',ru:'Свежий артишок и молодой шпинат с лёгкой трюфельной заправкой — лёгкое, но ароматное и землистое.'},
+    foh:{en:'Fresh artichoke and baby spinach with truffle dressing — light but aromatic. We keep it lightly dressed.',ru:'Свежий артишок и молодой шпинат с трюфельной заправкой — лёгкое, но ароматное. Заправляем деликатно.'},
+    allergens:['sulphites'], tags:{en:['vegetarian','truffle'],ru:['вегетарианское','трюфель']},
+    pairings:['martinez','last-word'],
+    wine:{en:'Saint Véran',ru:'Saint Véran'} },
+  { id:'tomato-burrata', name:'Tomato & Burrata', emoji:'🍅', category:'starter', price:'',
+    description:{en:'Fresh Datterino tomatoes with creamy burrata, basil, balsamic reduction and olive oil — creamy and bright.',ru:'Свежие томаты Датерино с кремовой бурратой, базиликом, бальзамической редукцией и оливковым маслом — сливочно и свежо.'},
+    foh:{en:'Fresh Datterino tomatoes with creamy burrata, basil and balsamic — creamy with bright acidity.',ru:'Свежие томаты Датерино с кремовой бурратой, базиликом и бальзамиком — сливочно, с яркой кислинкой.'},
+    allergens:['sulphites','milk'], tags:{en:['vegetarian','creamy'],ru:['вегетарианское','сливочное']},
+    pairings:['negroni','southside'],
+    wine:{en:'Rock Angel rosé or Saline',ru:'розе Rock Angel или Saline'} },
+  { id:'tuna-nicoise', name:'Seared Tuna Niçoise Style', emoji:'🍣', category:'starter', price:'£18',
+    description:{en:'Tuna seared medium-rare with classic Niçoise elements — egg and Mediterranean garnish. Vibrant and fresh.',ru:'Тунец, обжаренный medium-rare, с классическими элементами «Нисуаз» — яйцо и средиземноморский гарнир. Яркое и свежее.'},
+    foh:{en:'Seared tuna served medium-rare with classic Niçoise flavours — vibrant and Mediterranean. The tuna stays pink in the middle.',ru:'Обжаренный тунец medium-rare с классическим вкусом «Нисуаз» — яркое, средиземноморское. Тунец остаётся розовым внутри.'},
+    allergens:['fish','egg','sulphites','mustard'], tags:{en:['fish','mediterranean'],ru:['рыба','средиземноморское']},
+    pairings:['paloma','margarita'],
+    wine:{en:'Rock Angel rosé or Sancerre',ru:'розе Rock Angel или Sancerre'} },
+  { id:'crab-salmon-salad', name:'Crab & Smoked Salmon Salad', emoji:'🦀', category:'starter', price:'£14',
+    description:{en:'Fresh crab and smoked salmon layered with avocado, fennel and apple — light with layered textures.',ru:'Свежий краб и копчёный лосось слоями с авокадо, фенхелем и яблоком — лёгкое, с многослойной текстурой.'},
+    foh:{en:'Fresh crab and smoked salmon with avocado, fennel and apple — light with layered textures, clean and fresh.',ru:'Свежий краб и копчёный лосось с авокадо, фенхелем и яблоком — лёгкое, с многослойной текстурой, чистое и свежее.'},
+    allergens:['crustaceans','fish','egg','celery','mustard'], tags:{en:['fresh','light'],ru:['свежее','лёгкое']},
+    pairings:['french-75','gimlet'],
+    wine:{en:'Sancerre or Ruinart Brut',ru:'Sancerre или Ruinart Brut'} },
+  { id:'fennel-quinoa', name:'Fennel & Quinoa', emoji:'🥗', category:'starter', price:'',
+    description:{en:'Sous-vide fennel cooked in orange juice with citrus segments and dressed quinoa, orange glaze, chilli and coriander cress.',ru:'Фенхель су-вид в апельсиновом соке с цитрусовыми дольками и заправленной киноа, апельсиновой глазурью, чили и кресс-кориандром.'},
+    foh:{en:'Fresh citrus flavours with charred fennel cooked in orange juice — light, bright and vegetarian.',ru:'Свежие цитрусовые ноты и подкопчённый фенхель, томлёный в апельсиновом соке — лёгкое, яркое, вегетарианское.'},
+    allergens:['sulphites','mustard','gluten'], tags:{en:['vegetarian','citrus'],ru:['вегетарианское','цитрус']},
+    pairings:['paloma','gimlet'],
+    wine:{en:'Riesling',ru:'Riesling'} },
+
+  /* ── MAINS ── */
+  { id:'maccheroni-truffle', name:'Maccheroni, Truffle & Aged Parmesan', emoji:'🍝', category:'main', price:'£34',
+    description:{en:'Fresh maccheroni with black truffle and aged parmesan — rich, aromatic and indulgent. Finished with fresh truffle.',ru:'Свежие маккерони с чёрным трюфелем и выдержанным пармезаном — насыщенно, ароматно и роскошно. Финишируется свежим трюфелем.'},
+    foh:{en:'Fresh maccheroni pasta with black truffle and aged parmesan — rich, aromatic and indulgent. We finish it with fresh truffle.',ru:'Свежая паста маккерони с чёрным трюфелем и выдержанным пармезаном — насыщенно, ароматно, роскошно. Финишируем свежим трюфелем.'},
+    allergens:['gluten','milk','egg'], tags:{en:['vegetarian','truffle'],ru:['вегетарианское','трюфель']},
+    pairings:['manhattan','boulevardier'],
+    wine:{en:'Etna Judeka or Saint Véran',ru:'Etna Judeka или Saint Véran'} },
+  { id:'beef-fillet-peppercorn', name:'Beef Fillet, Peppercorn Sauce', emoji:'🥩', category:'main', price:'£43',
+    description:{en:'Prime beef fillet cooked to preference with a classic peppercorn sauce — tender and full-bodied. Rested before serving.',ru:'Премиальная говяжья вырезка нужной прожарки с классическим перечным соусом — нежная и насыщенная. Отдыхает перед подачей.'},
+    foh:{en:'Prime beef fillet cooked to preference with classic peppercorn sauce — tender and full-bodied.',ru:'Премиальная говяжья вырезка нужной прожарки с классическим перечным соусом — нежная и насыщенная.'},
+    allergens:['milk','sulphites','celery'], tags:{en:['meat','signature'],ru:['мясо','фирменное']},
+    pairings:['old-fashioned','manhattan'],
+    wine:{en:'Domaine La Solitude or Cissac',ru:'Domaine La Solitude или Cissac'} },
+  { id:'baby-chicken', name:'Roast Baby Chicken', emoji:'🍗', category:'main', price:'£34',
+    description:{en:'Roasted baby chicken with new potatoes, girolles mushrooms and natural jus — comforting and flavourful. Crispy skin is essential.',ru:'Запечённый молодой цыплёнок с молодым картофелем, лисичками и натуральным соусом — уютно и ароматно. Хрустящая кожа обязательна.'},
+    foh:{en:'Roasted baby chicken with new potatoes, girolles mushrooms and natural jus — comforting and flavourful with crispy skin.',ru:'Запечённый молодой цыплёнок с молодым картофелем, лисичками и натуральным соусом — уютно, ароматно, с хрустящей кожей.'},
+    allergens:['milk','sulphites'], tags:{en:['meat','comforting'],ru:['мясо','уютное']},
+    pairings:['manhattan','vieux-carre'],
+    wine:{en:'Saint Véran or Cissac',ru:'Saint Véran или Cissac'} },
+  { id:'miso-aubergine', name:'Miso Roasted Aubergine', emoji:'🍆', category:'main', price:'',
+    description:{en:'Miso-glazed aubergine with spiced aubergine purée, aubergine caviar, tomato sauce and puffed wild rice — plant-focused and lightly spiced.',ru:'Баклажан в глазури мисо со пряным пюре из баклажана, баклажанной икрой, томатным соусом и воздушным диким рисом — растительное и слегка пряное.'},
+    foh:{en:'A plant-focused dish — miso-glazed aubergine, lightly spiced, with rich aubergine purées and crunchy wild rice.',ru:'Растительное блюдо — баклажан в глазури мисо, слегка пряный, с насыщенным баклажанным пюре и хрустящим диким рисом.'},
+    allergens:['soy'], tags:{en:['vegan','umami'],ru:['веганское','умами']},
+    pairings:['oaxacan-old-fashioned','mezcal-mule'],
+    wine:{en:'Etna Judeka',ru:'Etna Judeka'} },
+  { id:'sea-bass-provencal', name:'Sea Bass, Provençal & Vierge', emoji:'🐠', category:'main', price:'',
+    description:{en:'Pan-seared sea bass on a Provençal vegetable and tomato base, finished with a light tomato and citrus vierge. Crisp skin.',ru:'Сибас на сковороде на основе провансальских овощей и томата, с лёгким томатно-цитрусовым соусом vierge. Хрустящая кожа.'},
+    foh:{en:'Pan-seared sea bass with a Provençal vegetable and tomato base, light tomato and citrus dressing on top — elegant and light.',ru:'Сибас на сковороде на основе провансальских овощей и томата, сверху лёгкий томатно-цитрусовый соус — элегантно и легко.'},
+    allergens:['fish','sulphites'], tags:{en:['fish','light'],ru:['рыба','лёгкое']},
+    pairings:['margarita','paloma'],
+    wine:{en:'Sancerre or Rock Angel rosé',ru:'Sancerre или розе Rock Angel'} },
+  { id:'lobster-vol-au-vent', name:'Vol-au-Vent of Lobster', emoji:'🦞', category:'main', price:'£53',
+    description:{en:'Buttery puff pastry filled with lobster in a rich cream sauce — a classic luxurious dish. Pastry must stay crisp.',ru:'Масляное слоёное тесто с лобстером в насыщенном сливочном соусе — классическое роскошное блюдо. Тесто должно оставаться хрустящим.'},
+    foh:{en:'Buttery puff pastry filled with lobster in a rich sauce — a classic, luxurious dish.',ru:'Масляное слоёное тесто с лобстером в насыщенном соусе — классическое роскошное блюдо.'},
+    allergens:['crustaceans','gluten','milk','sulphites'], tags:{en:['luxury','signature'],ru:['люкс','фирменное']},
+    pairings:['french-75','vesper-martini'],
+    wine:{en:'Ruinart Blanc de Blancs or Saint Véran',ru:'Ruinart Blanc de Blancs или Saint Véran'} },
+  { id:'braised-lamb', name:'Braised Spring Lamb', emoji:'🐑', category:'main', price:'£36',
+    description:{en:'Slow-braised spring lamb with garden vegetables, served in a cocotte — tender, seasonal and comforting. Cooked low and slow.',ru:'Томлёная весенняя ягнятина с садовыми овощами, подаётся в кокотнице — нежно, сезонно и уютно. Готовится долго и на низком огне.'},
+    foh:{en:'Slow-braised spring lamb with garden vegetables — tender, seasonal and comforting.',ru:'Томлёная весенняя ягнятина с садовыми овощами — нежно, сезонно и уютно.'},
+    allergens:['sulphites'], tags:{en:['meat','comforting'],ru:['мясо','уютное']},
+    pairings:['boulevardier','manhattan'],
+    wine:{en:'Domaine La Solitude or Cissac',ru:'Domaine La Solitude или Cissac'} },
+  { id:'cote-de-boeuf', name:'Côte de Boeuf (1kg)', emoji:'🍖', category:'main', price:'£125',
+    description:{en:'A one-kilogram rib of beef designed for sharing — beautifully marbled and simply cooked to highlight flavour. Rested at least 15 minutes.',ru:'Килограммовое ребро говядины для компании — прекрасно мраморное и просто приготовленное, чтобы подчеркнуть вкус. Отдыхает минимум 15 минут.'},
+    foh:{en:'A one-kilogram rib of beef designed for sharing — beautifully marbled and simply cooked to highlight the flavour. Great for two.',ru:'Килограммовое ребро говядины для компании — прекрасно мраморное, просто приготовленное ради вкуса. Отлично на двоих.'},
+    allergens:[], tags:{en:['meat','sharing'],ru:['мясо','на стол']},
+    pairings:['old-fashioned','boulevardier'],
+    wine:{en:'Cissac or Domaine La Solitude',ru:'Cissac или Domaine La Solitude'} },
+
+  /* ── SIDES ── */
+  { id:'truffle-fries', name:'Fries & Truffle Parmesan Fries', emoji:'🍟', category:'side', price:'£11.50',
+    description:{en:'Crispy French fries, available plain or tossed with truffle paste, grated parmesan and truffle oil while hot.',ru:'Хрустящий картофель фри — обычный или с трюфельной пастой, тёртым пармезаном и трюфельным маслом, смешанный горячим.'},
+    foh:{en:'Crispy French fries with melted parmesan and truffle — mixed fresh out of the fryer.',ru:'Хрустящий фри с расплавленным пармезаном и трюфелем — смешивается прямо из фритюра.'},
+    allergens:['gluten','milk'], tags:{en:['side','truffle'],ru:['гарнир','трюфель']},
+    pairings:[],
+    wine:{en:'',ru:''} },
+  { id:'truffle-mash', name:'Mash & Truffle Mash Potatoes', emoji:'🥔', category:'side', price:'£11.50',
+    description:{en:'Silky smooth and creamy mash potato, available plain or topped with fresh truffle slices.',ru:'Шелковисто-гладкое кремовое картофельное пюре — обычное или с ломтиками свежего трюфеля сверху.'},
+    foh:{en:'Silky smooth and creamy mash potato, with fresh truffle slices on top.',ru:'Шелковистое кремовое пюре со свежими ломтиками трюфеля сверху.'},
+    allergens:['milk'], tags:{en:['side','creamy'],ru:['гарнир','сливочное']},
+    pairings:[],
+    wine:{en:'',ru:''} },
+  { id:'honey-carrots', name:'Honey Glazed Carrots', emoji:'🥕', category:'side', price:'£7',
+    description:{en:'Carrots seared and glazed with honey and thyme.',ru:'Морковь, обжаренная и глазированная мёдом с тимьяном.'},
+    foh:{en:'Sweet honey-glazed carrots with thyme — a simple, seasonal side.',ru:'Сладкая медовая морковь с тимьяном — простой сезонный гарнир.'},
+    allergens:['gluten'], tags:{en:['side','vegetarian'],ru:['гарнир','вегетарианское']},
+    pairings:[],
+    wine:{en:'',ru:''} },
+  { id:'red-oak-salad', name:'Red Oak Lettuce Salad', emoji:'🥗', category:'side', price:'£7',
+    description:{en:'Fresh red oak lettuce leaves dressed with French dressing and sprinkled with chives.',ru:'Свежие листья салата «красный дуб» с французской заправкой и шнитт-луком.'},
+    foh:{en:'A fresh, light leaf salad with French dressing and chives.',ru:'Свежий лёгкий листовой салат с французской заправкой и шнитт-луком.'},
+    allergens:[], tags:{en:['side','light'],ru:['гарнир','лёгкое']},
+    pairings:[],
+    wine:{en:'',ru:''} },
+  { id:'green-beans', name:'Green Beans', emoji:'🫛', category:'side', price:'£7',
+    description:{en:'Green beans dressed with shallot, onion seeds, white wine vinegar and capers.',ru:'Зелёная фасоль с заправкой из шалота, семян лука, винного уксуса и каперсов.'},
+    foh:{en:'Green beans in a sharp shallot and caper dressing — a fresh, crunchy side.',ru:'Зелёная фасоль в пикантной заправке из шалота и каперсов — свежий хрустящий гарнир.'},
+    allergens:['gluten','sulphites'], tags:{en:['side','fresh'],ru:['гарнир','свежее']},
+    pairings:[],
+    wine:{en:'',ru:''} },
+
+  /* ── DESSERTS ── */
+  { id:'strawberry-pavlova', name:'Strawberries Pavlova', emoji:'🍓', category:'dessert', price:'£11',
+    description:{en:'Crisp meringue with fresh strawberries and cream — light, sweet and refreshing. Assembled just before serving.',ru:'Хрустящая меренга со свежей клубникой и сливками — лёгкое, сладкое и освежающее. Собирается прямо перед подачей.'},
+    foh:{en:'Crisp meringue with fresh strawberries and cream — light, sweet and refreshing.',ru:'Хрустящая меренга со свежей клубникой и сливками — лёгкое, сладкое, освежающее.'},
+    allergens:['egg','milk'], tags:{en:['sweet','light'],ru:['сладкое','лёгкое']},
+    pairings:['french-75','clover-club'],
+    wine:{en:'Ruinart Rosé or Veuve Clicquot Rosé',ru:'Ruinart Rosé или Veuve Clicquot Rosé'} },
+  { id:'chocolate-moelleux', name:'Dark Chocolate Moelleux', emoji:'🍫', category:'dessert', price:'£11',
+    description:{en:'Warm dark chocolate fondant with vanilla ice cream — rich with a soft molten centre. Centre must stay molten.',ru:'Тёплый фондан из тёмного шоколада с ванильным мороженым — насыщенный, с жидкой серединой. Центр должен оставаться текучим.'},
+    foh:{en:'Warm dark chocolate fondant with vanilla ice cream — rich with a soft molten centre.',ru:'Тёплый фондан из тёмного шоколада с ванильным мороженым — насыщенный, с жидкой серединой.'},
+    allergens:['gluten','egg','milk'], tags:{en:['sweet','indulgent'],ru:['сладкое','насыщенное']},
+    pairings:['espresso-martini','brandy-alexander'],
+    wine:{en:'Ruinart Brut',ru:'Ruinart Brut'} },
+  { id:'paris-brest', name:'Pistachio Paris-Brest', emoji:'🥮', category:'dessert', price:'£12',
+    description:{en:'Choux pastry ring filled with pistachio cream and finished with chocolate sauce — nutty and indulgent. Pastry kept crisp.',ru:'Кольцо из заварного теста с фисташковым кремом и шоколадным соусом — ореховое и роскошное. Тесто остаётся хрустящим.'},
+    foh:{en:'Choux pastry ring filled with pistachio cream and chocolate sauce — nutty and indulgent.',ru:'Кольцо из заварного теста с фисташковым кремом и шоколадным соусом — ореховое и роскошное.'},
+    allergens:['gluten','egg','milk','nuts','fish'], tags:{en:['sweet','nutty'],ru:['сладкое','ореховое']},
+    pairings:['brandy-alexander','espresso-martini'],
+    wine:{en:'Ruinart Brut',ru:'Ruinart Brut'} },
+  { id:'mille-feuille', name:'Mille Feuille, Salted Caramel', emoji:'🍰', category:'dessert', price:'£13',
+    description:{en:'Delicate layers of crisp puff pastry with vanilla pastry cream and salted caramel — a sweet and salty balance.',ru:'Тонкие слои хрустящего слоёного теста с ванильным заварным кремом и солёной карамелью — баланс сладкого и солёного.'},
+    foh:{en:'Delicate layers of crisp puff pastry with vanilla cream and salted caramel — sweet and salty balance.',ru:'Тонкие слои хрустящего слоёного теста с ванильным кремом и солёной карамелью — баланс сладкого и солёного.'},
+    allergens:['milk','egg','fish','gluten'], tags:{en:['sweet','salty'],ru:['сладкое','солёное']},
+    pairings:['white-russian','espresso-martini'],
+    wine:{en:'Ruinart Brut',ru:'Ruinart Brut'} },
+  { id:'lexotique', name:"L'Exotique", emoji:'🥭', category:'dessert', price:'£11',
+    description:{en:'A bright tropical dessert with mango salsa, fresh pineapple and mango sorbet — fresh and refreshing.',ru:'Яркий тропический десерт с сальсой из манго, свежим ананасом и сорбетом манго — свежо и освежающе.'},
+    foh:{en:'A bright tropical dessert with mango salsa, pineapple and mango sorbet — fresh and refreshing.',ru:'Яркий тропический десерт с сальсой из манго, ананасом и сорбетом манго — свежо и освежающе.'},
+    allergens:[], tags:{en:['fruity','refreshing'],ru:['фруктовое','освежающее']},
+    pairings:['painkiller','pina-colada'],
+    wine:{en:'Riesling or Saicho sparkling tea',ru:'Riesling или игристый чай Saicho'} },
 ];
 
 /* ══════════════════════════════════════════════════
@@ -9026,10 +9196,11 @@ let foodFilter = 'all';
 function renderFood() {
   const categories = [
     { id: 'all',     en: 'All',     ru: 'Все' },
+    { id: 'snack',   en: 'Snacks',  ru: 'Снеки' },
     { id: 'starter', en: 'Starters',ru: 'Закуски' },
     { id: 'main',    en: 'Mains',   ru: 'Основные' },
+    { id: 'side',    en: 'Sides',   ru: 'Гарниры' },
     { id: 'dessert', en: 'Desserts',ru: 'Десерты' },
-    { id: 'snack',   en: 'Snacks',  ru: 'Снеки' },
   ];
   const filtersEl = document.getElementById('foodFilters');
   if (filtersEl) {
@@ -9048,7 +9219,7 @@ function renderFood() {
         : `<div class="food-card-emoji">${f.emoji || '🍽️'}</div>`}
       <div class="food-card-body">
         <div class="food-card-name">${f.name}</div>
-        <div class="food-card-price">${f.price}</div>
+        ${f.price ? `<div class="food-card-price">${f.price}</div>` : ''}
         <div class="food-card-desc">${t(f.description)}</div>
       </div>
     </div>`).join('');
@@ -9065,10 +9236,24 @@ window.openFoodModal = function(f) {
   const allergenHTML = f.allergens?.length
     ? `<div class="food-modal-allergens">${f.allergens.map(a => `<span class="allergen-tag">${a}</span>`).join('')}</div>`
     : '';
+  const fohHTML = f.foh && t(f.foh)
+    ? `<div class="divider"></div>
+       <div class="section">
+         <div class="section-title">${lang === 'en' ? '💬 Talking Point' : '💬 Подача гостю'}</div>
+         <div class="food-foh-box"><span class="food-foh-icon">“</span><div class="food-foh-text">${t(f.foh)}</div></div>
+       </div>`
+    : '';
+  const wineHTML = f.wine && t(f.wine)
+    ? `<div class="divider"></div>
+       <div class="section">
+         <div class="section-title">${lang === 'en' ? '🍷 Wine Pairing' : '🍷 Вино к блюду'}</div>
+         <div class="food-wine-row"><span class="food-wine-icon">🍷</span><div class="food-wine-text">${t(f.wine)}</div></div>
+       </div>`
+    : '';
   const pairingsHTML = f.pairings?.length
     ? `<div class="divider"></div>
        <div class="section">
-         <div class="section-title">${lang === 'en' ? 'Pairs Well With' : 'Отлично сочетается с'}</div>
+         <div class="section-title">${lang === 'en' ? '🍸 Cocktail Pairing' : '🍸 Коктейль к блюду'}</div>
          <div class="food-pairing-list">
            ${f.pairings.map(id => {
              const c = COCKTAILS.find(x => x.id === id);
@@ -9096,7 +9281,7 @@ window.openFoodModal = function(f) {
       ${!f.img ? `<button class="modal-hero-close" id="modalClose" style="position:absolute;top:14px;right:14px">${svgClose}</button>` : ''}
       <div style="font-size:2rem;margin-bottom:6px">${f.emoji || '🍽️'}</div>
       <div class="modal-name">${f.name}</div>
-      <div style="font-size:.8rem;color:var(--gold-mid);font-weight:600;margin-top:4px">${f.price}</div>
+      ${f.price ? `<div style="font-size:.8rem;color:var(--gold-mid);font-weight:600;margin-top:4px">${f.price}</div>` : ''}
     </div>
     <div class="modal-content">
       <div class="divider" style="margin-top:8px"></div>
@@ -9105,6 +9290,8 @@ window.openFoodModal = function(f) {
         <p class="history-text">${t(f.description)}</p>
         ${allergenHTML ? `<div class="section-title" style="margin-top:12px">${lang === 'en' ? 'Allergens' : 'Аллергены'}</div>${allergenHTML}` : ''}
       </div>
+      ${fohHTML}
+      ${wineHTML}
       ${pairingsHTML}
     </div>`;
   document.getElementById('modalClose').addEventListener('click', closeModal);

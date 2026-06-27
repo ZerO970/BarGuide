@@ -154,26 +154,36 @@ Rendered as a card on the main home screen; click opens the relevant cocktail/fo
 
 ## Food Menu screen (`#screen-food`)
 
+Real House of Louie menu (Summer 26 Food Bible). **32 dishes.**
+
 ```js
 FOOD = [
-  { id: 'ribeye', name: '28-Day Aged Ribeye', emoji: '🥩', category: 'main', price: '£38',
+  { id: 'cote-de-boeuf', name: 'Côte de Boeuf (1kg)', emoji: '🍖', category: 'main', price: '£125',
     description: { en: '...', ru: '...' },
-    allergens: ['dairy', 'gluten'],           // string array
-    tags: { en: ['meat','signature'], ru: ['мясо','фирменное'] },
-    pairings: ['old-fashioned', 'manhattan']  // cocktail IDs from COCKTAILS[]
+    foh: { en: '...', ru: '...' },            // FOH talking point — staff selling line, shown in modal
+    allergens: ['milk', 'sulphites'],         // string array
+    tags: { en: ['meat','sharing'], ru: ['мясо','на стол'] },
+    pairings: ['old-fashioned', 'boulevardier'],  // cocktail IDs from COCKTAILS[]
+    wine: { en: 'Cissac or Domaine La Solitude', ru: '...' }  // sommelier note from venue wine list
   },
   // …
 ]
 ```
 
-Categories: `'starter'` | `'main'` | `'snack'` | `'dessert'`.
-12 dishes total. Food has no images — uses `emoji` field.
-Filter tabs rendered dynamically from unique categories. `openFoodModal(f)` uses the main `#modalOverlay`.
+Categories: `'snack'` | `'starter'` | `'main'` | `'side'` | `'dessert'`.
+Food has no images — uses `emoji` field (`f.img` optional, falls back to emoji).
+Filter tabs are a fixed list in `renderFood()` (all/snack/starter/main/side/dessert), not derived from data.
+`openFoodModal(f)` uses the main `#modalOverlay`; renders Description, Allergens, **💬 Talking Point** (`foh`), **🍷 Wine Pairing** (`wine`), **🍸 Cocktail Pairing** (`pairings`). Empty `foh`/`wine`/`pairings` sections are omitted; empty `price` is omitted.
+
+Wine list available at venue (for `wine` field): White — Saline, Sancerre, Riesling, Saint Véran. Red — Domaine La Solitude, Cissac, Saboteur, Etna Judeka. Rosé — Rock Angel. Champagne — Ruinart Brut, Ruinart Blanc de Blancs, Veuve Clicquot Rosé. Sparkling/NA — Saicho jasmine tea, French Bloom.
+
+Some dishes have no listed price in the source PDF (melon-soup, tomato-burrata, fennel-quinoa, miso-aubergine, sea-bass-provencal) — `price: ''`, render guards it.
 
 ### Add a food dish
-1. Add entry to `FOOD[]` — all fields required except `tags`
-2. `pairings` must be valid IDs from `COCKTAILS[]`
-3. No images needed (emoji fallback)
+1. Add entry to `FOOD[]` — `id`, `name`, `emoji`, `category`, `price`, `description` required; `foh`/`tags`/`pairings`/`wine` optional
+2. `pairings` must be valid IDs from `COCKTAILS[]`; `wine` is free text from the venue wine list
+3. If adding a new `category`, also add a tab to the `categories` array in `renderFood()`
+4. No images needed (emoji fallback)
 
 ---
 
@@ -434,7 +444,7 @@ VERSION=$(date +"%Y%m%d-%H%M") && sed -i "s|const CACHE = 'alligator-guide-[^']*
 ## Known issues / deferred
 
 - **Favourites & Compare** — UI code exists but buttons aren't rendered on normal grid cards. Deferred by owner. `syncCompareBar()`/`openCompareModal()` still use `WHISKIES.find` (whisky-only) — switch to `findSpirit()` if the feature ever ships for multiple categories.
-- **Food menu — placeholder content** — 12 dishes are fictional placeholders; replace with real House of Louie menu when available.
+- ~~Food menu — placeholder content~~ — **done**: replaced with the real House of Louie Summer 26 menu (32 dishes, with `foh` talking points + `wine`/cocktail pairings). Photos not included (PDF images couldn't be extracted in-env; cards are emoji-based by design).
 - ~~Swipe doesn't init Quiz/Match~~ — **fixed**: `navSetScreen` calls `quizNext()` when reaching the quiz screen.
 - ~~Search is EN-only~~ — **fixed**: `renderBar()` search now includes `w.nose.tags[lang]` + EN fallback + `palateNotes[lang]`.
 - ~~Event screen in swipe chain~~ — **fixed**: Event removed from swipe (`minIdx()` always returns 1); accessible via nav button only.
