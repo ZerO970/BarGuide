@@ -1,7 +1,8 @@
-const CACHE = 'alligator-guide-20260627-0419';
+const CACHE = 'alligator-guide-20260627-0434';
 const ASSETS = [
   '/AlligatorGuide/',
   '/AlligatorGuide/index.html',
+  '/AlligatorGuide/updates.js',
   '/AlligatorGuide/manifest.json',
   '/AlligatorGuide/alligator.svg',
   '/AlligatorGuide/icons/icon-192.png',

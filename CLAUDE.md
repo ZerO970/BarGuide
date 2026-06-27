@@ -211,21 +211,42 @@ Progress bar updates on every item toggle.
 
 ## Manager Updates overlay (`#updatesOverlay`)
 
+**Source file: [`updates.js`](updates.js)** — edit this file to add/remove updates. It's a separate file so you don't have to touch `index.html` for routine announcements.
+
 ```js
-MANAGER_UPDATES = [
-  { id: 'upd-1', date: '2026-06-26', tag: 'urgent',
+// updates.js
+const MANAGER_UPDATES = [
+  { id: 'upd-N', date: 'YYYY-MM-DD', tag: 'urgent',  // urgent | menu | info
     title: { en: '...', ru: '...' },
     body:  { en: '...', ru: '...' } },
-  // …
+  // … older entries below
 ]
 ```
 
-Tags: `'urgent'` | `'menu'` | `'info'`.
+Tags: `'urgent'` (red) | `'menu'` (gold) | `'info'` (grey).
 `#navUpdatesBadge` pill shows count of unread. Seen IDs stored in `localStorage ag_updates_v1`.
-Key functions: `openUpdates()`, `renderUpdates()`.
+Key functions: `openUpdates()`, `renderUpdates()` (both in `index.html`).
 
-### Update manager messages
-Edit `MANAGER_UPDATES[]` directly. Add new entries at the top (they render in order). Remove old ones when stale. Badge auto-resets for returning users who haven't seen the new IDs.
+### Workflow — adding a new update
+
+1. Open **`updates.js`**
+2. Add a new entry at the **very top** of the array with the next `id` number and today's date
+3. Bump the SW cache in `sw.js` (see Common tasks → Bump SW cache)
+4. Commit both `updates.js` + `sw.js` — no need to touch `index.html`
+
+The badge auto-shows for all staff who haven't seen the new ID yet.
+
+### Update log
+
+| Date | ID | Tag | EN Title |
+|---|---|---|---|
+| 2026-06-27 | upd-5 | menu | Food Menu Now Live in the App |
+| 2026-06-26 | upd-1 | urgent | 86: Laphroaig Quarter Cask — Out of Stock |
+| 2026-06-25 | upd-2 | menu | New Arrival: The Yamazaki 18 |
+| 2026-06-24 | upd-3 | info | Team Reminder: Glassware Standards |
+| 2026-06-20 | upd-4 | info | London Essence Event Running Until Aug 31 |
+
+> Keep entries in `updates.js` for ~2 weeks after posting, then remove stale ones (they become useless once all staff have seen them). Always update this table when adding a new entry.
 
 ---
 
