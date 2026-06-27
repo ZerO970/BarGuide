@@ -1,3 +1,5 @@
+// AlligatorGuide Service Worker
+// Copyright © 2026 Vitalii Zaikin. All rights reserved.
 const CACHE = 'alligator-guide-20260627-0434';
 const ASSETS = [
   '/AlligatorGuide/',
