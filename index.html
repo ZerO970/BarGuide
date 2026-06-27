@@ -5617,6 +5617,11 @@ const FOOD = [
     wine:{en:'Riesling or Saicho sparkling tea',ru:'Riesling или игристый чай Saicho'} },
 ];
 
+/* Auto-attach dish photos (images/food/<id>.jpg) extracted from the Food Bible.
+   Only red-oak-salad lacks a source photo → keeps its emoji fallback. */
+const FOOD_NO_PHOTO = new Set(['red-oak-salad']);
+FOOD.forEach(f => { if (!FOOD_NO_PHOTO.has(f.id)) f.img = `images/food/${f.id}.jpg`; });
+
 /* ══════════════════════════════════════════════════
    WEEKLY TASKS
 ══════════════════════════════════════════════════ */

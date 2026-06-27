@@ -1,4 +1,4 @@
-const CACHE = 'alligator-guide-20260627-0400';
+const CACHE = 'alligator-guide-20260627-0419';
 const ASSETS = [
   '/AlligatorGuide/',
   '/AlligatorGuide/index.html',
@@ -158,6 +158,37 @@ const ASSETS = [
   '/AlligatorGuide/images/events/riviera-cote-verte-spritz.jpg',
   '/AlligatorGuide/images/events/riviera-palmarae-tonic.jpg',
   '/AlligatorGuide/images/events/riviera-bardot-au-soleil.jpg',
+  '/AlligatorGuide/images/food/artichoke-spinach.jpg',
+  '/AlligatorGuide/images/food/baby-chicken.jpg',
+  '/AlligatorGuide/images/food/baguette-butter.jpg',
+  '/AlligatorGuide/images/food/beef-carpaccio.jpg',
+  '/AlligatorGuide/images/food/beef-fillet-peppercorn.jpg',
+  '/AlligatorGuide/images/food/braised-lamb.jpg',
+  '/AlligatorGuide/images/food/bream-carpaccio.jpg',
+  '/AlligatorGuide/images/food/chocolate-moelleux.jpg',
+  '/AlligatorGuide/images/food/cote-de-boeuf.jpg',
+  '/AlligatorGuide/images/food/crab-salmon-salad.jpg',
+  '/AlligatorGuide/images/food/crispy-egg-peas.jpg',
+  '/AlligatorGuide/images/food/fennel-quinoa.jpg',
+  '/AlligatorGuide/images/food/gougeres.jpg',
+  '/AlligatorGuide/images/food/green-beans.jpg',
+  '/AlligatorGuide/images/food/honey-carrots.jpg',
+  '/AlligatorGuide/images/food/lexotique.jpg',
+  '/AlligatorGuide/images/food/lobster-vol-au-vent.jpg',
+  '/AlligatorGuide/images/food/maccheroni-truffle.jpg',
+  '/AlligatorGuide/images/food/maldon-oysters.jpg',
+  '/AlligatorGuide/images/food/melon-soup.jpg',
+  '/AlligatorGuide/images/food/mille-feuille.jpg',
+  '/AlligatorGuide/images/food/miso-aubergine.jpg',
+  '/AlligatorGuide/images/food/nocellara-olives.jpg',
+  '/AlligatorGuide/images/food/oscietra-caviar.jpg',
+  '/AlligatorGuide/images/food/paris-brest.jpg',
+  '/AlligatorGuide/images/food/sea-bass-provencal.jpg',
+  '/AlligatorGuide/images/food/strawberry-pavlova.jpg',
+  '/AlligatorGuide/images/food/tomato-burrata.jpg',
+  '/AlligatorGuide/images/food/truffle-fries.jpg',
+  '/AlligatorGuide/images/food/truffle-mash.jpg',
+  '/AlligatorGuide/images/food/tuna-nicoise.jpg',
 ];
 
 self.addEventListener('install', e => {
